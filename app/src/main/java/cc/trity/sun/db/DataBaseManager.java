@@ -8,9 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import cc.trity.sun.models.CityModels;
-import cc.trity.sun.models.County;
-import cc.trity.sun.models.ProvinceModel;
+import cc.trity.sun.model.City;
+import cc.trity.sun.model.County;
+import cc.trity.sun.model.Province;
 
 /**
  * 数据库操作的类
@@ -47,7 +47,7 @@ public class DataBaseManager {
         return dataBaseManager;
     }
 
-    public void saveProvince(ProvinceModel provinceModel){
+    public void saveProvince(Province provinceModel){
         if(provinceModel!=null){
             ContentValues contentValues=new ContentValues();
             contentValues.put("province_name",provinceModel.getProvinceName());
@@ -56,13 +56,13 @@ public class DataBaseManager {
         }
     }
 
-    public List<ProvinceModel> loadProvinces(){
-        List<ProvinceModel> list = new ArrayList<ProvinceModel>();
+    public List<Province> loadProvinces(){
+        List<Province> list = new ArrayList<Province>();
         Cursor cursor = db
                 .query(DB_TABLE_PROVINCE, null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                ProvinceModel province = new ProvinceModel();
+                Province province = new Province();
                 province.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 province.setProvinceName(cursor.getString(cursor
                         .getColumnIndex("province_name")));
@@ -75,7 +75,7 @@ public class DataBaseManager {
     /**
      * 将City实例存储到数据库。
      */
-    public void saveCity(CityModels city) {
+    public void saveCity(City city) {
         if (city != null) {
             ContentValues values = new ContentValues();
             values.put("city_name", city.getCityName());
@@ -88,13 +88,13 @@ public class DataBaseManager {
     /**
      * 从数据库读取某省下所有的城市信息。
      */
-    public List<CityModels> loadCities(int provinceId) {
-        List<CityModels> list = new ArrayList<>();
+    public List<City> loadCities(int provinceId) {
+        List<City> list = new ArrayList<>();
         Cursor cursor = db.query(DB_TABLE_CITY, null, "province_id = ?",
                 new String[]{String.valueOf(provinceId)}, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                CityModels city = new CityModels();
+                City city = new City();
                 city.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 city.setCityName(cursor.getString(cursor
                         .getColumnIndex("city_name")));
