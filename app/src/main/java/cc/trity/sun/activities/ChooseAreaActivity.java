@@ -1,15 +1,13 @@
 package cc.trity.sun.activities;
 
-import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,15 +19,16 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.trity.sun.R;
+import cc.trity.sun.activities.base.BaseActivity;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.listener.HttpCallbackListener;
 import cc.trity.sun.model.City;
 import cc.trity.sun.model.County;
 import cc.trity.sun.model.Province;
 import cc.trity.sun.networks.HttpNetWorkTools;
-import cc.trity.sun.utils.LogUtils;
+import cc.trity.sun.utils.Utility;
 
-public class ChooseAreaActivity extends AppCompatActivity {
+public class ChooseAreaActivity extends BaseActivity {
 
     public static final int LEVEL_PROVINCE = 0;
     public static final int LEVEL_CITY = 1;
@@ -41,7 +40,6 @@ public class ChooseAreaActivity extends AppCompatActivity {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
-    private ProgressDialog progressDialog;
     private ArrayAdapter<String> adapter;
     private DataBaseManager dataBaseManager;
     private List<String> dataList = new ArrayList<String>();
@@ -77,41 +75,58 @@ public class ChooseAreaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_choose_area);
+        ButterKnife.inject(this);
+        this.init(savedInstanceState);
+    }
+
+    @Override
+    public void initVariables() {
         isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (prefs.getBoolean("city_selected", false) && !isFromWeatherActivity) {
-//			Intent intent = new Intent(this, WeatherActivity.class);
-//			startActivity(intent);
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
             finish();
             return;
         }
-        setContentView(R.layout.activity_choose_area);
-        ButterKnife.inject(this);
+    }
 
+    @Override
+    public void initView(Bundle savedInstanceState) {
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dataList);
         listArea.setAdapter(adapter);
-        dataBaseManager = DataBaseManager.getInstance(this);
-        listArea.setOnItemClickListener(new OnItemClickListener() {
+        listArea.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int index,
                                     long arg3) {
                 if (currentLevel == LEVEL_PROVINCE) {
                     selectedProvince = provinceList.get(index);
                     queryCities();
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(index);
                     queryCounties();
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
                 } else if (currentLevel == LEVEL_COUNTY) {
                     String countyCode = countyList.get(index).getCountyCode();
-//                    Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
-//                    intent.putExtra("county_code", countyCode);
-//                    startActivity(intent);
+                    Intent intent = new Intent(ChooseAreaActivity.this, MainActivity.class);
+                    intent.putExtra("county_code", countyCode);
+                    startActivity(intent);
                     finish();
                 }
             }
         });
+    }
+
+    @Override
+    public void loadData() {
+        dataBaseManager = DataBaseManager.getInstance(this);
         queryProvinces();  // 加载省级数据
     }
 
@@ -187,8 +202,7 @@ public class ChooseAreaActivity extends AppCompatActivity {
             @Override
             public void onFinish(String response) {
                 boolean result = false;
-                LogUtils.e(ChooseAreaActivity.this.getClass().getSimpleName(), response);
-                /*if ("province".equals(type)) {
+                if ("province".equals(type)) {
                     result = Utility.handleProvincesResponse(dataBaseManager,
                             response);
                 } else if ("city".equals(type)) {
@@ -206,14 +220,19 @@ public class ChooseAreaActivity extends AppCompatActivity {
                             closeProgressDialog();
                             if ("province".equals(type)) {
                                 queryProvinces();
+                                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
                             } else if ("city".equals(type)) {
+                                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
                                 queryCities();
                             } else if ("county".equals(type)) {
+                                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                                 queryCounties();
                             }
                         }
                     });
-                }*/
+                }
             }
 
             @Override
@@ -232,27 +251,6 @@ public class ChooseAreaActivity extends AppCompatActivity {
     }
 
     /**
-     * 显示进度对话框
-     */
-    private void showProgressDialog() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage("正在加载...");
-            progressDialog.setCanceledOnTouchOutside(false);
-        }
-        progressDialog.show();
-    }
-
-    /**
-     * 关闭进度对话框
-     */
-    private void closeProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
-
-    /**
      * 捕获Back按键，根据当前的级别来判断，此时应该返回市列表、省列表、还是直接退出。
      */
     @Override
@@ -261,10 +259,12 @@ public class ChooseAreaActivity extends AppCompatActivity {
             queryCities();
         } else if (currentLevel == LEVEL_CITY) {
             queryProvinces();
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
         } else {
             if (isFromWeatherActivity) {
-//                Intent intent = new Intent(this, WeatherActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
             }
             finish();
         }

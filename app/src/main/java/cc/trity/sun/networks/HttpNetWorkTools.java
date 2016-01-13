@@ -31,10 +31,9 @@ public class HttpNetWorkTools {
                     URL url = new URL(strUrl);
                     httpURLConnection = (HttpURLConnection) url.openConnection();
                     httpURLConnection.setRequestMethod("GET");
-                    httpURLConnection.setConnectTimeout(8000);
+                    httpURLConnection.setConnectTimeout(3000);
                     httpURLConnection.setReadTimeout(8000);
                     httpURLConnection.setDoInput(true);
-                    httpURLConnection.setDoOutput(true);
                     InputStream inputStream = httpURLConnection.getInputStream();
                     if (inputStream != null) {
                         BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream));
