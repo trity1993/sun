@@ -24,6 +24,7 @@ import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.listener.HttpCallbackListener;
 import cc.trity.sun.model.City;
 import cc.trity.sun.model.County;
+import cc.trity.sun.model.Global;
 import cc.trity.sun.model.Province;
 import cc.trity.sun.networks.HttpNetWorkTools;
 import cc.trity.sun.utils.Utility;
@@ -33,7 +34,7 @@ public class ChooseAreaActivity extends BaseActivity {
     public static final int LEVEL_PROVINCE = 0;
     public static final int LEVEL_CITY = 1;
     public static final int LEVEL_COUNTY = 2;
-    @InjectView(R.id.txt_area_title)
+    @InjectView(R.id.toolbar_title_custom)
     TextView txtAreaTitle;
     @InjectView(R.id.list_area)
     ListView listArea;
@@ -85,7 +86,7 @@ public class ChooseAreaActivity extends BaseActivity {
         isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (prefs.getBoolean("city_selected", false) && !isFromWeatherActivity) {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, WeatherActivity.class);
             startActivity(intent);
             finish();
             return;
@@ -115,7 +116,7 @@ public class ChooseAreaActivity extends BaseActivity {
 
                 } else if (currentLevel == LEVEL_COUNTY) {
                     String countyCode = countyList.get(index).getCountyCode();
-                    Intent intent = new Intent(ChooseAreaActivity.this, MainActivity.class);
+                    Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
                     intent.putExtra("county_code", countyCode);
                     startActivity(intent);
                     finish();
@@ -191,11 +192,12 @@ public class ChooseAreaActivity extends BaseActivity {
      * 根据传入的代号和类型从服务器上查询省市县数据。
      */
     private void queryFromServer(final String code, final String type) {
+
         String address;
         if (!TextUtils.isEmpty(code)) {
-            address = "http://www.weather.com.cn/data/list3/city" + code + ".xml";
+            address = String.format(Global.URL_AREA_FORMAT,code);
         } else {
-            address = "http://www.weather.com.cn/data/list3/city.xml";
+            address = Global.URL_PRIVENIC;
         }
         showProgressDialog();
         HttpNetWorkTools.sendRequestWithHttpURLConnection(address, new HttpCallbackListener() {
@@ -263,7 +265,7 @@ public class ChooseAreaActivity extends BaseActivity {
 
         } else {
             if (isFromWeatherActivity) {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, WeatherActivity.class);
                 startActivity(intent);
             }
             finish();

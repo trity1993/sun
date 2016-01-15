@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+
+import cc.trity.sun.R;
 
 /**
  * Created by TryIT on 2016/1/13.
@@ -34,6 +37,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
             Log.e(getClass().getSimpleName(), "toolbar is null!");
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_base,menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
