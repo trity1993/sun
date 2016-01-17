@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -78,7 +79,7 @@ public class ChooseAreaActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_area);
         ButterKnife.inject(this);
-        this.init(savedInstanceState);
+        this.init();
     }
 
     @Override
@@ -94,7 +95,7 @@ public class ChooseAreaActivity extends BaseActivity {
     }
 
     @Override
-    public void initView(Bundle savedInstanceState) {
+    public void initView() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -195,7 +196,7 @@ public class ChooseAreaActivity extends BaseActivity {
 
         String address;
         if (!TextUtils.isEmpty(code)) {
-            address = String.format(Global.URL_AREA_FORMAT,code);
+            address = String.format(Global.URL_AREA_FORMAT, Integer.valueOf(code));
         } else {
             address = Global.URL_PRIVENIC;
         }
@@ -272,4 +273,9 @@ public class ChooseAreaActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_add).setVisible(false);
+        return super.onPrepareOptionsMenu(menu);
+    }
 }

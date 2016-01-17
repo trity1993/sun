@@ -22,8 +22,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initVariables();
     }
-    public void init(Bundle savedInstanceState){
-        initView(savedInstanceState);
+    public void init(){
+        initView();
         loadData();
     }
     /**
@@ -93,9 +93,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 加载Layout布局文件，初始化控件，以及相应的事件方法
-     * @param savedInstanceState
      */
-    public abstract void initView(Bundle savedInstanceState);
+    public abstract void initView();
 
     /**
      * 进行调用获取数据

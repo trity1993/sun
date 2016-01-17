@@ -1,6 +1,5 @@
 package cc.trity.sun.activities;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -49,23 +48,13 @@ public class WeatherActivity extends BaseActivity {
         setContentView(R.layout.activity_weather);
         ButterKnife.inject(this);
 
-        this.init(savedInstanceState);
+        this.init();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case ActionBar.DISPLAY_SHOW_HOME:
-            case ActionBar.DISPLAY_USE_LOGO:
-            case ActionBar.DISPLAY_HOME_AS_UP:
-            case android.R.id.home:
-            case android.R.id.icon:
-                Intent intent = new Intent(WeatherActivity.this, ChooseAreaActivity.class);
-                intent.putExtra("from_weather_activity", true);
-                startActivity(intent);
-                finish();
-                break;
-            case R.id.action_refresh:
+            case R.id.action_add:
                 publishText.setText("同步中...");
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this);
                 String weatherCode = prefs.getString("weather_code", "");
@@ -84,13 +73,20 @@ public class WeatherActivity extends BaseActivity {
     }
 
     @Override
-    public void initView(Bundle savedInstanceState) {
+    public void initView() {
         trySetupToolbar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(WeatherActivity.this, ChooseAreaActivity.class);
+                intent.putExtra("from_weather_activity", true);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     @Override
