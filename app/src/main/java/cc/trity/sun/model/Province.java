@@ -1,5 +1,6 @@
 package cc.trity.sun.model;
 
+
 public class Province {
 
 	private int id;
@@ -32,4 +33,8 @@ public class Province {
 		this.provinceCode = provinceCode;
 	}
 
+	@Override
+	public String toString() {
+		return new String("id="+id+",provinceName="+provinceName+",provinceCode="+provinceCode);
+	}
 }

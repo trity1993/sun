@@ -1,9 +1,7 @@
 package cc.trity.sun.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -28,10 +26,11 @@ import cc.trity.sun.model.County;
 import cc.trity.sun.model.Global;
 import cc.trity.sun.model.Province;
 import cc.trity.sun.networks.HttpNetWorkTools;
+import cc.trity.sun.utils.LogUtils;
 import cc.trity.sun.utils.Utility;
 
 public class ChooseAreaActivity extends BaseActivity {
-
+    private static final String TAG="ChooseAreaActivity";
     public static final int LEVEL_PROVINCE = 0;
     public static final int LEVEL_CITY = 1;
     public static final int LEVEL_COUNTY = 2;
@@ -85,13 +84,13 @@ public class ChooseAreaActivity extends BaseActivity {
     @Override
     public void initVariables() {
         isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (prefs.getBoolean("city_selected", false) && !isFromWeatherActivity) {
-            Intent intent = new Intent(this, WeatherActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        if (prefs.getBoolean("city_selected", false) && !isFromWeatherActivity) {
+//            Intent intent = new Intent(this, WeatherActivity.class);
+//            startActivity(intent);
+//            finish();
+//            return;
+//        }
     }
 
     @Override
@@ -109,18 +108,21 @@ public class ChooseAreaActivity extends BaseActivity {
                     selectedProvince = provinceList.get(index);
                     queryCities();
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    LogUtils.d(TAG,"selectedProvince="+selectedProvince);
 
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(index);
                     queryCounties();
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    LogUtils.d(TAG,"selectedCity="+selectedCity);
 
                 } else if (currentLevel == LEVEL_COUNTY) {
                     String countyCode = countyList.get(index).getCountyCode();
-                    Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
-                    intent.putExtra("county_code", countyCode);
-                    startActivity(intent);
-                    finish();
+                    LogUtils.d(TAG,"countyCode="+countyCode);
+//                    Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+//                    intent.putExtra("county_code", countyCode);
+//                    startActivity(intent);
+//                    finish();
                 }
             }
         });
@@ -201,6 +203,7 @@ public class ChooseAreaActivity extends BaseActivity {
             address = Global.URL_PRIVENIC;
         }
         showProgressDialog();
+        LogUtils.d(TAG, address);
         HttpNetWorkTools.sendRequestWithHttpURLConnection(address, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {

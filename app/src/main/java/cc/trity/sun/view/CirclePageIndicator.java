@@ -65,6 +65,10 @@ public class CirclePageIndicator extends View implements PageIndicator {
     private int mActivePointerId = INVALID_POINTER;
     private boolean mIsDragging;
 
+    private int viewpagerCount=5;
+    private float viewpagerCountEnd;
+    private boolean isviewpagerCountEnd;
+
 
     public CirclePageIndicator(Context context) {
         this(context, null);
@@ -203,15 +207,15 @@ public class CirclePageIndicator extends View implements PageIndicator {
         if (mViewPager == null) {
             return;
         }
-        final int count = mViewPager.getAdapter().getCount();
+        final int count = viewpagerCount;
         if (count == 0) {
             return;
         }
 
-        if (mCurrentPage >= count) {
-            setCurrentItem(count - 1);
-            return;
-        }
+//        if (mCurrentPage >= count) {
+//            setCurrentItem(0);
+//            return;
+//        }
 
         int longSize;
         int longPaddingBefore;
@@ -266,10 +270,12 @@ public class CirclePageIndicator extends View implements PageIndicator {
         }
 
         //Draw the filled circle according to the current scroll
-        float cx = (mSnap ? mSnapPage : mCurrentPage) * threeRadius;
+
+        float cx = (mSnap ? mSnapPage%viewpagerCount : mCurrentPage%viewpagerCount) * threeRadius;
         if (!mSnap) {
-            cx += mPageOffset * threeRadius;
+            cx += mPageOffset * threeRadius;//这里导致增加了
         }
+
         if (mOrientation == HORIZONTAL) {
             dX = longOffset + cx;
             dY = shortOffset;
@@ -319,7 +325,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 if (!mIsDragging) {
-                    final int count = mViewPager.getAdapter().getCount();
+                    final int count = viewpagerCount;
                     final int width = getWidth();
                     final float halfWidth = width / 2f;
                     final float sixthWidth = width / 6f;
@@ -385,6 +391,12 @@ public class CirclePageIndicator extends View implements PageIndicator {
         setCurrentItem(initialPosition);
     }
 
+    public void setViewPagerFixedLength(ViewPager view,int lenght) {
+        this.viewpagerCount=lenght;
+        setViewPager(view);
+    }
+
+
     @Override
     public void setCurrentItem(int item) {
         if (mViewPager == null) {
@@ -414,7 +426,6 @@ public class CirclePageIndicator extends View implements PageIndicator {
         mCurrentPage = position;
         mPageOffset = positionOffset;
         invalidate();
-
         if (mListener != null) {
             mListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
         }
@@ -469,7 +480,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
             result = specSize;
         } else {
             //Calculate the width according the views count
-            final int count = mViewPager.getAdapter().getCount();
+            final int count = viewpagerCount;
             result = (int)(getPaddingLeft() + getPaddingRight()
                     + (count * 2 * mRadius) + (count - 1) * mRadius + 1);
             //Respect AT_MOST value if that was what is called for by measureSpec
