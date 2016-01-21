@@ -3,14 +3,13 @@ package cc.trity.sun.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +18,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.base.BaseActivity;
-import cc.trity.sun.db.DataBaseManager;
-import cc.trity.sun.listener.HttpCallbackListener;
-import cc.trity.sun.model.City;
-import cc.trity.sun.model.County;
 import cc.trity.sun.model.Global;
-import cc.trity.sun.model.Province;
-import cc.trity.sun.networks.HttpNetWorkTools;
+import cc.trity.sun.model.city.City;
+import cc.trity.sun.model.city.County;
+import cc.trity.sun.model.city.Province;
+import cc.trity.sun.sdk.PlaceSaxParseHandler;
 import cc.trity.sun.utils.LogUtils;
-import cc.trity.sun.utils.Utility;
 
 public class ChooseAreaActivity extends BaseActivity {
     private static final String TAG="ChooseAreaActivity";
@@ -42,7 +38,7 @@ public class ChooseAreaActivity extends BaseActivity {
     Toolbar toolbar;
 
     private ArrayAdapter<String> adapter;
-    private DataBaseManager dataBaseManager;
+//    private DataBaseManager dataBaseManager;
     private List<String> dataList = new ArrayList<String>();
     /**
      * 省列表
@@ -83,7 +79,7 @@ public class ChooseAreaActivity extends BaseActivity {
 
     @Override
     public void initVariables() {
-        isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
+//        isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
 //        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 //        if (prefs.getBoolean("city_selected", false) && !isFromWeatherActivity) {
 //            Intent intent = new Intent(this, WeatherActivity.class);
@@ -108,17 +104,17 @@ public class ChooseAreaActivity extends BaseActivity {
                     selectedProvince = provinceList.get(index);
                     queryCities();
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    LogUtils.d(TAG,"selectedProvince="+selectedProvince);
+                    LogUtils.d(TAG, "selectedProvince=" + selectedProvince);
 
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(index);
                     queryCounties();
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    LogUtils.d(TAG,"selectedCity="+selectedCity);
+                    LogUtils.d(TAG, "selectedCity=" + selectedCity);
 
                 } else if (currentLevel == LEVEL_COUNTY) {
-                    String countyCode = countyList.get(index).getCountyCode();
-                    LogUtils.d(TAG,"countyCode="+countyCode);
+                    String countyCode = countyList.get(index).getWeaterCode();
+                    LogUtils.d(TAG, "countyCode=" + countyCode);
 //                    Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
 //                    intent.putExtra("county_code", countyCode);
 //                    startActivity(intent);
@@ -130,26 +126,30 @@ public class ChooseAreaActivity extends BaseActivity {
 
     @Override
     public void loadData() {
-        dataBaseManager = DataBaseManager.getInstance(this);
-        queryProvinces();  // 加载省级数据
+        //加载城市city.xml的数据
+        try {
+            provinceList= PlaceSaxParseHandler.getProvicneModel(getAssets().open(Global.ASSETS_CITY));
+            if(provinceList!=null){
+                queryProvinces();  // 加载省级数据
+            }
+        } catch (Exception e) {
+            LogUtils.e(TAG, Log.getStackTraceString(e));
+        }
     }
 
     /**
      * 查询全国所有的省，优先从数据库查询，如果没有查询到再去服务器上查询。
      */
     private void queryProvinces() {
-        provinceList = dataBaseManager.loadProvinces();
         if (provinceList.size() > 0) {
             dataList.clear();
             for (Province province : provinceList) {
-                dataList.add(province.getProvinceName());
+                dataList.add(province.getPlaceName());
             }
             adapter.notifyDataSetChanged();
             listArea.setSelection(0);
             txtAreaTitle.setText("中国");
             currentLevel = LEVEL_PROVINCE;
-        } else {
-            queryFromServer(null, "province");
         }
     }
 
@@ -157,18 +157,16 @@ public class ChooseAreaActivity extends BaseActivity {
      * 查询选中省内所有的市，优先从数据库查询，如果没有查询到再去服务器上查询。
      */
     private void queryCities() {
-        cityList = dataBaseManager.loadCities(selectedProvince.getId());
+        cityList = selectedProvince.getCityList();
         if (cityList.size() > 0) {
             dataList.clear();
             for (City city : cityList) {
-                dataList.add(city.getCityName());
+                dataList.add(city.getPlaceName());
             }
             adapter.notifyDataSetChanged();
             listArea.setSelection(0);
-            txtAreaTitle.setText(selectedProvince.getProvinceName());
+            txtAreaTitle.setText(selectedProvince.getPlaceName());
             currentLevel = LEVEL_CITY;
-        } else {
-            queryFromServer(selectedProvince.getProvinceCode(), "city");
         }
     }
 
@@ -176,84 +174,17 @@ public class ChooseAreaActivity extends BaseActivity {
      * 查询选中市内所有的县，优先从数据库查询，如果没有查询到再去服务器上查询。
      */
     private void queryCounties() {
-        countyList = dataBaseManager.loadCounties(selectedCity.getId());
+        countyList = selectedCity.getCountyList();
         if (countyList.size() > 0) {
             dataList.clear();
             for (County county : countyList) {
-                dataList.add(county.getCountyName());
+                dataList.add(county.getPlaceName());
             }
             adapter.notifyDataSetChanged();
             listArea.setSelection(0);
-            txtAreaTitle.setText(selectedCity.getCityName());
+            txtAreaTitle.setText(selectedCity.getPlaceName());
             currentLevel = LEVEL_COUNTY;
-        } else {
-            queryFromServer(selectedCity.getCityCode(), "county");
         }
-    }
-
-    /**
-     * 根据传入的代号和类型从服务器上查询省市县数据。
-     */
-    private void queryFromServer(final String code, final String type) {
-
-        String address;
-        if (!TextUtils.isEmpty(code)) {
-            address = String.format(Global.URL_AREA_FORMAT, Integer.valueOf(code));
-        } else {
-            address = Global.URL_PRIVENIC;
-        }
-        showProgressDialog();
-        LogUtils.d(TAG, address);
-        HttpNetWorkTools.sendRequestWithHttpURLConnection(address, new HttpCallbackListener() {
-            @Override
-            public void onFinish(String response) {
-                boolean result = false;
-                if ("province".equals(type)) {
-                    result = Utility.handleProvincesResponse(dataBaseManager,
-                            response);
-                } else if ("city".equals(type)) {
-                    result = Utility.handleCitiesResponse(dataBaseManager,
-                            response, selectedProvince.getId());
-                } else if ("county".equals(type)) {
-                    result = Utility.handleCountiesResponse(dataBaseManager,
-                            response, selectedCity.getId());
-                }
-                if (result) {
-                    // 通过runOnUiThread()方法回到主线程处理逻辑
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            closeProgressDialog();
-                            if ("province".equals(type)) {
-                                queryProvinces();
-                                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-                            } else if ("city".equals(type)) {
-                                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-                                queryCities();
-                            } else if ("county".equals(type)) {
-                                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                                queryCounties();
-                            }
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                // 通过runOnUiThread()方法回到主线程处理逻辑
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        closeProgressDialog();
-                        Toast.makeText(ChooseAreaActivity.this,
-                                "加载失败", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
     }
 
     /**

@@ -7,6 +7,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
+ * base64转码加密
  * Created by TryIT on 2016/1/18.
  */
 public class URLEncoderUtils {

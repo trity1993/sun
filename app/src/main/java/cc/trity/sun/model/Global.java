@@ -11,5 +11,6 @@ public class Global {
     public static final String APP_ID="02031c9cf50aca5b";
     public static final String PRIVATE_KEY="2037ff_SmartWeatherAPI_bfadbba";
     public static final String CITY_GD_CODE="101280101";
+    public static final String ASSETS_CITY="city.xml";
 
 }

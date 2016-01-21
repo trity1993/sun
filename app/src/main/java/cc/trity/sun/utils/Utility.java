@@ -3,89 +3,22 @@ package cc.trity.sun.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParser;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
-import cc.trity.sun.db.DataBaseManager;
-import cc.trity.sun.model.City;
-import cc.trity.sun.model.County;
-import cc.trity.sun.model.Province;
+import cc.trity.sun.model.city.BasePlace;
 
 public class Utility {
-
-	/**
-	 * 解析和处理服务器返回的省级数据
-	 */
-	public synchronized static boolean handleProvincesResponse(
-			DataBaseManager dataBaseManager, String response) {
-		if (!TextUtils.isEmpty(response)) {
-			String[] allProvinces = response.split(",");
-			if (allProvinces != null && allProvinces.length > 0) {
-				for (String p : allProvinces) {
-					String[] array = p.split("\\|");
-					Province province = new Province();
-					province.setProvinceCode(array[0]);
-					province.setProvinceName(array[1]);
-					// 将解析出来的数据存储到Province表
-					dataBaseManager.saveProvince(province);
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * 解析和处理服务器返回的市级数据
-	 */
-	public static boolean handleCitiesResponse(DataBaseManager dataBaseManager,
-			String response, int provinceId) {
-		if (!TextUtils.isEmpty(response)) {
-			String[] allCities = response.split(",");
-			if (allCities != null && allCities.length > 0) {
-				for (String c : allCities) {
-					String[] array = c.split("\\|");
-					City city = new City();
-					city.setCityCode(array[0]);
-					city.setCityName(array[1]);
-					city.setProvinceId(provinceId);
-					// 将解析出来的数据存储到City表
-					dataBaseManager.saveCity(city);
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * 解析和处理服务器返回的县级数据
-	 */
-	public static boolean handleCountiesResponse(DataBaseManager dataBaseManager,
-			String response, int cityId) {
-		if (!TextUtils.isEmpty(response)) {
-			String[] allCounties = response.split(",");
-			if (allCounties != null && allCounties.length > 0) {
-				for (String c : allCounties) {
-					String[] array = c.split("\\|");
-					County county = new County();
-					county.setCountyCode(array[0]);
-					county.setCountyName(array[1]);
-					county.setCityId(cityId);
-					// 将解析出来的数据存储到County表
-					dataBaseManager.saveCounty(county);
-				}
-				return true;
-			}
-		}
-		return false;
-	}
+	private static final String TAG="Utility";
 
 	/**
 	 * 解析服务器返回的JSON数据，并将解析出的数据存储到本地。
@@ -125,6 +58,40 @@ public class Utility {
 		editor.putString("publish_time", publishTime);
 		editor.putString("current_date", sdf.format(new Date()));
 		editor.commit();
+	}
+
+
+	public static List<BasePlace> getPlace(String xmlStr,String flagArgs){
+		XmlPullParser xmlPullParser=FileUtils.getXmlPullParser(xmlStr);
+		BasePlace place=null;
+		List<BasePlace> listPlace=null;
+		try{
+			int eventType=xmlPullParser.getEventType();
+			while (eventType!=XmlPullParser.END_DOCUMENT){
+				String nodeName=xmlPullParser.getName();
+				switch (eventType){
+					case XmlPullParser.START_DOCUMENT:
+						place=new BasePlace();
+						listPlace=new ArrayList<>();
+						break;
+					case XmlPullParser.START_TAG:
+						if(nodeName.equals(flagArgs)){
+							place.setId(xmlPullParser.getAttributeValue(null, "id"));
+							place.setPlaceName(xmlPullParser.getAttributeValue(null, "name"));
+						}
+						break;
+					case XmlPullParser.END_TAG:
+						listPlace.add(place);
+						place=null;
+						break;
+				}
+				eventType=xmlPullParser.next();
+			}
+		}catch (Exception e){
+			LogUtils.e(TAG, Log.getStackTraceString(e));
+			return null;
+		}
+		return listPlace;
 	}
 
 }

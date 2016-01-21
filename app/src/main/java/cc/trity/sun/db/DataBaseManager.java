@@ -8,9 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import cc.trity.sun.model.City;
-import cc.trity.sun.model.County;
-import cc.trity.sun.model.Province;
+import cc.trity.sun.model.city.City;
+import cc.trity.sun.model.city.County;
+import cc.trity.sun.model.city.Province;
 
 /**
  * 数据库操作的类
@@ -50,8 +50,8 @@ public class DataBaseManager {
     public void saveProvince(Province provinceModel){
         if(provinceModel!=null){
             ContentValues contentValues=new ContentValues();
-            contentValues.put("province_name",provinceModel.getProvinceName());
-            contentValues.put("province_code",provinceModel.getProvinceCode());
+//            contentValues.put("province_name",provinceModel.getProvinceName());
+//            contentValues.put("province_code",provinceModel.getProvinceCode());
             db.insert(DB_TABLE_PROVINCE,null,contentValues);
         }
     }
@@ -63,10 +63,10 @@ public class DataBaseManager {
         if (cursor.moveToFirst()) {
             do {
                 Province province = new Province();
-                province.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                province.setProvinceName(cursor.getString(cursor
-                        .getColumnIndex("province_name")));
-                province.setProvinceCode(cursor.getString(cursor.getColumnIndex("province_code")));
+//                province.setId(cursor.getInt(cursor.getColumnIndex("id")));
+//                province.setProvinceName(cursor.getString(cursor
+//                        .getColumnIndex("province_name")));
+//                province.setProvinceCode(cursor.getString(cursor.getColumnIndex("province_code")));
                 list.add(province);
             } while (cursor.moveToNext());
         }
@@ -78,9 +78,9 @@ public class DataBaseManager {
     public void saveCity(City city) {
         if (city != null) {
             ContentValues values = new ContentValues();
-            values.put("city_name", city.getCityName());
-            values.put("city_code", city.getCityCode());
-            values.put("province_id", city.getProvinceId());
+//            values.put("city_name", city.getCityName());
+//            values.put("city_code", city.getCityCode());
+//            values.put("province_id", city.getProvinceId());
             db.insert(DB_TABLE_CITY, null, values);
         }
     }
@@ -95,12 +95,12 @@ public class DataBaseManager {
         if (cursor.moveToFirst()) {
             do {
                 City city = new City();
-                city.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                city.setCityName(cursor.getString(cursor
-                        .getColumnIndex("city_name")));
-                city.setCityCode(cursor.getString(cursor
-                        .getColumnIndex("city_code")));
-                city.setProvinceId(provinceId);
+//                city.setId(cursor.getInt(cursor.getColumnIndex("id")));
+//                city.setCityName(cursor.getString(cursor
+//                        .getColumnIndex("city_name")));
+//                city.setCityCode(cursor.getString(cursor
+//                        .getColumnIndex("city_code")));
+//                city.setProvinceId(provinceId);
                 list.add(city);
             } while (cursor.moveToNext());
         }
@@ -113,9 +113,9 @@ public class DataBaseManager {
     public void saveCounty(County county) {
         if (county != null) {
             ContentValues values = new ContentValues();
-            values.put("county_name", county.getCountyName());
-            values.put("county_code", county.getCountyCode());
-            values.put("city_id", county.getCityId());
+//            values.put("county_name", county.getCountyName());
+//            values.put("county_code", county.getCountyCode());
+//            values.put("city_id", county.getCityId());
             db.insert(DB_TABLE_COUNTY, null, values);
         }
     }
@@ -130,12 +130,12 @@ public class DataBaseManager {
         if (cursor.moveToFirst()) {
             do {
                 County county = new County();
-                county.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                county.setCountyName(cursor.getString(cursor
-                        .getColumnIndex("county_name")));
-                county.setCountyCode(cursor.getString(cursor
-                        .getColumnIndex("county_code")));
-                county.setCityId(cityId);
+//                county.setId(cursor.getInt(cursor.getColumnIndex("id")));
+//                county.setCountyName(cursor.getString(cursor
+//                        .getColumnIndex("county_name")));
+//                county.setCountyCode(cursor.getString(cursor
+//                        .getColumnIndex("county_code")));
+//                county.setCityId(cityId);
                 list.add(county);
             } while (cursor.moveToNext());
         }
