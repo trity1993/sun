@@ -26,11 +26,14 @@ import cc.trity.sun.activities.ChooseAreaActivity;
 import cc.trity.sun.activities.MainActivity;
 import cc.trity.sun.fragments.base.BaseFragment;
 import cc.trity.sun.listener.HttpCallbackListener;
+import cc.trity.sun.model.Global;
 import cc.trity.sun.model.ReponseForcecastWeather;
 import cc.trity.sun.model.WeatherContainer;
 import cc.trity.sun.model.WeatherDetail;
+import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.networks.HttpManager;
 import cc.trity.sun.networks.HttpNetWorkTools;
+import cc.trity.sun.service.WeatherForegroundService;
 import cc.trity.sun.utils.CommonUtils;
 import cc.trity.sun.utils.FileUtils;
 import cc.trity.sun.utils.GsonUtils;
@@ -260,7 +263,7 @@ public class WeatherFragment extends BaseFragment {
             return true;
         }
 
-        sbDay.replace(8,12,"1800");
+        sbDay.replace(8, 12, "1800");
         curTime=Long.valueOf(sbDay.toString());
         if (dateHM < curTime && curDate >= curTime) {
             return true;
@@ -272,6 +275,9 @@ public class WeatherFragment extends BaseFragment {
         if (weatherContainer == null) {
             return;
         }
+        //加载天气编码的名称
+        String[] weatherName=getResources().getStringArray(R.array.weather_names);
+        //加载图片资源
         int[] resImage = FileUtils.getResourseArray(activity, R.array.weather_num);
         String imgIconNum;
         StringBuilder temp = new StringBuilder();
@@ -284,8 +290,7 @@ public class WeatherFragment extends BaseFragment {
             temp.append(weatherDetail.getDayTemp());
             imgIconNum = weatherDetail.getDayNum();
         }
-        LogUtils.d(TAG, "imgIconNum=" + imgIconNum);
-
+        //设置图标
         int num = Integer.valueOf(imgIconNum);
         if(imgWeatherFlag==null){
             return ;
@@ -298,14 +303,33 @@ public class WeatherFragment extends BaseFragment {
             imgWeatherFlag.setImageResource(resImage[num]);
         }
         LogUtils.d(TAG, "temp=" + temp.toString());
+        //设置温度
         if (!TextUtils.isEmpty(temp.toString())) {
             String degreeStr = getResources().getString(R.string.degree);
             temp.append(degreeStr);
             txtLocationTemp.setText(temp.toString());
             txtLocationTemp.setVisibility(View.VISIBLE);
         }
+        if(Global.isStartService){
+            WeatherMsg weatherMsg=new WeatherMsg();
+            weatherMsg.setWeatherTemp(temp.toString());
+            weatherMsg.setWeatherDetail(weatherName[num]);
+            weatherMsg.setWeatherImage(resImage[num]);
+
+            createForGround(weatherMsg);
+            Global.isStartService=false;
+        }
     }
 
+    /**
+     * 产生前台线程
+     * @param weatherMsg
+     */
+    public void createForGround(WeatherMsg weatherMsg){
+        Intent intent=new Intent(activity, WeatherForegroundService.class);
+        intent.putExtra("weather_message",weatherMsg);
+        activity.startService(intent);
+    }
     @Override
     public void onPause() {
         super.onPause();
