@@ -29,13 +29,10 @@ import cc.trity.sun.listener.HttpCallbackListener;
 import cc.trity.sun.model.Global;
 import cc.trity.sun.model.ReponseForcecastWeather;
 import cc.trity.sun.model.WeatherContainer;
-import cc.trity.sun.model.WeatherDetail;
 import cc.trity.sun.model.WeatherMsg;
-import cc.trity.sun.networks.HttpManager;
-import cc.trity.sun.networks.HttpNetWorkTools;
+import cc.trity.sun.presenter.WeatherPresenter;
 import cc.trity.sun.service.WeatherForegroundService;
 import cc.trity.sun.utils.CommonUtils;
-import cc.trity.sun.utils.FileUtils;
 import cc.trity.sun.utils.GsonUtils;
 import cc.trity.sun.utils.LogUtils;
 import cc.trity.sun.utils.TimeUtils;
@@ -44,7 +41,7 @@ import cc.trity.sun.utils.Utility;
 /**
  * A simple {@link BaseFragment} subclass.
  */
-public class WeatherFragment extends BaseFragment {
+public class WeatherFragment extends BaseFragment implements HttpCallbackListener {
     private final int REFRESH_UPDATE_VIEW = 0;
     private final int ERROR_UPDATE_VIEW = 1;
     private final int ERROR_CITY_CODE = 2;
@@ -69,13 +66,22 @@ public class WeatherFragment extends BaseFragment {
 
     private WeatherContainer weatherContainer;
 
+    private WeatherPresenter weatherPresenter;
+
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case REFRESH_UPDATE_VIEW:
                     WeatherContainer weatherContainer = (WeatherContainer) msg.obj;
-                    updateWeatherView(weatherContainer);
+                    if(weatherPresenter!=null){
+                        WeatherMsg weatherMsg=weatherPresenter.updateData(weatherContainer);
+                        if(weatherMsg!=null){
+                            updateView(weatherMsg);
+                            createForGround(weatherMsg);
+                        }
+                    }
+
                     if (swipeRefresh != null)
                         swipeRefresh.setRefreshing(false);
                     break;
@@ -83,17 +89,13 @@ public class WeatherFragment extends BaseFragment {
                     CommonUtils.showToast(activity, R.string.error_server_response);
                     if (swipeRefresh != null)
                         swipeRefresh.setRefreshing(false);
-
                     break;
                 case ERROR_CITY_CODE:
                     CommonUtils.showToast(activity, R.string.error_location_code);
                     if (swipeRefresh != null)
                         swipeRefresh.setRefreshing(false);
-
                     break;
             }
-
-
         }
     };
 
@@ -124,6 +126,7 @@ public class WeatherFragment extends BaseFragment {
         }
         hour = Integer.valueOf(TimeUtils.getCurentTime("HH"));
 
+        weatherPresenter=WeatherPresenter.getInstance(activity);
     }
 
     @Override
@@ -200,15 +203,15 @@ public class WeatherFragment extends BaseFragment {
             handler.sendEmptyMessage(ERROR_CITY_CODE);
             return;
         }
-        if (isUpdate()) {
-            loadWeather();
+        if (weatherPresenter.isUpdate(weatherContainer,countyCode)) {
+            weatherPresenter.loadWeather(countyCode, this);
         } else {
             if(weatherContainer==null){
                 if(countyCode!=null)
                     weatherContainer=Utility.getWeatherContainer(activity,countyCode);
             }
             if(weatherContainer==null){
-                loadWeather();
+                weatherPresenter.loadWeather(countyCode,this);
             }else{
                 Message msg = new Message();
                 msg.what=REFRESH_UPDATE_VIEW;
@@ -217,108 +220,15 @@ public class WeatherFragment extends BaseFragment {
             }
 
         }
-
-    }
-    public void loadWeather(){
-        //生成url
-        String url = HttpManager.getReqAdress(true, countyCode);
-        HttpNetWorkTools.sendRequestWithHttpURLConnection(url, new HttpCallbackListener() {
-            @Override
-            public void onFinish(String response) {
-                LogUtils.d(TAG, response + "");
-                ReponseForcecastWeather weatherData = GsonUtils.getClass(response, ReponseForcecastWeather.class);
-                weatherContainer = weatherData.getWeatherContainer();
-
-                Message msg = new Message();
-                msg.obj = weatherContainer;
-                msg.what=REFRESH_UPDATE_VIEW;
-                handler.sendMessage(msg);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                LogUtils.e(TAG, "error");
-                handler.sendEmptyMessage(ERROR_UPDATE_VIEW);
-            }
-        });
     }
 
-    public boolean isUpdate() {
-        weatherContainer = Utility.getWeatherContainer(activity, countyCode);
-        if (weatherContainer == null)
-            return false;
-        long dateHM = Long.valueOf(weatherContainer.getReleaseTime().trim());
-        long curDate = Long.valueOf(TimeUtils.getCurentTime("yyyyMMddHHmm"));
-
-        StringBuilder sbDay=new StringBuilder(TimeUtils.getCurentTime("yyyyMMdd"));
-        sbDay.append("0600");
-        long curTime=Long.valueOf(sbDay.toString());
-        if (dateHM < curTime && curDate >= curTime) {
-            return true;
-        }
-
-        sbDay.replace(8,12,"1100");
-        curTime=Long.valueOf(sbDay.toString());
-        if (dateHM < curTime && curDate >= curTime) {
-            return true;
-        }
-
-        sbDay.replace(8, 12, "1800");
-        curTime=Long.valueOf(sbDay.toString());
-        if (dateHM < curTime && curDate >= curTime) {
-            return true;
-        }
-        return false;
-    }
-
-    public void updateWeatherView(WeatherContainer weatherContainer) {
-        if (weatherContainer == null) {
-            return;
-        }
-        //加载天气编码的名称
-        String[] weatherName=getResources().getStringArray(R.array.weather_names);
-        //加载图片资源
-        int[] resImage = FileUtils.getResourseArray(activity, R.array.weather_num);
-        String imgIconNum;
-        StringBuilder temp = new StringBuilder();
-        WeatherDetail weatherDetail = weatherContainer.getWeatherDetailList().get(0);
-
-        if (hour > 18 || hour < 6) {
-            temp.append(weatherDetail.getNightTemp());
-            imgIconNum = weatherDetail.getNightNum();
-        } else {
-            temp.append(weatherDetail.getDayTemp());
-            imgIconNum = weatherDetail.getDayNum();
-        }
-        //设置图标
-        int num = Integer.valueOf(imgIconNum);
-        if(imgWeatherFlag==null){
-            return ;
-        }
-        if (num == 53) {
-            imgWeatherFlag.setImageResource(resImage[resImage.length - 1]);
-        } else if (num == 99) {
-            imgWeatherFlag.setImageResource(R.mipmap.ic_launcher);
-        } else {
-            imgWeatherFlag.setImageResource(resImage[num]);
-        }
-        LogUtils.d(TAG, "temp=" + temp.toString());
+    public void updateView(WeatherMsg weatherMsg){
         //设置温度
-        if (!TextUtils.isEmpty(temp.toString())) {
-            String degreeStr = getResources().getString(R.string.degree);
-            temp.append(degreeStr);
-            txtLocationTemp.setText(temp.toString());
-            txtLocationTemp.setVisibility(View.VISIBLE);
-        }
-        if(Global.isStartService){
-            WeatherMsg weatherMsg=new WeatherMsg();
-            weatherMsg.setWeatherTemp(temp.toString());
-            weatherMsg.setWeatherDetail(weatherName[num]);
-            weatherMsg.setWeatherImage(resImage[num]);
-
-            createForGround(weatherMsg);
-            Global.isStartService=false;
-        }
+        txtLocationTemp.setText(weatherMsg.getWeatherTemp());
+        txtLocationTemp.setVisibility(View.VISIBLE);
+        //更新图片
+        if(imgWeatherFlag!=null)
+            imgWeatherFlag.setImageResource(weatherMsg.getWeatherImage());
     }
 
     /**
@@ -326,41 +236,42 @@ public class WeatherFragment extends BaseFragment {
      * @param weatherMsg
      */
     public void createForGround(WeatherMsg weatherMsg){
-        Intent intent=new Intent(activity, WeatherForegroundService.class);
-        intent.putExtra("weather_message",weatherMsg);
-        activity.startService(intent);
+        if(Global.isStartService){
+            Global.isStartService=false;
+            Intent intent=new Intent(activity, WeatherForegroundService.class);
+            intent.putExtra(Global.INTENT_WEATHER_MSG, weatherMsg);
+            activity.startService(intent);
+        }
+
     }
     @Override
     public void onPause() {
         super.onPause();
-        if (weatherContainer != null && countyCode != null) {
-            if (TimeUtils.getHM(weatherContainer.getReleaseTime()).compareTo("18") >= 0) {//晚上的情况不能直接替换
-                WeatherContainer weatherContainer1 = Utility.getWeatherContainer(activity, countyCode);
-                if (weatherContainer1 == null) {
-                    String jsonWeatherInfo = GsonUtils.createGsonString(weatherContainer);
-                    Utility.saveCountyWeatherInfo(activity, countyCode, jsonWeatherInfo);
-                    return;
-                }
-                weatherContainer.getWeatherDetailList().get(0)
-                        .setDayNum(weatherContainer1.getWeatherDetailList().get(0).getDayNum());
-                weatherContainer.getWeatherDetailList().get(0)
-                        .setDayTemp(weatherContainer1.getWeatherDetailList().get(0).getDayTemp());
-                weatherContainer.getWeatherDetailList().get(0)
-                        .setNightWindDirectNum(weatherContainer1.getWeatherDetailList().get(0).getDayWindDirectNum());
-                weatherContainer.getWeatherDetailList().get(0)
-                        .setNightWindPowerNum(weatherContainer1.getWeatherDetailList().get(0).getDayWindPowerNum());
-
-
-            }
-            String jsonWeatherInfo = GsonUtils.createGsonString(weatherContainer);
-            Utility.saveCountyWeatherInfo(activity, countyCode, jsonWeatherInfo);
-
-        }
+        if(weatherPresenter!=null)
+            weatherPresenter.saveWeatherMsg(weatherContainer,countyCode);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+    }
+
+    @Override
+    public void onFinish(String response) {
+        LogUtils.d(TAG, response + "");
+        ReponseForcecastWeather weatherData = GsonUtils.getClass(response, ReponseForcecastWeather.class);
+        weatherContainer = weatherData.getWeatherContainer();
+
+        Message msg = new Message();
+        msg.obj = weatherContainer;
+        msg.what=REFRESH_UPDATE_VIEW;
+        handler.sendMessage(msg);
+    }
+
+    @Override
+    public void onError(Exception e) {
+        LogUtils.e(TAG, "error");
+        handler.sendEmptyMessage(ERROR_UPDATE_VIEW);
     }
 }

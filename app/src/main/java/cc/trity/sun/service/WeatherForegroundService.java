@@ -12,6 +12,7 @@ import android.support.v7.app.NotificationCompat;
 
 import cc.trity.sun.R;
 import cc.trity.sun.activities.MainActivity;
+import cc.trity.sun.model.Global;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.utils.LogUtils;
 
@@ -32,7 +33,7 @@ public class WeatherForegroundService extends Service {
      * 创建前台线程。
      */
     public void createForeGround(Intent weatherIntent){
-        WeatherMsg weatherMsg=weatherIntent.getParcelableExtra("weather_message");
+        WeatherMsg weatherMsg=weatherIntent.getParcelableExtra(Global.INTENT_WEATHER_MSG);
         int resIntR=weatherMsg.getWeatherImage();
         if(resIntR<0)
             return ;

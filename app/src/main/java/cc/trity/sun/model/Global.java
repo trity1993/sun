@@ -14,5 +14,6 @@ public class Global {
     public static boolean isStartService=true;
 
     public static final String DEFALUT_CITY_CODE="101280101";
+    public static final String INTENT_WEATHER_MSG="weather_message";
 
 }
