@@ -1,6 +1,7 @@
 package cc.trity.sun.activities.base;
 
 import android.app.ProgressDialog;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -62,6 +63,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {//后退
         super.onBackPressed();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     /**
