@@ -1,10 +1,14 @@
 package cc.trity.sun.activities;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,34 +17,50 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.base.BaseActivity;
+import cc.trity.sun.adapters.EndlessLoopAdapter;
+import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.fragments.WeatherFragment;
-import cc.trity.sun.listener.HttpCallbackListener;
-import cc.trity.sun.model.Global;
-import cc.trity.sun.model.WeatherRequest;
-import cc.trity.sun.networks.HttpNetWorkTools;
-import cc.trity.sun.utils.LogUtils;
-import cc.trity.sun.utils.TimeUtils;
-import cc.trity.sun.utils.URLEncoderUtils;
+import cc.trity.sun.model.city.County;
+import cc.trity.sun.service.WeatherForegroundService;
 import cc.trity.sun.view.CirclePageIndicator;
 import cc.trity.sun.view.CubeOutTransformer;
 
 public class MainActivity extends BaseActivity {
-
-
+    public static final int ADD_FRAGMENT=0;
+    private static final String TAG = "MainActivity";
     @InjectView(R.id.viewpager_main)
     ViewPager viewpagerMain;
-    String[] sampleTitle;
     int[] resInt = new int[]{Color.parseColor("#ffc722")
             , Color.parseColor("#ff2259")
             , Color.parseColor("#00d8a2")
             , Color.parseColor("#545a4a")
             , Color.parseColor("#b13fd7")};
-    List<Fragment> fragmentList;
+    List<Fragment> fragmentList=new ArrayList<>();
+    List<County> countyList;
 
-    int lenght = 5;
+
+    int lenght = 1;
     @InjectView(R.id.indicator)
     CirclePageIndicator indicator;
-    boolean isCircle;
+
+    String countyCode = null;
+    String countyName = null;
+    EndlessLoopAdapter endlessLoopAdapter = null;
+    DataBaseManager dataBaseManager=null;
+    WeatherForegroundService.WeatherUpdateBinder weatherBinder;
+    ServiceConnection serviceConnection=new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            weatherBinder=(WeatherForegroundService.WeatherUpdateBinder)service;
+            weatherBinder.startDownload();
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,62 +71,100 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initVariables() {
-        sampleTitle = new String[lenght];
-        fragmentList = new ArrayList<>(lenght);
+        dataBaseManager=DataBaseManager.getInstance(MainActivity.this);
+        countyList=dataBaseManager.loadCounties();
 
+        lenght=countyList.size();
+
+        County county=null;
         for (int i = 0; i < lenght; i++) {
-            Fragment fragment = WeatherFragment.newInstance(resInt[i], i);
+            county=countyList.get(i);
+            Fragment fragment = WeatherFragment.newInstance(resInt[i], i, county.getWeaterCode(), county.getPlaceName());
             fragmentList.add(fragment);
         }
+
     }
 
     @Override
     public void initView() {
-        viewpagerMain.setAdapter(new FragmentStatePagerAdapter(this.getSupportFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                return fragmentList.get(position%fragmentList.size());
+        if (lenght == 1) {
+            endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, lenght);
+        } else if (lenght <= 3) {
+            //循环多一次，倍数增加
+            for (int i = 0; i < lenght; i++) {
+                Fragment fragment = WeatherFragment.newInstance(resInt[i], i, countyCode, countyName);
+                fragmentList.add(fragment);
             }
-
-            @Override
-            public int getCount() {
-                return Integer.MAX_VALUE;
-            }
-        });
-
+            endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, Integer.MAX_VALUE);
+        } else if (lenght >= 4) {
+            endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, Integer.MAX_VALUE);
+        }
+        viewpagerMain.setAdapter(endlessLoopAdapter);
+        viewpagerMain.setCurrentItem(lenght * 100);//设置再中间可以左右滑动
         viewpagerMain.setPageTransformer(true, new CubeOutTransformer());
-        indicator.setViewPager(viewpagerMain);
+        indicator.setViewPagerFixedLength(viewpagerMain, lenght);
         indicator.setSnap(true);
+        if(lenght==0){
+            Intent intent = new Intent(MainActivity.this, ChooseAreaActivity.class);
+            startActivityForResult(intent, MainActivity.ADD_FRAGMENT);
+        }
     }
 
     @Override
     public void loadData() {
-        //填充请求数据
-        WeatherRequest weatherRequest=new WeatherRequest();
-        weatherRequest.setDate(TimeUtils.getCurentTime("yyyyMMddHHmm"));
-        weatherRequest.setAreaid(Global.CITY_GD_CODE);
-        //变成预报天气是应该执行下面这个方法
-        weatherRequest.changeForecastType();
-
-
-        //生成密钥
-        String encryptKey=URLEncoderUtils.standardURLEncoder(weatherRequest.generatePubliKey(),Global.PRIVATE_KEY);
-        weatherRequest.setKey(encryptKey);
-        //生成url
-        String url=weatherRequest.generateUrl();
-        HttpNetWorkTools.sendRequestWithHttpURLConnection(url, new HttpCallbackListener() {
-            @Override
-            public void onFinish(String response) {
-                LogUtils.d(MainActivity.this.getLocalClassName(),response+"");
-            }
-
-            @Override
-            public void onError(Exception e) {
-                LogUtils.d(MainActivity.this.getLocalClassName(),"error");
-
-            }
-        });
+//        startService(intent);
+//        bindService(intent,serviceConnection,BIND_AUTO_CREATE);
     }
 
+    public void updateView(){
 
+        countyList.clear();
+        countyList.addAll(dataBaseManager.loadCounties());
+        lenght=countyList.size();
+
+        fragmentList.clear();
+        for (int i = 0; i < lenght; i++) {
+            County county=countyList.get(i);
+            Fragment fragment = WeatherFragment.newInstance(resInt[i], i, county.getWeaterCode(), county.getPlaceName());
+            fragmentList.add(fragment);
+        }
+
+        if (lenght == 1) {
+            endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, lenght);
+        } else if (lenght <= 3) {
+            //循环多一次，倍数增加
+            for (int i = 0; i < lenght; i++) {
+                Fragment fragment = WeatherFragment.newInstance(resInt[i], i, countyCode, countyName);
+                fragmentList.add(fragment);
+            }
+            endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, Integer.MAX_VALUE);
+        } else if (lenght >= 4) {
+            endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, Integer.MAX_VALUE);
+        }
+        viewpagerMain.setAdapter(endlessLoopAdapter);
+        indicator.setViewPagerFixedLength(viewpagerMain, lenght);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_service:
+                stopService(new Intent(MainActivity.this,WeatherForegroundService.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            switch (requestCode){
+                case ADD_FRAGMENT:
+                    updateView();
+                    break;
+            }
+        }
+    }
 }

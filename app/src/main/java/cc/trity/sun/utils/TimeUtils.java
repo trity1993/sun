@@ -19,4 +19,30 @@ public class TimeUtils {
         Date date=new Date(System.currentTimeMillis());
         return simpleDateFormat.format(date);
     }
+
+    /**
+     * 截取小时和分钟
+     * @param date
+     * @return
+     */
+    public static String getHM(String date){
+        if(date==null){
+            return "";
+        }
+        else if(date.length()<8){
+            return "";
+        }
+        return date.substring(8, 12);
+    }
+
+    /**
+     *
+     * @param strHourMinuite 格式为 0600
+     * @return
+     */
+    public static String getCurAppointHour(String strHourMinuite){
+        StringBuilder stringBuilder=new StringBuilder(getCurentTime("yyyyMMdd"));
+        stringBuilder.append(strHourMinuite);
+        return stringBuilder.toString();
+    }
 }

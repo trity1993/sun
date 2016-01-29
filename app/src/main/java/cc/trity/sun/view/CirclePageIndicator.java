@@ -45,7 +45,7 @@ import static android.widget.LinearLayout.VERTICAL;
  */
 public class CirclePageIndicator extends View implements PageIndicator {
     private static final int INVALID_POINTER = -1;
-
+    private static final int DEFAULT_LENTH=1;
     private float mRadius;
     private final Paint mPaintPageFill = new Paint(ANTI_ALIAS_FLAG);
     private final Paint mPaintStroke = new Paint(ANTI_ALIAS_FLAG);
@@ -65,10 +65,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
     private int mActivePointerId = INVALID_POINTER;
     private boolean mIsDragging;
 
-    private int viewpagerCount=5;
-    private float viewpagerCountEnd;
-    private boolean isviewpagerCountEnd;
-
+    private int viewpagerCount;
 
     public CirclePageIndicator(Context context) {
         this(context, null);
@@ -117,6 +114,8 @@ public class CirclePageIndicator extends View implements PageIndicator {
 
         final ViewConfiguration configuration = ViewConfiguration.get(context);
         mTouchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(configuration);
+
+        viewpagerCount=DEFAULT_LENTH;//默认自定义设置count=1
     }
 
 
@@ -381,6 +380,9 @@ public class CirclePageIndicator extends View implements PageIndicator {
             throw new IllegalStateException("ViewPager does not have adapter instance.");
         }
         mViewPager = view;
+        if(viewpagerCount==DEFAULT_LENTH){
+            viewpagerCount =view.getAdapter().getCount();//这样就可以在非循环情况下也可以使用
+        }
         mViewPager.setOnPageChangeListener(this);
         invalidate();
     }
