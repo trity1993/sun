@@ -3,4 +3,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="space_xlarge">64dp</dimen>
+    <dimen name="space_large">32dp</dimen>
+    <dimen name="space_normal">16dp</dimen>
+    <dimen name="space_small">8dp</dimen>
 </resources>

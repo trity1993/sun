@@ -1,6 +1,7 @@
 package cc.trity.sun.utils;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -111,7 +112,7 @@ public class FileUtils {
         if(context==null)
             return false;
         try {
-            FileOutputStream fileOutputStream=context.openFileOutput(fileName,Context.MODE_PRIVATE);
+            FileOutputStream fileOutputStream=context.openFileOutput(fileName, Context.MODE_PRIVATE);
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
             writer.write(writeMsg);
             writer.close();
@@ -120,6 +121,25 @@ public class FileUtils {
             LogUtils.e(TAG, Log.getStackTraceString(e));
         }
         return false;
+    }
+
+    /**
+     * 通过得到arrays.xml中arrayResure的子项
+     * 返回对应的资源数组
+     * @param context
+     * @param arrayResure
+     * @return
+     */
+    public static int[] getResourseArray(Context context,int arrayResure){
+        TypedArray ar = context.getResources().obtainTypedArray(arrayResure);
+        int len = ar.length();
+        int[] resIds = new int[len];
+        for (int i = 0; i < len; i++)
+            resIds[i] = ar.getResourceId(i, 0);
+
+        ar.recycle();
+
+        return resIds;
     }
 
 }

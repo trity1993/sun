@@ -5,4 +5,8 @@
         android:id="@+id/action_add"
         android:icon="@mipmap/icon_initactivechat"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_service"
+        android:title="stop service"
+        app:showAsAction="never"/>
 </menu>

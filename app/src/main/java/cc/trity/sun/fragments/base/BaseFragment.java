@@ -2,21 +2,14 @@ package cc.trity.sun.fragments.base;
 
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-
-import cc.trity.sun.R;
-import cc.trity.sun.activities.ChooseAreaActivity;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public abstract class BaseFragment extends Fragment {
-
+    protected static final String TAG="BaseFragment";
     protected Activity activity;
 
     public BaseFragment() {
@@ -27,27 +20,27 @@ public abstract class BaseFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity=getActivity();
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
         initVariables();
 
     }
 
-    @Override
+   /* @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.menu_base, menu);
-    }
+    }*/
 
-    @Override
+   /* @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_add:
-                Intent intent=new Intent(activity, ChooseAreaActivity.class);
-                activity.startActivity(intent);
+                    Intent intent=new Intent(activity, ChooseAreaActivity.class);
+                    activity.startActivity(intent);
             break;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     public void init(){
         initView();

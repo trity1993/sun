@@ -3,6 +3,7 @@ package cc.trity.sun.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import cc.trity.sun.model.WeatherContainer;
 import cc.trity.sun.model.city.BasePlace;
 
 public class Utility {
@@ -58,6 +60,21 @@ public class Utility {
 		editor.putString("publish_time", publishTime);
 		editor.putString("current_date", sdf.format(new Date()));
 		editor.commit();
+	}
+
+	public static void saveCountyWeatherInfo(Context context,String countyCode,String county3WeatherInfo){
+		SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(context).edit();
+		editor.putString(countyCode,county3WeatherInfo);
+		editor.commit();
+	}
+
+	public static WeatherContainer getWeatherContainer(Context context,String countyCode){
+		SharedPreferences sharePre=PreferenceManager.getDefaultSharedPreferences(context);
+		String jsonStr=sharePre.getString(countyCode,"");
+		if(!TextUtils.isEmpty(jsonStr)){
+			return GsonUtils.getClass(jsonStr,WeatherContainer.class);
+		}
+		return null;
 	}
 
 

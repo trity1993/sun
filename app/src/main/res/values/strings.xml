@@ -3,4 +3,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="degree">&#176;C</string>
+    <!--错误信息-->
+    <string name="error_location_code">位置获取错误，请重新选择地点</string>
+    <string name="error_server_response">服务器开小差，请重新刷新</string>
 </resources>
