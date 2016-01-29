@@ -113,9 +113,8 @@ public class DataBaseManager {
     public void saveCounty(County county) {
         if (county != null) {
             ContentValues values = new ContentValues();
-//            values.put("county_name", county.getCountyName());
-//            values.put("county_code", county.getCountyCode());
-//            values.put("city_id", county.getCityId());
+            values.put("county_name", county.getPlaceName());
+            values.put("county_code", county.getWeaterCode());
             db.insert(DB_TABLE_COUNTY, null, values);
         }
     }
@@ -123,19 +122,16 @@ public class DataBaseManager {
     /**
      * 从数据库读取某城市下所有的县信息。
      */
-    public List<County> loadCounties(int cityId) {
+    public List<County> loadCounties() {
         List<County> list = new ArrayList<County>();
-        Cursor cursor = db.query(DB_TABLE_COUNTY, null, "city_id = ?",
-                new String[] { String.valueOf(cityId) }, null, null, null);
+        Cursor cursor = db.query(DB_TABLE_COUNTY, null,null,null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
                 County county = new County();
-//                county.setId(cursor.getInt(cursor.getColumnIndex("id")));
-//                county.setCountyName(cursor.getString(cursor
-//                        .getColumnIndex("county_name")));
-//                county.setCountyCode(cursor.getString(cursor
-//                        .getColumnIndex("county_code")));
-//                county.setCityId(cityId);
+                county.setPlaceName(cursor.getString(cursor
+                        .getColumnIndex("county_name")));
+                county.setWeaterCode(cursor.getString(cursor
+                        .getColumnIndex("county_code")));
                 list.add(county);
             } while (cursor.moveToNext());
         }

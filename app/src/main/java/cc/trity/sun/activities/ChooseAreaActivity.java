@@ -1,5 +1,6 @@
 package cc.trity.sun.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.base.BaseActivity;
+import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.model.Global;
 import cc.trity.sun.model.city.City;
 import cc.trity.sun.model.city.County;
@@ -64,10 +66,8 @@ public class ChooseAreaActivity extends BaseActivity {
      * 当前选中的级别
      */
     private int currentLevel;
-    /**
-     * 是否从WeatherActivity中跳转过来。
-     */
-    private boolean isFromWeatherActivity;
+
+    private int resToolBg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,20 +79,17 @@ public class ChooseAreaActivity extends BaseActivity {
 
     @Override
     public void initVariables() {
-//        isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        if (prefs.getBoolean("city_selected", false) && !isFromWeatherActivity) {
-//            Intent intent = new Intent(this, WeatherActivity.class);
-//            startActivity(intent);
-//            finish();
-//            return;
-//        }
+        Intent intent=getIntent();
+        resToolBg=intent.getIntExtra("resBgColor",-1);
     }
 
     @Override
     public void initView() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if(resToolBg!=-1){
+            toolbar.setBackgroundColor(resToolBg);
+        }
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dataList);
         listArea.setAdapter(adapter);
@@ -113,12 +110,14 @@ public class ChooseAreaActivity extends BaseActivity {
                     LogUtils.d(TAG, "selectedCity=" + selectedCity);
 
                 } else if (currentLevel == LEVEL_COUNTY) {
-                    String countyCode = countyList.get(index).getWeaterCode();
+                    County county=countyList.get(index);
+                    saveCounties(county);
+                    String countyCode = county.getWeaterCode();
+                    String countyName=county.getPlaceName();
+
                     LogUtils.d(TAG, "countyCode=" + countyCode);
-//                    Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
-//                    intent.putExtra("county_code", countyCode);
-//                    startActivity(intent);
-//                    finish();
+
+                    toMainAct(ChooseAreaActivity.this,countyCode,countyName);
                 }
             }
         });
@@ -136,6 +135,7 @@ public class ChooseAreaActivity extends BaseActivity {
             LogUtils.e(TAG, Log.getStackTraceString(e));
         }
     }
+
 
     /**
      * 查询全国所有的省，优先从数据库查询，如果没有查询到再去服务器上查询。
@@ -187,6 +187,26 @@ public class ChooseAreaActivity extends BaseActivity {
         }
     }
 
+    private void saveCounties(County county){
+        DataBaseManager dataBaseManager=DataBaseManager.getInstance(ChooseAreaActivity.this);
+        dataBaseManager.saveCounty(county);
+    }
+
+    /**
+     * 回调函数进行传值跳转
+     * @param activity
+     * @param paramsCode
+     * @param paramsName
+     */
+    public void toMainAct(Activity activity, String paramsCode, String paramsName) {
+        Intent intent = new Intent();
+        intent.putExtra("county_code", paramsCode);
+        intent.putExtra("county_name", paramsName);
+        Global.pageLength++;
+        activity.setResult(RESULT_OK,intent);
+        finish();
+    }
+
     /**
      * 捕获Back按键，根据当前的级别来判断，此时应该返回市列表、省列表、还是直接退出。
      */
@@ -197,13 +217,8 @@ public class ChooseAreaActivity extends BaseActivity {
         } else if (currentLevel == LEVEL_CITY) {
             queryProvinces();
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-        } else {
-            if (isFromWeatherActivity) {
-                Intent intent = new Intent(this, WeatherActivity.class);
-                startActivity(intent);
-            }
-            finish();
+        }else{
+            super.onBackPressed();
         }
     }
 
