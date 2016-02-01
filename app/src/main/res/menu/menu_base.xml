@@ -6,7 +6,7 @@
         android:icon="@mipmap/icon_initactivechat"
         app:showAsAction="always"/>
     <item
-        android:id="@+id/action_service"
-        android:title="stop service"
+        android:id="@+id/action_setting"
+        android:title="@string/title_activity_setting"
         app:showAsAction="never"/>
 </menu>

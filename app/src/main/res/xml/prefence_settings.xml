@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/title_activity_setting">
+    <PreferenceCategory android:key="prefer_category_choose"
+        android:title="@string/setting_title_choose">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="check_update_preference"
+            android:widgetLayout="@layout/switch_layout"
+            android:title="@string/setting_content_auto_update" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:key="prefer_category_help"
+        android:title="@string/setting_title_help">
+        <Preference android:title="@string/setting_content_feedback">
+        </Preference>
+        <Preference android:title="@string/setting_content_share">
+
+        </Preference>
+        <Preference android:title="@string/setting_content_update_version">
+
+        </Preference>
+        <Preference
+            android:summary="@string/setting_summary_blog"
+            android:title="@string/setting_content_about">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://hexo.trity.cc/" />
+        </Preference>
+
+    </PreferenceCategory>
+</PreferenceScreen>

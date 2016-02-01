@@ -1,17 +1,21 @@
 package cc.trity.sun.presenter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 
 import cc.trity.sun.R;
 import cc.trity.sun.listener.HttpCallbackListener;
+import cc.trity.sun.model.Global;
 import cc.trity.sun.model.WeatherContainer;
 import cc.trity.sun.model.WeatherDetail;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.networks.HttpManager;
 import cc.trity.sun.networks.HttpNetWorkTools;
+import cc.trity.sun.service.WeatherForegroundService;
 import cc.trity.sun.utils.FileUtils;
 import cc.trity.sun.utils.GsonUtils;
+import cc.trity.sun.utils.NetWorkUtils;
 import cc.trity.sun.utils.TimeUtils;
 import cc.trity.sun.utils.Utility;
 
@@ -43,8 +47,12 @@ public class WeatherPresenter {
      */
     public void loadWeather(String countyCode,HttpCallbackListener httpCallbackListener){
         //生成url
-        String url = HttpManager.getReqAdress(true, countyCode);
-        HttpNetWorkTools.sendRequestWithHttpURLConnection(url, httpCallbackListener);
+        if(NetWorkUtils.isNetworkAvailable(context)){
+            String url = HttpManager.getReqAdress(true, countyCode);
+            HttpNetWorkTools.sendRequestWithHttpURLConnection(url, httpCallbackListener);
+        }else{
+            httpCallbackListener.onError(null);
+        }
     }
 
     /**
@@ -83,6 +91,11 @@ public class WeatherPresenter {
         return false;
     }
 
+    /**
+     * 通过weatherContainer更新数据
+     * @param weatherContainer
+     * @return
+     */
     public WeatherMsg updateData(WeatherContainer weatherContainer) {
         if (weatherContainer == null) {
             return null;
@@ -90,7 +103,8 @@ public class WeatherPresenter {
         //加载天气编码的名称
         String[] weatherName=context.getResources().getStringArray(R.array.weather_names);
         //加载图片资源
-        int[] resImage = FileUtils.getResourseArray(context, R.array.weather_num);
+        int[] resImage = null;
+        int[] reslittleImage = null;
         String imgIconNum;
         StringBuilder temp = new StringBuilder();
         WeatherDetail weatherDetail = weatherContainer.getWeatherDetailList().get(0);
@@ -99,9 +113,16 @@ public class WeatherPresenter {
         if (hour > 18 || hour < 6) {
             temp.append(weatherDetail.getNightTemp());
             imgIconNum = weatherDetail.getNightNum();
+
+            resImage = FileUtils.getResourseArray(context, R.array.weather_night_icon);
+            reslittleImage = FileUtils.getResourseArray(context, R.array.weather_little_night_icon);
+
         } else {
             temp.append(weatherDetail.getDayTemp());
             imgIconNum = weatherDetail.getDayNum();
+
+            resImage = FileUtils.getResourseArray(context, R.array.weather_icon);
+            reslittleImage = FileUtils.getResourseArray(context, R.array.weather_little_icon);
         }
         if (!TextUtils.isEmpty(temp.toString())) {
             String degreeStr = context.getResources().getString(R.string.degree);
@@ -112,18 +133,23 @@ public class WeatherPresenter {
         int num = Integer.valueOf(imgIconNum);
         //资源id
         int resId=0;
+        int resLittleId=0;
         if (num == 53) {
             resId=resImage[resImage.length - 1];
+            resLittleId=reslittleImage[resImage.length - 1];
         } else if (num == 99) {
             resId=R.mipmap.ic_launcher;
+            resLittleId=R.mipmap.ic_launcher;
         } else {
             resId=resImage[num];
+            resLittleId=reslittleImage[num];
         }
 
         WeatherMsg weatherMsg = new WeatherMsg();
         weatherMsg.setWeatherTemp(temp.toString());
         weatherMsg.setWeatherDetail(weatherName[num]);
         weatherMsg.setWeatherImage(resId);
+        weatherMsg.setWeatherLittleImage(resLittleId);
 
         return weatherMsg;
     }
@@ -155,5 +181,19 @@ public class WeatherPresenter {
             String jsonWeatherInfo = GsonUtils.createGsonString(weatherContainer);
             Utility.saveCountyWeatherInfo(context, countyCode, jsonWeatherInfo);
         }
+    }
+
+    /**
+     * 创建前台线程
+     * @param weatherMsg
+     */
+    public void toCreateForGround(WeatherMsg weatherMsg){
+        if(Global.isStartService){
+            Global.isStartService=false;
+            Intent intent=new Intent(context, WeatherForegroundService.class);
+            intent.putExtra(Global.INTENT_WEATHER_MSG, weatherMsg);
+            context.startService(intent);
+        }
+
     }
 }

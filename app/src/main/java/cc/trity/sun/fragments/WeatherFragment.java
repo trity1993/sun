@@ -24,14 +24,13 @@ import butterknife.InjectView;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.ChooseAreaActivity;
 import cc.trity.sun.activities.MainActivity;
+import cc.trity.sun.activities.SettingActivity;
 import cc.trity.sun.fragments.base.BaseFragment;
 import cc.trity.sun.listener.HttpCallbackListener;
-import cc.trity.sun.model.Global;
 import cc.trity.sun.model.ReponseForcecastWeather;
 import cc.trity.sun.model.WeatherContainer;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.presenter.WeatherPresenter;
-import cc.trity.sun.service.WeatherForegroundService;
 import cc.trity.sun.utils.CommonUtils;
 import cc.trity.sun.utils.GsonUtils;
 import cc.trity.sun.utils.LogUtils;
@@ -78,7 +77,7 @@ public class WeatherFragment extends BaseFragment implements HttpCallbackListene
                         WeatherMsg weatherMsg=weatherPresenter.updateData(weatherContainer);
                         if(weatherMsg!=null){
                             updateView(weatherMsg);
-                            createForGround(weatherMsg);
+                            weatherPresenter.toCreateForGround(weatherMsg);
                         }
                     }
 
@@ -158,6 +157,11 @@ public class WeatherFragment extends BaseFragment implements HttpCallbackListene
                         intent.putExtra("resBgColor", resBgColor);
                         activity.startActivityForResult(intent, MainActivity.ADD_FRAGMENT);
                         break;
+                    case R.id.action_setting:
+                        Intent intentSet = new Intent(activity, SettingActivity.class);
+                        intentSet.putExtra("resBgColor", resBgColor);
+                        startActivity(intentSet);
+                        break;
                 }
                 return true;
             }
@@ -231,19 +235,6 @@ public class WeatherFragment extends BaseFragment implements HttpCallbackListene
             imgWeatherFlag.setImageResource(weatherMsg.getWeatherImage());
     }
 
-    /**
-     * 产生前台线程
-     * @param weatherMsg
-     */
-    public void createForGround(WeatherMsg weatherMsg){
-        if(Global.isStartService){
-            Global.isStartService=false;
-            Intent intent=new Intent(activity, WeatherForegroundService.class);
-            intent.putExtra(Global.INTENT_WEATHER_MSG, weatherMsg);
-            activity.startService(intent);
-        }
-
-    }
     @Override
     public void onPause() {
         super.onPause();

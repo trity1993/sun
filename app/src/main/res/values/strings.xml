@@ -7,4 +7,15 @@
     <!--错误信息-->
     <string name="error_location_code">位置获取错误，请重新选择地点</string>
     <string name="error_server_response">服务器开小差，请重新刷新</string>
+    <string name="error_network">请重新连接网络，并下拉尝试刷新</string>
+
+    <string name="title_activity_setting">设置</string>
+    <string name="setting_title_choose">人性化自由选择</string>
+    <string name="setting_content_auto_update">自动更新天气</string>
+    <string name="setting_title_help">帮助</string>
+    <string name="setting_content_feedback">我的反馈</string>
+    <string name="setting_content_share">分享sun</string>
+    <string name="setting_content_about">关于我</string>
+    <string name="setting_summary_blog">我的博客</string>
+    <string name="setting_content_update_version">手动检查更新</string>
 </resources>

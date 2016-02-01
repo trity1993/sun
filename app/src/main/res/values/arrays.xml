@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="weather_num">
+    <string-array name="weather_icon">
         <item>@mipmap/icon_sunny</item>
         <item>@mipmap/icon_cloudy</item>
         <item>@mipmap/icon_overcast</item>
@@ -35,6 +35,112 @@
         <item>@mipmap/icon_sandstorm</item>
         <item>@mipmap/icon_haze</item>
     </string-array>
+    <string-array name="weather_night_icon">
+        <item>@mipmap/icon_sunny_night</item>
+        <item>@mipmap/icon_cloudy_night</item>
+        <item>@mipmap/icon_overcast</item>
+        <item>@mipmap/icon_shower_night</item>
+        <item>@mipmap/icon_thundershower_night</item>
+        <item>@mipmap/icon_thundershowerhail_night</item>
+        <item>@mipmap/icon_sleet</item>
+        <item>@mipmap/icon_lightrain</item>
+        <item>@mipmap/icon_moderaterain</item>
+        <item>@mipmap/icon_heavyrain</item>
+        <item>@mipmap/icon_storm</item>
+        <item>@mipmap/icon_storm</item>
+        <item>@mipmap/icon_storm</item>
+        <item>@mipmap/icon_snow_night</item>
+        <item>@mipmap/icon_lightsnow</item>
+        <item>@mipmap/icon_moderatesnow</item>
+        <item>@mipmap/icon_heavysnow</item>
+        <item>@mipmap/icon_heavysnow</item>
+        <item>@mipmap/icon_foggy</item>
+        <item>@mipmap/icon_icerain</item>
+        <item>@mipmap/icon_dust</item>
+        <item>@mipmap/icon_lightrain</item>
+        <item>@mipmap/icon_moderaterain</item>
+        <item>@mipmap/icon_heavyrain</item>
+        <item>@mipmap/icon_storm</item>
+        <item>@mipmap/icon_heavyrain</item>
+        <item>@mipmap/icon_lightsnow</item>
+        <item>@mipmap/icon_moderatesnow</item>
+        <item>@mipmap/icon_heavysnow</item>
+        <item>@mipmap/icon_dust</item>
+        <item>@mipmap/icon_sandstorm</item>
+        <item>@mipmap/icon_sandstorm</item>
+        <item>@mipmap/icon_haze</item>
+    </string-array>
+    <string-array name="weather_little_icon">
+        <item>@mipmap/little_icon_sunny</item>
+        <item>@mipmap/little_icon_cloudy</item>
+        <item>@mipmap/little_icon_overcast</item>
+        <item>@mipmap/little_icon_shower</item>
+        <item>@mipmap/little_icon_thundershower</item>
+        <item>@mipmap/little_icon_thundershowerhail</item>
+        <item>@mipmap/little_icon_sleet</item>
+        <item>@mipmap/little_icon_lightrain</item>
+        <item>@mipmap/little_icon_moderaterain</item>
+        <item>@mipmap/little_icon_heavyrain</item>
+        <item>@mipmap/little_icon_storm</item>
+        <item>@mipmap/little_icon_storm</item>
+        <item>@mipmap/little_icon_storm</item>
+        <item>@mipmap/little_icon_snow</item>
+        <item>@mipmap/little_icon_lightsnow</item>
+        <item>@mipmap/little_icon_moderatesnow</item>
+        <item>@mipmap/little_icon_heavysnow</item>
+        <item>@mipmap/little_icon_heavysnow</item>
+        <item>@mipmap/little_icon_foggy</item>
+        <item>@mipmap/little_icon_icerain</item>
+        <item>@mipmap/little_icon_dust</item>
+        <item>@mipmap/little_icon_lightrain</item>
+        <item>@mipmap/little_icon_moderaterain</item>
+        <item>@mipmap/little_icon_heavyrain</item>
+        <item>@mipmap/little_icon_storm</item>
+        <item>@mipmap/little_icon_heavyrain</item>
+        <item>@mipmap/little_icon_lightsnow</item>
+        <item>@mipmap/little_icon_moderatesnow</item>
+        <item>@mipmap/little_icon_heavysnow</item>
+        <item>@mipmap/little_icon_dust</item>
+        <item>@mipmap/little_icon_sandstorm</item>
+        <item>@mipmap/little_icon_sandstorm</item>
+        <item>@mipmap/little_icon_haze</item>
+    </string-array>
+    <string-array name="weather_little_night_icon">
+        <item>@mipmap/little_icon_sunny_night</item>
+        <item>@mipmap/little_icon_cloudy_night</item>
+        <item>@mipmap/little_icon_overcast</item>
+        <item>@mipmap/little_icon_shower_night</item>
+        <item>@mipmap/little_icon_thundershower_night</item>
+        <item>@mipmap/little_icon_thundershowerhail_night</item>
+        <item>@mipmap/little_icon_sleet</item>
+        <item>@mipmap/little_icon_lightrain</item>
+        <item>@mipmap/little_icon_moderaterain</item>
+        <item>@mipmap/little_icon_heavyrain</item>
+        <item>@mipmap/little_icon_storm</item>
+        <item>@mipmap/little_icon_storm</item>
+        <item>@mipmap/little_icon_storm</item>
+        <item>@mipmap/little_icon_snow_night</item>
+        <item>@mipmap/little_icon_lightsnow</item>
+        <item>@mipmap/little_icon_moderatesnow</item>
+        <item>@mipmap/little_icon_heavysnow</item>
+        <item>@mipmap/little_icon_heavysnow</item>
+        <item>@mipmap/little_icon_foggy</item>
+        <item>@mipmap/little_icon_icerain</item>
+        <item>@mipmap/little_icon_dust</item>
+        <item>@mipmap/little_icon_lightrain</item>
+        <item>@mipmap/little_icon_moderaterain</item>
+        <item>@mipmap/little_icon_heavyrain</item>
+        <item>@mipmap/little_icon_storm</item>
+        <item>@mipmap/little_icon_heavyrain</item>
+        <item>@mipmap/little_icon_lightsnow</item>
+        <item>@mipmap/little_icon_moderatesnow</item>
+        <item>@mipmap/little_icon_heavysnow</item>
+        <item>@mipmap/little_icon_dust</item>
+        <item>@mipmap/little_icon_sandstorm</item>
+        <item>@mipmap/little_icon_sandstorm</item>
+        <item>@mipmap/little_icon_haze</item>
+    </string-array>
+
     <string-array name="weather_names">
         <item>晴</item>
         <item>多云</item>

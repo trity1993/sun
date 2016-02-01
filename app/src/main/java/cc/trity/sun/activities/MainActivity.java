@@ -1,14 +1,12 @@
 package cc.trity.sun.activities;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +18,8 @@ import cc.trity.sun.activities.base.BaseActivity;
 import cc.trity.sun.adapters.EndlessLoopAdapter;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.fragments.WeatherFragment;
+import cc.trity.sun.model.Global;
 import cc.trity.sun.model.city.County;
-import cc.trity.sun.service.WeatherForegroundService;
 import cc.trity.sun.view.CirclePageIndicator;
 import cc.trity.sun.view.CubeOutTransformer;
 
@@ -47,19 +45,7 @@ public class MainActivity extends BaseActivity {
     String countyName = null;
     EndlessLoopAdapter endlessLoopAdapter = null;
     DataBaseManager dataBaseManager=null;
-    WeatherForegroundService.WeatherUpdateBinder weatherBinder;
-    ServiceConnection serviceConnection=new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            weatherBinder=(WeatherForegroundService.WeatherUpdateBinder)service;
-            weatherBinder.startDownload();
 
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +57,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initVariables() {
+
         dataBaseManager=DataBaseManager.getInstance(MainActivity.this);
         countyList=dataBaseManager.loadCounties();
 
@@ -82,7 +69,9 @@ public class MainActivity extends BaseActivity {
             Fragment fragment = WeatherFragment.newInstance(resInt[i], i, county.getWeaterCode(), county.getPlaceName());
             fragmentList.add(fragment);
         }
-
+        //读取sharePrf是否打开前台线程
+        SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
+        Global.isStartService=sharedPreferences.getBoolean(Global.SHARE_PREF_SERVICE, true);
     }
 
     @Override
@@ -144,16 +133,6 @@ public class MainActivity extends BaseActivity {
         viewpagerMain.setAdapter(endlessLoopAdapter);
         indicator.setViewPagerFixedLength(viewpagerMain, lenght);
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_service:
-                stopService(new Intent(MainActivity.this,WeatherForegroundService.class));
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

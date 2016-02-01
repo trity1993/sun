@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import cc.trity.sun.ActivityCollector;
 import cc.trity.sun.R;
 
 /**
@@ -21,6 +22,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityCollector.addActivity(this);
+
         initVariables();
     }
     public void init(){
@@ -68,6 +71,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onDestroy() {
+        ActivityCollector.removeActivity(this);
+        super.onDestroy();
     }
 
     /**

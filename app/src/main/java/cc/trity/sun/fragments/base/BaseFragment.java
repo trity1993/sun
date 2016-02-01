@@ -25,23 +25,6 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
-   /* @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_base, menu);
-    }*/
-
-   /* @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_add:
-                    Intent intent=new Intent(activity, ChooseAreaActivity.class);
-                    activity.startActivity(intent);
-            break;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
-
     public void init(){
         initView();
         loadData();

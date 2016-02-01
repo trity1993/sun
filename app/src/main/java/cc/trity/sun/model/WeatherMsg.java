@@ -13,6 +13,7 @@ public class WeatherMsg implements Parcelable {
     private String airQuality;
     private int airQualityImg;
     private int weatherImage;
+    private int weatherLittleImage;
 
     public WeatherMsg(){}
 
@@ -21,6 +22,7 @@ public class WeatherMsg implements Parcelable {
         this.weatherTemp=source.readString();
         this.airQuality=source.readString();
         this.weatherImage=source.readInt();
+        this.weatherLittleImage=source.readInt();
         this.airQualityImg=source.readInt();
     }
 
@@ -49,8 +51,18 @@ public class WeatherMsg implements Parcelable {
         dest.writeString(weatherDetail);
         dest.writeString(weatherTemp);
         dest.writeString(airQuality);
-        dest.writeInt(airQualityImg);
         dest.writeInt(weatherImage);
+        dest.writeInt(weatherLittleImage);
+        dest.writeInt(airQualityImg);
+
+    }
+
+    public int getWeatherLittleImage() {
+        return weatherLittleImage;
+    }
+
+    public void setWeatherLittleImage(int weatherLittleImage) {
+        this.weatherLittleImage = weatherLittleImage;
     }
 
     public String getWeatherDetail() {
