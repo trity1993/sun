@@ -252,6 +252,10 @@ public class WeatherFragment extends BaseFragment implements HttpCallbackListene
     public void onFinish(String response) {
         LogUtils.d(TAG, response + "");
         ReponseForcecastWeather weatherData = GsonUtils.getClass(response, ReponseForcecastWeather.class);
+        if(weatherData==null){//预防返回data error时候的解析错误
+            onError(null);
+            return;
+        }
         weatherContainer = weatherData.getWeatherContainer();
 
         Message msg = new Message();
