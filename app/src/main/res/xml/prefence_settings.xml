@@ -17,7 +17,9 @@
         <Preference android:title="@string/setting_content_feedback">
         </Preference>
         <Preference android:title="@string/setting_content_share">
-
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://www.pgyer.com/T_sun" />
         </Preference>
         <Preference android:title="@string/setting_content_update_version">
 

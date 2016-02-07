@@ -1,16 +1,17 @@
 package cc.trity.sun.fragments.base;
 
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+
+import cc.trity.library.activity.BaseActivity;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public abstract class BaseFragment extends Fragment {
     protected static final String TAG="BaseFragment";
-    protected Activity activity;
+    protected BaseActivity activity;
 
     public BaseFragment() {
         // Required empty public constructor
@@ -19,7 +20,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activity=getActivity();
+        activity=(BaseActivity)getActivity();
 //        setHasOptionsMenu(true);
         initVariables();
 

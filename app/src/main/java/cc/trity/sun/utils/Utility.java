@@ -16,6 +16,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import cc.trity.library.utils.FileUtils;
+import cc.trity.library.utils.GsonUtils;
+import cc.trity.library.utils.LogUtils;
 import cc.trity.sun.model.WeatherContainer;
 import cc.trity.sun.model.city.BasePlace;
 
@@ -72,14 +75,14 @@ public class Utility {
 		SharedPreferences sharePre=PreferenceManager.getDefaultSharedPreferences(context);
 		String jsonStr=sharePre.getString(countyCode,"");
 		if(!TextUtils.isEmpty(jsonStr)){
-			return GsonUtils.getClass(jsonStr,WeatherContainer.class);
+			return GsonUtils.getClass(jsonStr, WeatherContainer.class);
 		}
 		return null;
 	}
 
 
 	public static List<BasePlace> getPlace(String xmlStr,String flagArgs){
-		XmlPullParser xmlPullParser=FileUtils.getXmlPullParser(xmlStr);
+		XmlPullParser xmlPullParser= FileUtils.getXmlPullParser(xmlStr);
 		BasePlace place=null;
 		List<BasePlace> listPlace=null;
 		try{

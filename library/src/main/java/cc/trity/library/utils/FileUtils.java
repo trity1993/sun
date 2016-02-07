@@ -1,4 +1,4 @@
-package cc.trity.sun.utils;
+package cc.trity.library.utils;
 
 import android.content.Context;
 import android.content.res.TypedArray;

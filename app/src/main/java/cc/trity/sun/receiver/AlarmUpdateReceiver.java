@@ -8,6 +8,9 @@ import android.content.Intent;
 
 import java.util.List;
 
+import cc.trity.library.utils.CommonUtils;
+import cc.trity.library.utils.GsonUtils;
+import cc.trity.library.utils.NetWorkUtils;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.listener.HttpCallbackListener;
 import cc.trity.sun.model.Global;
@@ -16,9 +19,6 @@ import cc.trity.sun.model.WeatherContainer;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.model.city.County;
 import cc.trity.sun.presenter.WeatherPresenter;
-import cc.trity.sun.utils.CommonUtils;
-import cc.trity.sun.utils.GsonUtils;
-import cc.trity.sun.utils.NetWorkUtils;
 
 /**
  * 定时6，11，18 进行启动service进行刷新工作
@@ -27,7 +27,7 @@ import cc.trity.sun.utils.NetWorkUtils;
 public class AlarmUpdateReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        CommonUtils.showToast(context,"AlarmUpdateReceiver 已接受到");
+        CommonUtils.showToast(context, "AlarmUpdateReceiver 已接受到");
         if(NetWorkUtils.isNetworkAvailable(context)){
             final WeatherPresenter weatherPresenter=WeatherPresenter.getInstance(context);
             DataBaseManager dataBaseManager= DataBaseManager.getInstance(context);

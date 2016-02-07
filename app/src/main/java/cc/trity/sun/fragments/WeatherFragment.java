@@ -21,26 +21,26 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cc.trity.library.net.RequestCallback;
+import cc.trity.library.utils.CommonUtils;
+import cc.trity.library.utils.GsonUtils;
+import cc.trity.library.utils.LogUtils;
+import cc.trity.library.utils.TimeUtils;
 import cc.trity.sun.R;
-import cc.trity.sun.activities.ChooseAreaActivity;
+import cc.trity.sun.activities.ChooseAreaActivityApp;
 import cc.trity.sun.activities.MainActivity;
-import cc.trity.sun.activities.SettingActivity;
+import cc.trity.sun.activities.SettingActivityApp;
 import cc.trity.sun.fragments.base.BaseFragment;
-import cc.trity.sun.listener.HttpCallbackListener;
 import cc.trity.sun.model.ReponseForcecastWeather;
 import cc.trity.sun.model.WeatherContainer;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.presenter.WeatherPresenter;
-import cc.trity.sun.utils.CommonUtils;
-import cc.trity.sun.utils.GsonUtils;
-import cc.trity.sun.utils.LogUtils;
-import cc.trity.sun.utils.TimeUtils;
 import cc.trity.sun.utils.Utility;
 
 /**
  * A simple {@link BaseFragment} subclass.
  */
-public class WeatherFragment extends BaseFragment implements HttpCallbackListener {
+public class WeatherFragment extends BaseFragment implements RequestCallback {
     private final int REFRESH_UPDATE_VIEW = 0;
     private final int ERROR_UPDATE_VIEW = 1;
     private final int ERROR_CITY_CODE = 2;
@@ -153,12 +153,12 @@ public class WeatherFragment extends BaseFragment implements HttpCallbackListene
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_add:
-                        Intent intent = new Intent(activity, ChooseAreaActivity.class);
+                        Intent intent = new Intent(activity, ChooseAreaActivityApp.class);
                         intent.putExtra("resBgColor", resBgColor);
                         activity.startActivityForResult(intent, MainActivity.ADD_FRAGMENT);
                         break;
                     case R.id.action_setting:
-                        Intent intentSet = new Intent(activity, SettingActivity.class);
+                        Intent intentSet = new Intent(activity, SettingActivityApp.class);
                         intentSet.putExtra("resBgColor", resBgColor);
                         startActivity(intentSet);
                         break;
@@ -208,14 +208,14 @@ public class WeatherFragment extends BaseFragment implements HttpCallbackListene
             return;
         }
         if (weatherPresenter.isUpdate(weatherContainer,countyCode)) {
-            weatherPresenter.loadWeather(countyCode, this);
+            weatherPresenter.loadWeather(activity,countyCode,this);
         } else {
             if(weatherContainer==null){
                 if(countyCode!=null)
                     weatherContainer=Utility.getWeatherContainer(activity,countyCode);
             }
             if(weatherContainer==null){
-                weatherPresenter.loadWeather(countyCode,this);
+                weatherPresenter.loadWeather(activity,countyCode,this);
             }else{
                 Message msg = new Message();
                 msg.what=REFRESH_UPDATE_VIEW;
@@ -248,7 +248,7 @@ public class WeatherFragment extends BaseFragment implements HttpCallbackListene
         ButterKnife.reset(this);
     }
 
-    @Override
+   /* @Override
     public void onFinish(String response) {
         LogUtils.d(TAG, response + "");
         ReponseForcecastWeather weatherData = GsonUtils.getClass(response, ReponseForcecastWeather.class);
@@ -266,6 +266,28 @@ public class WeatherFragment extends BaseFragment implements HttpCallbackListene
 
     @Override
     public void onError(Exception e) {
+        LogUtils.e(TAG, "error");
+        handler.sendEmptyMessage(ERROR_UPDATE_VIEW);
+    }*/
+
+    @Override
+    public void onSuccess(String content) {
+        LogUtils.d(TAG, content + "");
+        ReponseForcecastWeather weatherData = GsonUtils.getClass(content, ReponseForcecastWeather.class);
+        if(weatherData==null){
+            onFail(null);
+            return ;
+        }
+        weatherContainer = weatherData.getWeatherContainer();
+
+        Message msg = new Message();
+        msg.obj = weatherContainer;
+        msg.what=REFRESH_UPDATE_VIEW;
+        handler.sendMessage(msg);
+    }
+
+    @Override
+    public void onFail(String errorMessage) {
         LogUtils.e(TAG, "error");
         handler.sendEmptyMessage(ERROR_UPDATE_VIEW);
     }

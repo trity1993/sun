@@ -1,4 +1,4 @@
-package cc.trity.sun.utils;
+package cc.trity.library.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;

@@ -14,7 +14,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.trity.sun.R;
-import cc.trity.sun.activities.base.BaseActivity;
+import cc.trity.sun.activities.base.AppBaseActivity;
 import cc.trity.sun.adapters.EndlessLoopAdapter;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.fragments.WeatherFragment;
@@ -23,7 +23,7 @@ import cc.trity.sun.model.city.County;
 import cc.trity.sun.view.CirclePageIndicator;
 import cc.trity.sun.view.CubeOutTransformer;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends AppBaseActivity {
     public static final int ADD_FRAGMENT=0;
     private static final String TAG = "MainActivity";
     @InjectView(R.id.viewpager_main)
@@ -52,7 +52,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-        this.init();
+        this.init(savedInstanceState);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    public void initView() {
+    public void initView(Bundle savedInstanceState) {
         if (lenght == 1) {
             endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, lenght);
         } else if (lenght <= 3) {
@@ -94,7 +94,7 @@ public class MainActivity extends BaseActivity {
         indicator.setViewPagerFixedLength(viewpagerMain, lenght);
         indicator.setSnap(true);
         if(lenght==0){
-            Intent intent = new Intent(MainActivity.this, ChooseAreaActivity.class);
+            Intent intent = new Intent(MainActivity.this, ChooseAreaActivityApp.class);
             startActivityForResult(intent, MainActivity.ADD_FRAGMENT);
         }
     }

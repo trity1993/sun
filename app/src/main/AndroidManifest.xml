@@ -24,16 +24,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ChooseAreaActivity">
+        <activity android:name=".activities.ChooseAreaActivityApp">
 
         </activity>
         <activity android:name=".activities.LoginActivity"></activity>
-        <activity android:name=".activities.SettingActivity"
+        <activity android:name=".activities.SettingActivityApp"
             android:label="@string/title_activity_setting">
 
         </activity>
 
-        <service android:name=".service.WeatherForegroundService"></service>
+        <service android:name=".service.WeatherForegroundService"
+            android:process=":background"></service>
         <receiver android:name=".receiver.AlarmUpdateReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>

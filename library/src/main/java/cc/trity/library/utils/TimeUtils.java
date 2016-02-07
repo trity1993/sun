@@ -1,4 +1,4 @@
-package cc.trity.sun.utils;
+package cc.trity.library.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

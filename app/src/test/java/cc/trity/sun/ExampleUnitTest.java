@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import cc.trity.sun.model.Global;
 import cc.trity.sun.model.ReponseForcecastWeather;
-import cc.trity.sun.utils.GsonUtils;
 
 import static org.junit.Assert.assertEquals;
 

@@ -8,8 +8,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import cc.trity.library.utils.LogUtils;
 import cc.trity.sun.listener.HttpCallbackListener;
-import cc.trity.sun.utils.LogUtils;
 
 /**
  * Created by TryIT on 2016/1/11.

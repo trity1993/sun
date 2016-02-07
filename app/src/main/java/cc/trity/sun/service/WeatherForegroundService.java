@@ -6,19 +6,21 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 
 import java.util.Date;
 
+import cc.trity.library.utils.LogUtils;
+import cc.trity.library.utils.TimeUtils;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.MainActivity;
+import cc.trity.sun.activities.SettingActivityApp;
 import cc.trity.sun.model.Global;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.receiver.AlarmUpdateReceiver;
-import cc.trity.sun.utils.LogUtils;
-import cc.trity.sun.utils.TimeUtils;
 
 /**
  * 前台线程
@@ -76,11 +78,20 @@ public class WeatherForegroundService extends Service {
                 .setContentTitle(weatherMsg.getWeatherDetail())
                 .setContentText(weatherMsg.getWeatherTemp())
                 .setContentInfo("空气质量")
-                .setLargeIcon(largeIcon) /*天气图标*/
-                .addAction(R.mipmap.ic_share_white_24dp, "分享", pdIntent)
-                .addAction(R.mipmap.ic_settings_white_24dp, "设置", pdIntent)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText("帮我分享下吧~"));
+                .setLargeIcon(largeIcon) ;/*天气图标*/
 
+        //添加设置的action
+        notificationIntent.setClass(this, SettingActivityApp.class);
+        pdIntent=PendingIntent.getActivity(this,requestID,notificationIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+        mBuilder.addAction(R.mipmap.ic_settings_white_24dp, "设置", pdIntent);
+
+        //添加分享通过浏览器当指定的下载位置。
+        Uri uri= Uri.parse(Global.URL_SHARE_APP);
+        notificationIntent=new Intent(Intent.ACTION_VIEW,uri);
+        pdIntent=PendingIntent.getActivity(this,requestID,notificationIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+
+        mBuilder.addAction(R.mipmap.ic_share_white_24dp, "分享", pdIntent)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText("帮我分享下吧~"));
         startForeground(id, mBuilder.build());
     }
 

@@ -4,7 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import java.util.List;
+
+import cc.trity.library.activity.BaseActivity;
+import cc.trity.library.net.RequestCallback;
+import cc.trity.library.net.RequestParameter;
+import cc.trity.library.utils.FileUtils;
+import cc.trity.library.utils.GsonUtils;
+import cc.trity.library.utils.NetWorkUtils;
+import cc.trity.library.utils.TimeUtils;
 import cc.trity.sun.R;
+import cc.trity.sun.engine.RemoteService;
 import cc.trity.sun.listener.HttpCallbackListener;
 import cc.trity.sun.model.Global;
 import cc.trity.sun.model.WeatherContainer;
@@ -13,10 +23,6 @@ import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.networks.HttpManager;
 import cc.trity.sun.networks.HttpNetWorkTools;
 import cc.trity.sun.service.WeatherForegroundService;
-import cc.trity.sun.utils.FileUtils;
-import cc.trity.sun.utils.GsonUtils;
-import cc.trity.sun.utils.NetWorkUtils;
-import cc.trity.sun.utils.TimeUtils;
 import cc.trity.sun.utils.Utility;
 
 /**
@@ -52,6 +58,16 @@ public class WeatherPresenter {
             HttpNetWorkTools.sendRequestWithHttpURLConnection(url, httpCallbackListener);
         }else{
             httpCallbackListener.onError(null);
+        }
+    }
+    public void loadWeather(BaseActivity baseActivity,String countyCode,RequestCallback requestCallback){
+        //生成url
+        if(NetWorkUtils.isNetworkAvailable(context)){
+            //执行网络请求的操作
+            List<RequestParameter> parameterList=HttpManager.getReqParameters(true,countyCode,Global.URL_WEATHER);
+            RemoteService.getInstance().invoke(baseActivity,"getWeatherForecast",parameterList,requestCallback);
+        }else{
+            requestCallback.onFail(null);
         }
     }
 
