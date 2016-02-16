@@ -1,4 +1,4 @@
-# sun
+# sun 作者来源：
 source for [jakob Henner](https://dribbble.com/pattern)
 weather app for ios:[sun](http://pattern.dk/sun/)
 
@@ -6,3 +6,17 @@ weather app for ios:[sun](http://pattern.dk/sun/)
 所以心血来潮就进行实现了下。
 
 后续效果继续补上。
+
+下面是效果图：
+![](https://o1whyeemo.qnssl.com/image/view/app_screenshots/9e876c8aa7c9bd7bfccf60c045a7af53/528)
+![](https://o1whyeemo.qnssl.com/image/view/app_screenshots/cffab510c111ff0f4b5c9266384e3627/528)
+![](https://o1whyeemo.qnssl.com/image/view/app_screenshots/86bd499026f7dcd98e2c0ffbf8b1eb4f/528)
+![](https://o1whyeemo.qnssl.com/image/view/app_screenshots/6f86dfb9900cab9a1128d1b6f049134d/528)
+
+应用下载链接：
+[sun](https://www.pgyer.com/T_sun)
+
+### 相关技术点
+- 无线循环`viewpager`,使用`Integer.MAX`的方式,当运动`<3`的情况，就补充到`>3`的情况
+- 使用《app研发录》推荐的用线程池封装网络底层(`ThreadPollExcutor+Runnable+Handler`)，来处理网络请求
+- 封装自己的类库，有利于以后其他项目的移植
