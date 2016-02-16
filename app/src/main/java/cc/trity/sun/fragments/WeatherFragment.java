@@ -227,12 +227,15 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
     }
 
     public void updateView(WeatherMsg weatherMsg){
-        //设置温度
-        txtLocationTemp.setText(weatherMsg.getWeatherTemp());
-        txtLocationTemp.setVisibility(View.VISIBLE);
-        //更新图片
-        if(imgWeatherFlag!=null)
+
+        if(imgWeatherFlag!=null&&txtLocationTemp!=null){
+            //设置温度
+            txtLocationTemp.setText(weatherMsg.getWeatherTemp());
+            txtLocationTemp.setVisibility(View.VISIBLE);
+            //更新图片
             imgWeatherFlag.setImageResource(weatherMsg.getWeatherImage());
+
+        }
     }
 
     @Override

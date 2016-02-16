@@ -146,6 +146,8 @@ public class WeatherPresenter {
         }
 
         //设置图标
+        if(TextUtils.isEmpty(imgIconNum))
+            return null;
         int num = Integer.valueOf(imgIconNum);
         //资源id
         int resId=0;
