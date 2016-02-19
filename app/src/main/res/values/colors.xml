@@ -6,4 +6,9 @@
     <color name="gray_light">#646264</color>
     <color name="white_light">#f3f4f7</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="alapha_white">#AAFFFFFF</color>
+    <color name="yellow_bg">#ffc722</color>
+    <color name="pink_bg">#ff2259</color>
+    <color name="green_bg">#00d8a2</color>
+    <color name="blue_bg">#49ccd4</color>
 </resources>

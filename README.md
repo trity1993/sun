@@ -8,10 +8,8 @@ weather app for ios:[sun](http://pattern.dk/sun/)
 后续效果继续补上。
 
 下面是效果图：
+
 ![](https://o1whyeemo.qnssl.com/image/view/app_screenshots/9e876c8aa7c9bd7bfccf60c045a7af53/528)
-![](https://o1whyeemo.qnssl.com/image/view/app_screenshots/cffab510c111ff0f4b5c9266384e3627/528)
-![](https://o1whyeemo.qnssl.com/image/view/app_screenshots/86bd499026f7dcd98e2c0ffbf8b1eb4f/528)
-![](https://o1whyeemo.qnssl.com/image/view/app_screenshots/6f86dfb9900cab9a1128d1b6f049134d/528)
 
 应用下载链接：
 [sun](https://www.pgyer.com/T_sun)

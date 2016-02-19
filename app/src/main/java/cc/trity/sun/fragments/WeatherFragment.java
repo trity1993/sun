@@ -59,7 +59,7 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
     @InjectView(R.id.txt_location_temp)
     TextView txtLocationTemp;
 
-    private int resBgColor, selectPage;
+    private int resBgColor, resbg;
     private String countyCode, countyName;
     private int hour;
 
@@ -67,46 +67,17 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
 
     private WeatherPresenter weatherPresenter;
 
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case REFRESH_UPDATE_VIEW:
-                    WeatherContainer weatherContainer = (WeatherContainer) msg.obj;
-                    if(weatherPresenter!=null){
-                        WeatherMsg weatherMsg=weatherPresenter.updateData(weatherContainer);
-                        if(weatherMsg!=null){
-                            updateView(weatherMsg);
-                            weatherPresenter.toCreateForGround(weatherMsg);
-                        }
-                    }
-
-                    if (swipeRefresh != null)
-                        swipeRefresh.setRefreshing(false);
-                    break;
-                case ERROR_UPDATE_VIEW:
-                    CommonUtils.showToast(activity, R.string.error_server_response);
-                    if (swipeRefresh != null)
-                        swipeRefresh.setRefreshing(false);
-                    break;
-                case ERROR_CITY_CODE:
-                    CommonUtils.showToast(activity, R.string.error_location_code);
-                    if (swipeRefresh != null)
-                        swipeRefresh.setRefreshing(false);
-                    break;
-            }
-        }
-    };
+    Handler handler = new Handler(this);
 
     public WeatherFragment() {
     }
 
-    public static WeatherFragment newInstance(int resBgColor, int selectPage,
+    public static WeatherFragment newInstance(int resBgColor, int resbg,
                                               String countyCode, String countyName) {
         WeatherFragment weatherFragment = new WeatherFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("resBgColor", resBgColor);
-        bundle.putInt("selectPage", selectPage);
+        bundle.putInt("resBg", resbg);
         bundle.putString("countyCode", countyCode);
         bundle.putString("countyName", countyName);
         weatherFragment.setArguments(bundle);
@@ -119,7 +90,7 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
         Bundle bundle = getArguments();
         if (bundle != null) {
             resBgColor = bundle.getInt("resBgColor");
-            selectPage = bundle.getInt("selectPage");
+            resbg = bundle.getInt("resBg");
             countyCode = bundle.getString("countyCode");
             countyName = bundle.getString("countyName");
         }
@@ -141,12 +112,13 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
 
     @Override
     public void initView() {
+        //设置背景
+        rlLayout.setBackgroundResource(resbg);
+
         //设置toolbar
-        rlLayout.setBackgroundColor(resBgColor);
-        AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
+        AppCompatActivity appCompatActivity = activity;
         appCompatActivity.setSupportActionBar(toolbar);
         appCompatActivity.getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setBackgroundColor(resBgColor);
         toolbar.inflateMenu(R.menu.menu_base);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -211,23 +183,56 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
             weatherPresenter.loadWeather(activity,countyCode,this);
         } else {
             if(weatherContainer==null){
-                if(countyCode!=null)
+                if(countyCode!=null){
                     weatherContainer=Utility.getWeatherContainer(activity,countyCode);
+
+                }
+                if(weatherContainer==null){
+                    weatherPresenter.loadWeather(activity,countyCode,this);
+                }else{
+                    Message msg = new Message();
+                    msg.what=REFRESH_UPDATE_VIEW;
+                    msg.obj = weatherContainer;
+                    handler.sendMessage(msg);
+                }
             }
-            if(weatherContainer==null){
-                weatherPresenter.loadWeather(activity,countyCode,this);
-            }else{
-                Message msg = new Message();
-                msg.what=REFRESH_UPDATE_VIEW;
-                msg.obj = weatherContainer;
-                handler.sendMessage(msg);
-            }
+
 
         }
     }
 
-    public void updateView(WeatherMsg weatherMsg){
+    @Override
+    public boolean handleMessage(Message msg) {
+        switch (msg.what) {
+            case REFRESH_UPDATE_VIEW:
+                WeatherContainer weatherContainer = (WeatherContainer) msg.obj;
+                if(weatherPresenter!=null){
+                    WeatherMsg weatherMsg=weatherPresenter.updateData(weatherContainer,countyName);
+                    if(weatherMsg!=null){
+                        updateView(weatherMsg);
+                        weatherPresenter.toCreateForGround(weatherMsg);
+                    }
+                }
 
+                if (swipeRefresh != null)
+                    swipeRefresh.setRefreshing(false);
+                break;
+            case ERROR_UPDATE_VIEW:
+                CommonUtils.showToast(activity, R.string.error_server_response);
+                if (swipeRefresh != null)
+                    swipeRefresh.setRefreshing(false);
+                break;
+            case ERROR_CITY_CODE:
+                CommonUtils.showToast(activity, R.string.error_location_code);
+                if (swipeRefresh != null)
+                    swipeRefresh.setRefreshing(false);
+                break;
+        }
+        return true;
+    }
+
+    public void updateView(WeatherMsg weatherMsg){
+        //需要判断是否为null，否则会有空指针的异常
         if(imgWeatherFlag!=null&&txtLocationTemp!=null){
             //设置温度
             txtLocationTemp.setText(weatherMsg.getWeatherTemp());
@@ -251,27 +256,6 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
         ButterKnife.reset(this);
     }
 
-   /* @Override
-    public void onFinish(String response) {
-        LogUtils.d(TAG, response + "");
-        ReponseForcecastWeather weatherData = GsonUtils.getClass(response, ReponseForcecastWeather.class);
-        if(weatherData==null){//预防返回data error时候的解析错误
-            onError(null);
-            return;
-        }
-        weatherContainer = weatherData.getWeatherContainer();
-
-        Message msg = new Message();
-        msg.obj = weatherContainer;
-        msg.what=REFRESH_UPDATE_VIEW;
-        handler.sendMessage(msg);
-    }
-
-    @Override
-    public void onError(Exception e) {
-        LogUtils.e(TAG, "error");
-        handler.sendEmptyMessage(ERROR_UPDATE_VIEW);
-    }*/
 
     @Override
     public void onSuccess(String content) {

@@ -177,4 +177,10 @@
         <item>霾</item>
         <item>无</item>
     </string-array>
+    <string-array name="weather_bg">
+        <item>R.drawable.corner_yellow_bg</item>
+        <item>R.drawable.corner_pink_bg</item>
+        <item>R.drawable.corner_green_bg</item>
+        <item>R.drawable.corner_blue_bg</item>
+    </string-array>
 </resources>

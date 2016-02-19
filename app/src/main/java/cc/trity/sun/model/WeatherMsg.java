@@ -11,19 +11,24 @@ public class WeatherMsg implements Parcelable {
     private String weatherDetail;
     private String weatherTemp;
     private String airQuality;
+    private String weatherLocation;
     private int airQualityImg;
     private int weatherImage;
     private int weatherLittleImage;
+    private int weatherBackground;
 
     public WeatherMsg(){}
 
     WeatherMsg(Parcel source){
         this.weatherDetail=source.readString();
         this.weatherTemp=source.readString();
+        this.weatherLocation=source.readString();
         this.airQuality=source.readString();
+
         this.weatherImage=source.readInt();
         this.weatherLittleImage=source.readInt();
         this.airQualityImg=source.readInt();
+        this.weatherBackground=source.readInt();
     }
 
     public static final Parcelable.Creator<WeatherMsg> CREATOR
@@ -32,7 +37,6 @@ public class WeatherMsg implements Parcelable {
         @Override
         public WeatherMsg createFromParcel(Parcel source) {
             return new WeatherMsg(source);
-//            return new WeatherMsg(source.readString(),source.readString(),source.readInt());
         }
 
         @Override
@@ -50,10 +54,13 @@ public class WeatherMsg implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(weatherDetail);
         dest.writeString(weatherTemp);
+        dest.writeString(weatherLocation);
+
         dest.writeString(airQuality);
         dest.writeInt(weatherImage);
         dest.writeInt(weatherLittleImage);
         dest.writeInt(airQualityImg);
+        dest.writeInt(weatherBackground);
 
     }
 
@@ -103,5 +110,21 @@ public class WeatherMsg implements Parcelable {
 
     public void setWeatherImage(int weatherImage) {
         this.weatherImage = weatherImage;
+    }
+
+    public String getWeatherLocation() {
+        return weatherLocation;
+    }
+
+    public void setWeatherLocation(String weatherLocation) {
+        this.weatherLocation = weatherLocation;
+    }
+
+    public int getWeatherBackground() {
+        return weatherBackground;
+    }
+
+    public void setWeatherBackground(int weatherBackground) {
+        this.weatherBackground = weatherBackground;
     }
 }

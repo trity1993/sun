@@ -60,6 +60,13 @@ public class WeatherPresenter {
             httpCallbackListener.onError(null);
         }
     }
+
+    /**
+     * 异步加载weather天气
+     * @param baseActivity
+     * @param countyCode
+     * @param requestCallback
+     */
     public void loadWeather(BaseActivity baseActivity,String countyCode,RequestCallback requestCallback){
         //生成url
         if(NetWorkUtils.isNetworkAvailable(context)){
@@ -112,7 +119,7 @@ public class WeatherPresenter {
      * @param weatherContainer
      * @return
      */
-    public WeatherMsg updateData(WeatherContainer weatherContainer) {
+    public WeatherMsg updateData(WeatherContainer weatherContainer,String countName) {
         if (weatherContainer == null) {
             return null;
         }
@@ -129,7 +136,6 @@ public class WeatherPresenter {
         if (hour > 18 || hour < 6) {
             temp.append(weatherDetail.getNightTemp());
             imgIconNum = weatherDetail.getNightNum();
-
             resImage = FileUtils.getResourseArray(context, R.array.weather_night_icon);
             reslittleImage = FileUtils.getResourseArray(context, R.array.weather_little_night_icon);
 
@@ -166,6 +172,7 @@ public class WeatherPresenter {
         WeatherMsg weatherMsg = new WeatherMsg();
         weatherMsg.setWeatherTemp(temp.toString());
         weatherMsg.setWeatherDetail(weatherName[num]);
+        weatherMsg.setWeatherLocation(countName);
         weatherMsg.setWeatherImage(resId);
         weatherMsg.setWeatherLittleImage(resLittleId);
 

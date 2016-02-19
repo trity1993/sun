@@ -33,14 +33,14 @@ public class AlarmUpdateReceiver extends BroadcastReceiver {
             DataBaseManager dataBaseManager= DataBaseManager.getInstance(context);
             List<County> countyList= dataBaseManager.loadCounties();
             if(countyList!=null&&countyList.size()>=0){
-                County county=countyList.get(0);
+                final County county=countyList.get(0);
                 weatherPresenter.loadWeather(county.getWeaterCode(), new HttpCallbackListener() {
                     @Override
                     public void onFinish(String response) {
                         ReponseForcecastWeather weatherData = GsonUtils.getClass(response, ReponseForcecastWeather.class);
                         WeatherContainer weatherContainer = weatherData.getWeatherContainer();
                         if(weatherPresenter!=null){
-                            WeatherMsg weatherMsg=weatherPresenter.updateData(weatherContainer);
+                            WeatherMsg weatherMsg=weatherPresenter.updateData(weatherContainer,county.getPlaceName());
                             if(weatherMsg!=null){
                                 Global.isStartService=true;
                                 weatherPresenter.toCreateForGround(weatherMsg);

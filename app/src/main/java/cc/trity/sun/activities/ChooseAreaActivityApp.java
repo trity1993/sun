@@ -81,6 +81,8 @@ public class ChooseAreaActivityApp extends AppBaseActivity {
     public void initVariables() {
         Intent intent=getIntent();
         resToolBg=intent.getIntExtra("resBgColor",-1);
+        if(resToolBg!=-1)
+            resToolBg=getResources().getColor(resToolBg);
     }
 
     @Override

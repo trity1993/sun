@@ -11,8 +11,8 @@
         android:layout_height="match_parent"/>
     <cc.trity.sun.view.CirclePageIndicator
         android:id="@+id/indicator"
-        android:padding="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/space_small"
         android:layout_gravity="bottom"/>
 </FrameLayout>
