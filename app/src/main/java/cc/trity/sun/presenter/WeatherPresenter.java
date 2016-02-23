@@ -17,8 +17,8 @@ import cc.trity.sun.R;
 import cc.trity.sun.engine.RemoteService;
 import cc.trity.sun.listener.HttpCallbackListener;
 import cc.trity.sun.model.Global;
-import cc.trity.sun.model.WeatherContainer;
-import cc.trity.sun.model.WeatherDetail;
+import cc.trity.sun.model.weathersponse.WeatherContainer;
+import cc.trity.sun.model.weathersponse.WeatherDetail;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.networks.HttpManager;
 import cc.trity.sun.networks.HttpNetWorkTools;
@@ -72,9 +72,9 @@ public class WeatherPresenter {
         if(NetWorkUtils.isNetworkAvailable(context)){
             //执行网络请求的操作
             List<RequestParameter> parameterList=HttpManager.getReqParameters(true,countyCode,Global.URL_WEATHER);
-            RemoteService.getInstance().invoke(baseActivity,"getWeatherForecast",parameterList,requestCallback);
+            RemoteService.getInstance().invoke(baseActivity,"getWeatherForecast",parameterList,countyCode,requestCallback);
         }else{
-            requestCallback.onFail(null);
+            requestCallback.onFail(R.string.error_network_die);
         }
     }
 
@@ -95,20 +95,20 @@ public class WeatherPresenter {
 
         StringBuilder sbDay=new StringBuilder(TimeUtils.getCurentTime("yyyyMMdd"));
         sbDay.append("0600");
-        long curTime=Long.valueOf(sbDay.toString());
-        if (dateHM < curTime && curDate >= curTime) {
+        long updateTime=Long.valueOf(sbDay.toString());
+        if (dateHM < updateTime && curDate >= updateTime) {
             return true;
         }
 
         sbDay.replace(8,12,"1100");
-        curTime=Long.valueOf(sbDay.toString());
-        if (dateHM < curTime && curDate >= curTime) {
+        updateTime=Long.valueOf(sbDay.toString());
+        if (dateHM < updateTime && curDate >= updateTime) {
             return true;
         }
 
         sbDay.replace(8, 12, "1800");
-        curTime=Long.valueOf(sbDay.toString());
-        if (dateHM < curTime && curDate >= curTime) {
+        updateTime=Long.valueOf(sbDay.toString());
+        if (dateHM < updateTime && curDate >= updateTime) {
             return true;
         }
         return false;

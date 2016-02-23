@@ -8,7 +8,7 @@ public class Response {
     private boolean error;
     private int errorType;	//1为Cookie失效
     private String errorMessage;
-    private String result;
+    private String result; //json的字符串
 
     public boolean isError() {
         return error;

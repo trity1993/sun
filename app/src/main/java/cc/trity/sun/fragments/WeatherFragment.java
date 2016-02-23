@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cc.trity.library.animation.Rotate3dAnimation;
 import cc.trity.library.net.RequestCallback;
 import cc.trity.library.utils.CommonUtils;
 import cc.trity.library.utils.GsonUtils;
@@ -31,19 +32,17 @@ import cc.trity.sun.activities.ChooseAreaActivityApp;
 import cc.trity.sun.activities.MainActivity;
 import cc.trity.sun.activities.SettingActivityApp;
 import cc.trity.sun.fragments.base.BaseFragment;
-import cc.trity.sun.model.ReponseForcecastWeather;
-import cc.trity.sun.model.WeatherContainer;
+import cc.trity.sun.model.weathersponse.ReponseForcecastWeather;
+import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.presenter.WeatherPresenter;
 import cc.trity.sun.utils.Utility;
 
 /**
+ * 显示天气信息
  * A simple {@link BaseFragment} subclass.
  */
 public class WeatherFragment extends BaseFragment implements RequestCallback {
-    private final int REFRESH_UPDATE_VIEW = 0;
-    private final int ERROR_UPDATE_VIEW = 1;
-    private final int ERROR_CITY_CODE = 2;
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
     @InjectView(R.id.rl_layout)
@@ -66,6 +65,8 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
     private WeatherContainer weatherContainer;
 
     private WeatherPresenter weatherPresenter;
+
+    private Rotate3dAnimation rotate3dAnimation;
 
     Handler handler = new Handler(this);
 
@@ -152,7 +153,11 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+
                 WeatherFragment.this.loadData();
+                if (swipeRefresh != null){
+                    swipeRefresh.setRefreshing(false);
+                }
             }
         });
         refreshRlLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -171,12 +176,13 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
                 }
             }
         }, 1000);
+
     }
 
     @Override
     public void loadData() {
         if (TextUtils.isEmpty(countyCode)) {
-            handler.sendEmptyMessage(ERROR_CITY_CODE);
+            errorCountyCode();
             return;
         }
         if (weatherPresenter.isUpdate(weatherContainer,countyCode)) {
@@ -185,62 +191,46 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
             if(weatherContainer==null){
                 if(countyCode!=null){
                     weatherContainer=Utility.getWeatherContainer(activity,countyCode);
-
                 }
                 if(weatherContainer==null){
                     weatherPresenter.loadWeather(activity,countyCode,this);
-                }else{
-                    Message msg = new Message();
-                    msg.what=REFRESH_UPDATE_VIEW;
-                    msg.obj = weatherContainer;
-                    handler.sendMessage(msg);
                 }
             }
-
-
+            updateView(weatherContainer);//无论是否为null都要进行更新操作
         }
     }
 
-    @Override
-    public boolean handleMessage(Message msg) {
-        switch (msg.what) {
-            case REFRESH_UPDATE_VIEW:
-                WeatherContainer weatherContainer = (WeatherContainer) msg.obj;
-                if(weatherPresenter!=null){
-                    WeatherMsg weatherMsg=weatherPresenter.updateData(weatherContainer,countyName);
-                    if(weatherMsg!=null){
-                        updateView(weatherMsg);
-                        weatherPresenter.toCreateForGround(weatherMsg);
-                    }
+    public void updateView(WeatherContainer weatherContainer){
+        if(weatherPresenter!=null){
+            WeatherMsg weatherMsg=weatherPresenter.updateData(weatherContainer,countyName);
+            if(weatherMsg!=null){
+                //需要判断是否为null，否则会有空指针的异常
+                if(imgWeatherFlag!=null&&txtLocationTemp!=null){
+                    //设置温度
+                    txtLocationTemp.setText(weatherMsg.getWeatherTemp());
+                    txtLocationTemp.setVisibility(View.VISIBLE);
+                    //更新图片
+                    imgWeatherFlag.setImageResource(weatherMsg.getWeatherImage());
+
                 }
 
-                if (swipeRefresh != null)
-                    swipeRefresh.setRefreshing(false);
-                break;
-            case ERROR_UPDATE_VIEW:
-                CommonUtils.showToast(activity, R.string.error_server_response);
-                if (swipeRefresh != null)
-                    swipeRefresh.setRefreshing(false);
-                break;
-            case ERROR_CITY_CODE:
-                CommonUtils.showToast(activity, R.string.error_location_code);
-                if (swipeRefresh != null)
-                    swipeRefresh.setRefreshing(false);
-                break;
+                weatherPresenter.toCreateForGround(weatherMsg);
+            }
         }
-        return true;
+        if (swipeRefresh != null){
+            swipeRefresh.setRefreshing(false);
+        }
     }
 
-    public void updateView(WeatherMsg weatherMsg){
-        //需要判断是否为null，否则会有空指针的异常
-        if(imgWeatherFlag!=null&&txtLocationTemp!=null){
-            //设置温度
-            txtLocationTemp.setText(weatherMsg.getWeatherTemp());
-            txtLocationTemp.setVisibility(View.VISIBLE);
-            //更新图片
-            imgWeatherFlag.setImageResource(weatherMsg.getWeatherImage());
-
-        }
+    public void errorUpdateView(String errorMesg){
+        CommonUtils.showToast(activity, errorMesg);
+        if (swipeRefresh != null)
+            swipeRefresh.setRefreshing(false);
+    }
+    public void errorCountyCode(){
+        CommonUtils.showToast(activity, R.string.error_location_code);
+        if (swipeRefresh != null)
+            swipeRefresh.setRefreshing(false);
     }
 
     @Override
@@ -262,20 +252,33 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
         LogUtils.d(TAG, content + "");
         ReponseForcecastWeather weatherData = GsonUtils.getClass(content, ReponseForcecastWeather.class);
         if(weatherData==null){
-            onFail(null);
+            onFail(R.string.error_denode);
             return ;
         }
         weatherContainer = weatherData.getWeatherContainer();
 
-        Message msg = new Message();
-        msg.obj = weatherContainer;
-        msg.what=REFRESH_UPDATE_VIEW;
-        handler.sendMessage(msg);
+        //更新UI
+        updateView(weatherContainer);
+        //保存缓存数据
+        if(weatherPresenter!=null)
+            weatherPresenter.saveWeatherMsg(weatherContainer,countyCode);
     }
 
     @Override
-    public void onFail(String errorMessage) {
-        LogUtils.e(TAG, "error");
-        handler.sendEmptyMessage(ERROR_UPDATE_VIEW);
+    public void onFail(int resErrormsgInt) {
+        String errorMessage=null;
+        if(resErrormsgInt!=0){
+            errorMessage=getResources().getString(resErrormsgInt);
+        }else{
+            errorMessage=getResources().getString(R.string.error_donnot_knowledge);
+
+        }
+        LogUtils.e(TAG,errorMessage);
+        errorUpdateView(errorMessage);
+    }
+
+    @Override
+    public boolean handleMessage(Message msg) {
+        return false;
     }
 }

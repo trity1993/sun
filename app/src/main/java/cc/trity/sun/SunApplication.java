@@ -1,20 +1,19 @@
 package cc.trity.sun;
 
-import android.app.Application;
 import android.content.Context;
 import android.os.StrictMode;
+
+import cc.trity.library.BaseApplication;
 
 /**
  * Created by TryIT on 2016/1/11.
  */
-public class SunApplication extends Application {
+public class SunApplication extends BaseApplication {
     private static final boolean DEVELOPER_MODE=true;
-    private static Context context;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        context=getApplicationContext();
 //        initCrashHandler(context);
         setUpDebug();
     }
@@ -38,10 +37,6 @@ public class SunApplication extends Application {
                     .penaltyDeath()
                     .build());
         }
-    }
-
-    public static Context getContext() {
-        return context;
     }
 
 }

@@ -1,5 +1,5 @@
 
-package cc.trity.sun.model;
+package cc.trity.sun.model.weathersponse;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

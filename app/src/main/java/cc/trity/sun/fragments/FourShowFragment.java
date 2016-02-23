@@ -21,7 +21,7 @@ import cc.trity.sun.adapters.WeatherRecyclerAdapter;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.fragments.base.BaseFragment;
 import cc.trity.sun.listener.OnRecyclerItemClickListener;
-import cc.trity.sun.model.WeatherContainer;
+import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.model.city.County;
 import cc.trity.sun.presenter.WeatherPresenter;

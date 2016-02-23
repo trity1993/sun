@@ -34,6 +34,15 @@ public class RequestManager {
         addRequest(request);
         return request;
     }
+    public HttpRequest createRequest(final URLData urlData,
+                                     final List<RequestParameter> params,final String cacheKey,
+                                     final RequestCallback requestCallback) {
+        final HttpRequest request = new HttpRequest(urlData, params,cacheKey,
+                requestCallback);
+
+        addRequest(request);
+        return request;
+    }
 
     /**
      * 添加Request到列表
@@ -43,19 +52,19 @@ public class RequestManager {
     }
 
     /**
-     * 取消网络请求
+     * 取消网络请求,面对httpUrlConnection如何取消网络请求
      */
     public void cancelRequest() {
         if ((requestList != null) && (requestList.size() > 0)) {
             for (final HttpRequest request : requestList) {
-//                if (request.getRequest() != null) {
+                if (request != null) {
 //                    try {
 //                        request.getRequest().abort();
-//                        requestList.remove(request.getRequest());
+                        requestList.remove(request);
 //                    } catch (final UnsupportedOperationException e) {
 //                        e.printStackTrace();
 //                    }
-//                }
+                }
             }
         }
     }

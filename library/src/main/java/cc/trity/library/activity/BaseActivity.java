@@ -29,11 +29,17 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        if (requestManager != null) {
+            requestManager.cancelRequest();
+        }
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
+        if (requestManager != null) {
+            requestManager.cancelRequest();
+        }
         super.onDestroy();
     }
 

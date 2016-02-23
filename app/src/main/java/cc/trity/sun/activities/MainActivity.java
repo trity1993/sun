@@ -16,7 +16,6 @@ import cc.trity.sun.R;
 import cc.trity.sun.activities.base.AppBaseActivity;
 import cc.trity.sun.adapters.EndlessLoopAdapter;
 import cc.trity.sun.db.DataBaseManager;
-import cc.trity.sun.fragments.FourShowFragment;
 import cc.trity.sun.fragments.WeatherFragment;
 import cc.trity.sun.model.Global;
 import cc.trity.sun.model.city.County;
@@ -78,8 +77,8 @@ public class MainActivity extends AppBaseActivity {
 
         for (int i = 0; i < lenght; i++) {
             county=countyList.get(i);
-//            Fragment fragment = WeatherFragment.newInstance(resInt[i%4], resDrawableInt[i%4], county.getWeaterCode(), county.getPlaceName());
-            Fragment fragment=new FourShowFragment();
+            Fragment fragment = WeatherFragment.newInstance(resInt[i%4], resDrawableInt[i%4], county.getWeaterCode(), county.getPlaceName());
+//            Fragment fragment=new FourShowFragment();
             fragmentList.add(fragment);
         }
         //读取sharePrf是否打开前台线程

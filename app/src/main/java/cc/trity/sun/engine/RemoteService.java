@@ -34,11 +34,21 @@ public class RemoteService {
     public void invoke(final BaseActivity activity,
                        final String apiKey,
                        final List<RequestParameter> params,
+                       final String cacheKey,
                        final RequestCallback callBack) {
+        invoke(activity,apiKey,params,cacheKey,callBack,false);
+    }
+    public void invoke(final BaseActivity activity,
+                       final String apiKey,
+                       final List<RequestParameter> params,
+                       final String cacheKey,
+                       final RequestCallback callBack,boolean isForceUpdate) {
         final URLData urlData = UrlConfigManager.findURL(activity, apiKey);
-
+        if(isForceUpdate){
+            urlData.setExpires(0);
+        }
         HttpRequest request = activity.getRequestManager().createRequest(
-                urlData, params, callBack);
+                urlData, params,cacheKey, callBack);
         DefaultThreadPool.getInstance().execute(request);
     }
 }

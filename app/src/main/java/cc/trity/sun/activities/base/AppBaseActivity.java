@@ -9,8 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import cc.trity.library.activity.BaseActivity;
-import cc.trity.library.net.RequestCallback;
-import cc.trity.library.utils.CommonUtils;
 import cc.trity.sun.ActivityCollector;
 import cc.trity.sun.R;
 
@@ -96,16 +94,4 @@ public abstract class AppBaseActivity extends BaseActivity {
         }
     }
 
-    /**
-     * 统一错误时候的输出
-     */
-    public abstract class AbstractRequestCallback
-            implements RequestCallback {
-
-        public abstract void onSuccess(String content);
-
-        public void onFail(String errorMessage) {
-            CommonUtils.showToast(AppBaseActivity.this, R.string.error_network);
-        }
-    }
 }

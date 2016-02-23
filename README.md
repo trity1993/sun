@@ -1,7 +1,14 @@
-# sun 作者来源：
+# 应用来源
+## sun 作者来源：
 source for [jakob Henner](https://dribbble.com/pattern)
 weather app for ios:[sun](http://pattern.dk/sun/)
+演示视频：[Safari天气应用sun使用视频](http://v.youku.com/v_show/id_XNDMwNzU3NzU2.html?tpa=dW5pb25faWQ9MTAyMjEzXzEwMDAwMl8wMV8wMQ)
+最新演示视频：[2013年](https://www.youtube.com/watch?v=kXWgBYaU3uQ)
+对应软文：[一个精彩的Web App案例——Sun，让你感受Web App的美妙体验](http://iwebad.com/news/218.html)
 
+恶狠狠的广告也是够了。
+
+## 而我的想法
 一直想做一些很cool的事情，喜欢看一些精美的应用，小巧精美，尤其在交互上更加吸引人，外加看**《第一行代码》**的时候，巧好是一个关于天气 的应用，
 所以心血来潮就进行实现了下。
 

@@ -19,7 +19,7 @@ import java.util.Locale;
 import cc.trity.library.utils.FileUtils;
 import cc.trity.library.utils.GsonUtils;
 import cc.trity.library.utils.LogUtils;
-import cc.trity.sun.model.WeatherContainer;
+import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.model.city.BasePlace;
 
 public class Utility {

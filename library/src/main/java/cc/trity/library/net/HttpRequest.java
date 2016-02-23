@@ -11,7 +11,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import cc.trity.library.BaseApplication;
+import cc.trity.library.cache.CacheManager;
+import cc.trity.library.utils.GsonUtils;
 import cc.trity.library.utils.LogUtils;
+import cc.trity.tritylibrary.R;
 
 /**
  * 执行http请求操作
@@ -19,11 +23,16 @@ import cc.trity.library.utils.LogUtils;
  */
 public class HttpRequest implements Runnable {
     private static final String TAG="HttpRequest";
+
+    public static final String REQUEST_GET = "get";
+    public static final String REQUEST_POST = "post";
+
     private URLData urlData = null;
     private RequestCallback requestCallback = null;
     private List<RequestParameter> parameter = null;
     private String urlStr = null;
-//    private HttpURLConnection httpURLConnection;
+    private String newUrl = null; // 拼接key-value后的url
+    private String cacheKey;//使用url，会导致一些发时间作为参数到服务器中，导致无法再次获取缓存
 
     protected Handler handler;
 
@@ -36,16 +45,26 @@ public class HttpRequest implements Runnable {
 
         handler=new Handler();
     }
+    public HttpRequest(final URLData data,final List<RequestParameter> parameter,final String cacheKey,
+                      final RequestCallback callback){
+        this(data,parameter,callback);
+        this.cacheKey=cacheKey;
+    }
 
     @Override
     public void run() {
         HttpURLConnection httpURLConnection=null;
         try {
             String netType=urlData.getNetType();
-            if(netType.equals("get")){
+            if(netType.equals(REQUEST_GET)){
+
                 //设置参数得到url
                 final StringBuffer paramBuffer = new StringBuffer();
+
                 if ((parameter != null) && (parameter.size() > 0)) {
+
+                    sortKeys();//进行排序，使得url不会因为顺序的原因而导致不唯一
+
                     for(RequestParameter p:parameter){
                         if(paramBuffer.length()==0){
                             paramBuffer.append(p.getName()+"="+p.getValue());
@@ -54,22 +73,43 @@ public class HttpRequest implements Runnable {
                         }
                     }
                 }
-                String newUrl=urlStr+"?"+paramBuffer.toString();
+                newUrl=urlStr+"?"+paramBuffer.toString();
                 LogUtils.d(TAG,newUrl);
+
+                //判断是否超过缓存时间，是否需要更新
+                if(urlData.getExpires()>0){
+                    final String content;
+                    if(cacheKey!=null){
+                        content= CacheManager.getInstance(BaseApplication.getContext()).getFileCache(cacheKey);
+                    }else{
+                        //默认使用url作为key
+                        content=CacheManager.getInstance(BaseApplication.getContext()).getFileCache(newUrl);
+                    }
+                    if(content!=null){
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                requestCallback.onSuccess(content);
+
+                            }
+                        });
+                        return ;
+                    }
+                }
 
                 URL url=new URL(newUrl);
                 httpURLConnection=(HttpURLConnection)url.openConnection();
-                httpURLConnection.setRequestMethod("GET");
+                httpURLConnection.setRequestMethod(REQUEST_GET);
                 httpURLConnection.setDoInput(true);
                 //额外设置
                 httpURLConnection.setConnectTimeout(8000);
                 httpURLConnection.setReadTimeout(8000);
                 httpURLConnection.connect();//连接
 
-            }else if(netType.equals("post")){
+            }else if(netType.equals(REQUEST_POST)){
                 URL url=new URL(urlStr);
                 httpURLConnection=(HttpURLConnection)url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setRequestMethod(REQUEST_POST);
                 httpURLConnection.setDoInput(true);
                 httpURLConnection.setDoInput(true);
                 //额外设置
@@ -104,26 +144,47 @@ public class HttpRequest implements Runnable {
                     while ((line = bufReader.readLine()) != null) {
                         sbuf.append(line);
                     }
-                    //成功进行回调
-                    if(requestCallback!=null){
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                requestCallback.onSuccess(sbuf.toString());
-
-                            }
-                        });
+                    final String content =sbuf.toString();
+                    if(content.isEmpty()){
+                        handleNetworkError(R.string.error_server_response);
                     }
+                    String strResponse="{'isError':false,'errorType':0,'errorMessage':'','result':"+content+"}";
+                    Response responseInGson= GsonUtils.getClass(strResponse, Response.class);
+                    if(responseInGson.isError()){
+                        handleNetworkError(R.string.error_server_response);
+                    }else{
+                        //缓存到文件中
+                        CacheManager cacheManager=CacheManager.getInstance(BaseApplication.getContext());
+                        if (urlData.getNetType().equals(REQUEST_GET)
+                                && urlData.getExpires() > 0) {
+                            if(cacheKey!=null){
+                                cacheManager.putFileCache(cacheKey, content, urlData.getExpires());
+                            }else{
+                                cacheManager.putFileCache(newUrl,content,urlData.getExpires());
+                            }
+                        }
+                        //成功进行回调
+                        if(requestCallback!=null){
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    requestCallback.onSuccess(content);
+
+                                }
+                            });
+                        }
+                    }
+
                 }else{
-                    handleNetworkError("网络异常");
+                    handleNetworkError(R.string.error_server_response);
                 }
             }else{
-                handleNetworkError("网络异常");
+                handleNetworkError(R.string.error_network_die);
             }
 
         }catch (Exception e){
             LogUtils.e(TAG, Log.getStackTraceString(e));
-            handleNetworkError("网络异常");
+            handleNetworkError(R.string.error_donnot_knowledge);
         }finally {
             if (httpURLConnection != null){
                 httpURLConnection.disconnect();
@@ -132,14 +193,22 @@ public class HttpRequest implements Runnable {
         }
     }
 
-    public void handleNetworkError(final String errorMsg) {
+    public void handleNetworkError(final int resErrorInt) {
         if ((requestCallback != null)) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    HttpRequest.this.requestCallback.onFail(errorMsg);
+                    HttpRequest.this.requestCallback.onFail(resErrorInt);
                 }
             });
         }
+    }
+
+    /**
+     * 对URL的键值进行排序，产生唯一值
+     * 因为不同参数的不同位置下，产生的数据不同。
+     */
+    private void sortKeys(){
+
     }
 }
