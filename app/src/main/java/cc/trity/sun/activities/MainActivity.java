@@ -45,8 +45,7 @@ public class MainActivity extends AppBaseActivity {
 
     int lenght = 1;
 
-    String countyCode = null;
-    String countyName = null;
+    County county=null;
     EndlessLoopAdapter endlessLoopAdapter = null;
     DataBaseManager dataBaseManager=null;
 
@@ -73,8 +72,6 @@ public class MainActivity extends AppBaseActivity {
             return;
         }
 
-        County county=null;
-
         for (int i = 0; i < lenght; i++) {
             county=countyList.get(i);
             Fragment fragment = WeatherFragment.newInstance(resInt[i%4], resDrawableInt[i%4], county.getWeaterCode(), county.getPlaceName());
@@ -93,7 +90,8 @@ public class MainActivity extends AppBaseActivity {
         } else if (lenght <= 3) {
             //循环多一次，倍数增加
             for (int i = 0; i < lenght; i++) {
-                Fragment fragment = WeatherFragment.newInstance(resInt[i], resDrawableInt[i], countyCode, countyName);
+                county=countyList.get(i);
+                Fragment fragment = WeatherFragment.newInstance(resInt[i], resDrawableInt[i], county.getWeaterCode(), county.getPlaceName());
                 fragmentList.add(fragment);
             }
             endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, Integer.MAX_VALUE);
