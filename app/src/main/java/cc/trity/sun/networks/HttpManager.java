@@ -7,7 +7,7 @@ import java.util.List;
 
 import cc.trity.library.net.RequestParameter;
 import cc.trity.library.utils.TimeUtils;
-import cc.trity.sun.model.Global;
+import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.model.WeatherRequest;
 import cc.trity.sun.utils.URLEncoderUtils;
 
@@ -34,7 +34,7 @@ public class HttpManager {
             weatherRequest.changeForecastType();
 
         //生成密钥
-        String encryptKey= URLEncoderUtils.standardURLEncoder(weatherRequest.generatePubliKey(), Global.PRIVATE_KEY);
+        String encryptKey= URLEncoderUtils.standardURLEncoder(weatherRequest.generatePubliKey(), AppConstants.PRIVATE_KEY);
         weatherRequest.setKey(encryptKey);
         return weatherRequest.generateUrl();
     }
@@ -61,7 +61,7 @@ public class HttpManager {
         RequestParameter parameter2=new RequestParameter("date",
                 TimeUtils.getCurentTime("yyyyMMddHHmm"));
         //只需要获取前面6个
-        RequestParameter parameter3=new RequestParameter("appid",Global.APP_ID);
+        RequestParameter parameter3=new RequestParameter("appid", AppConstants.APP_ID);
 
         requestParameters.add(parameter);
         requestParameters.add(parameter1);
@@ -71,8 +71,8 @@ public class HttpManager {
         String newUrl=generateUrl(requestParameters, urlStr);
         if(!TextUtils.isEmpty(newUrl)){
             requestParameters.set(requestParameters.size()-1,new RequestParameter("appid"
-                    ,Global.APP_ID.substring(0,6)));
-            String encryptKey= URLEncoderUtils.standardURLEncoder(newUrl, Global.PRIVATE_KEY);
+                    , AppConstants.APP_ID.substring(0,6)));
+            String encryptKey= URLEncoderUtils.standardURLEncoder(newUrl, AppConstants.PRIVATE_KEY);
 
             RequestParameter parameter4=new RequestParameter("key",encryptKey);
             requestParameters.add(parameter4);
@@ -100,6 +100,6 @@ public class HttpManager {
             }
             return urlStr+"?"+paramBuffer.toString();
         }
-        return Global.DEFAULT_STRING_VALUE;
+        return AppConstants.DEFAULT_STRING_VALUE;
     }
 }

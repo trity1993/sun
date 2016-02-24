@@ -18,7 +18,7 @@ import cc.trity.library.utils.TimeUtils;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.MainActivity;
 import cc.trity.sun.activities.SettingActivityApp;
-import cc.trity.sun.model.Global;
+import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.receiver.AlarmUpdateReceiver;
 
@@ -54,7 +54,7 @@ public class WeatherForegroundService extends Service {
      * 创建前台线程。
      */
     public void createForeGround(Intent weatherIntent){
-        WeatherMsg weatherMsg=weatherIntent.getParcelableExtra(Global.INTENT_WEATHER_MSG);
+        WeatherMsg weatherMsg=weatherIntent.getParcelableExtra(AppConstants.INTENT_WEATHER_MSG);
         int resIntR=weatherMsg.getWeatherLittleImage();
         LogUtils.d(TAG, "" + resIntR);
 
@@ -86,7 +86,7 @@ public class WeatherForegroundService extends Service {
         mBuilder.addAction(R.mipmap.ic_settings_white_24dp, "设置", pdIntent);
 
         //添加分享通过浏览器当指定的下载位置。
-        Uri uri= Uri.parse(Global.URL_SHARE_APP);
+        Uri uri= Uri.parse(AppConstants.URL_SHARE_APP);
         notificationIntent=new Intent(Intent.ACTION_VIEW,uri);
         pdIntent=PendingIntent.getActivity(this,requestID,notificationIntent,PendingIntent.FLAG_CANCEL_CURRENT);
 
@@ -116,7 +116,7 @@ public class WeatherForegroundService extends Service {
         }
         AlarmManager alarmManager=(AlarmManager)getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(this, AlarmUpdateReceiver.class);
-        PendingIntent pdIntent=PendingIntent.getBroadcast(this,Global.REQUEST_ALARM_RECEIVER,intent,PendingIntent.FLAG_CANCEL_CURRENT);
-        alarmManager.set(AlarmManager.RTC_WAKEUP,TimeUtils.getTimemills(date,Global.MATCH_DATE_MINUTE),pdIntent);
+        PendingIntent pdIntent=PendingIntent.getBroadcast(this, AppConstants.REQUEST_ALARM_RECEIVER,intent,PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmManager.set(AlarmManager.RTC_WAKEUP,TimeUtils.getTimemills(date, AppConstants.MATCH_DATE_MINUTE),pdIntent);
     }
 }

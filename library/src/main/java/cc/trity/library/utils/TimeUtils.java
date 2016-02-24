@@ -1,15 +1,22 @@
 package cc.trity.library.utils;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import cc.trity.library.net.HttpRequest;
 
 /**
  * 时间的出列类
  * Created by TryIT on 2016/1/19.
  */
 public class TimeUtils {
+    private static final String TAG="TimeUtils";
     /**
      *
      * 注意 SimpleDateFormat 是线程不安全的
@@ -18,7 +25,7 @@ public class TimeUtils {
      */
     public static String getCurentTime(String match){
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat(match);
-        Date date=new Date(System.currentTimeMillis());
+        Date date=getServerTime();
         return simpleDateFormat.format(date);
     }
 
@@ -37,6 +44,24 @@ public class TimeUtils {
     public static String getAssignFormatTime(Date date,String math){
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat(math);
         return simpleDateFormat.format(date);
+    }
+
+    /**
+     * 通过Date.toString()的格式匹配为：EEE, d MMM yyyy HH:mm:ss z
+     * 来转换为北京时间 东八区的时间
+     * @param dateStr
+     * @return
+     */
+    public static Date getGMT8Time(String dateStr){
+        final SimpleDateFormat sdf = new SimpleDateFormat(
+                "EEE, d MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
+        try {
+            return sdf.parse(dateStr);
+        } catch (ParseException e) {
+            LogUtils.e(TAG, Log.getStackTraceString(e));
+        }
+        return null;
     }
 
     /**
@@ -91,9 +116,20 @@ public class TimeUtils {
             calendar.setTime(date);
             return calendar.getTimeInMillis();
         } catch (ParseException e) {
-            e.printStackTrace();
+            LogUtils.e(TAG, Log.getStackTraceString(e));
+
         }
         return -1;
+    }
+
+    /**
+     * 得到服务端的时间
+     * 通过手机端与客户端间隔时间来得到
+     * @return
+     */
+    public static Date getServerTime() {
+        return new Date(System.currentTimeMillis()
+                + HttpRequest.deltaBetweenServerAndClientTime);
     }
 
 }

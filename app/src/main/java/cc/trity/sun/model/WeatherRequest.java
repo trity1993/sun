@@ -1,5 +1,7 @@
 package cc.trity.sun.model;
 
+import cc.trity.sun.engine.AppConstants;
+
 /**
  * 天气数据请求的参数类
  * Created by TryIT on 2016/1/19.
@@ -13,7 +15,7 @@ public class WeatherRequest {
 
     public WeatherRequest() {
         type = "index_v";//常规数据的接口
-        appid = Global.APP_ID;
+        appid = AppConstants.APP_ID;
     }
 
     public WeatherRequest(String areaid, String date, String key) {
@@ -27,7 +29,7 @@ public class WeatherRequest {
      * @return
      */
     public String generatePubliKey() {
-        return new String(Global.URL_WEATHER + "?" +
+        return new String(AppConstants.URL_WEATHER + "?" +
                 "areaid=" + areaid + "&" + "type=" + type + "&" + "date=" + date + "&" + "appid=" + appid);
     }
 
@@ -37,7 +39,7 @@ public class WeatherRequest {
      */
     public String generateUrl() {
         appid=appid.substring(0,6);
-        return new String(Global.URL_WEATHER + "?" +
+        return new String(AppConstants.URL_WEATHER + "?" +
                 "areaid=" + areaid + "&" + "type=" + type + "&" + "date=" + date +
                 "&" + "appid=" + appid+"&"+"key="+key);
     }

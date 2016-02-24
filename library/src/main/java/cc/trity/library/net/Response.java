@@ -6,9 +6,20 @@ package cc.trity.library.net;
  */
 public class Response {
     private boolean error;
+
     private int errorType;	//1为Cookie失效
+
     private String errorMessage;
+
     private String result; //json的字符串
+
+    public Response(){}
+    public Response(boolean error, int errorType, String errorMessage, String result) {
+        this.error = error;
+        this.errorType = errorType;
+        this.errorMessage = errorMessage;
+        this.result = result;
+    }
 
     public boolean isError() {
         return error;

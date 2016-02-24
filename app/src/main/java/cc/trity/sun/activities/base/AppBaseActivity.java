@@ -17,6 +17,8 @@ import cc.trity.sun.R;
  */
 public abstract class AppBaseActivity extends BaseActivity {
 
+    protected boolean needCallback;//是否需要回调
+
     private ProgressDialog progressDialog;
 
     @Override

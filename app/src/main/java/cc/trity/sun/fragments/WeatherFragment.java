@@ -21,8 +21,6 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import cc.trity.library.animation.Rotate3dAnimation;
-import cc.trity.library.net.RequestCallback;
 import cc.trity.library.utils.CommonUtils;
 import cc.trity.library.utils.GsonUtils;
 import cc.trity.library.utils.LogUtils;
@@ -32,9 +30,10 @@ import cc.trity.sun.activities.ChooseAreaActivityApp;
 import cc.trity.sun.activities.MainActivity;
 import cc.trity.sun.activities.SettingActivityApp;
 import cc.trity.sun.fragments.base.BaseFragment;
+import cc.trity.sun.listener.AbstractRequestCallback;
+import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.model.weathersponse.ReponseForcecastWeather;
 import cc.trity.sun.model.weathersponse.WeatherContainer;
-import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.presenter.WeatherPresenter;
 import cc.trity.sun.utils.Utility;
 
@@ -42,7 +41,7 @@ import cc.trity.sun.utils.Utility;
  * 显示天气信息
  * A simple {@link BaseFragment} subclass.
  */
-public class WeatherFragment extends BaseFragment implements RequestCallback {
+public class WeatherFragment extends BaseFragment {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
     @InjectView(R.id.rl_layout)
@@ -66,7 +65,6 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
 
     private WeatherPresenter weatherPresenter;
 
-    private Rotate3dAnimation rotate3dAnimation;
 
     Handler handler = new Handler(this);
 
@@ -186,14 +184,14 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
             return;
         }
         if (weatherPresenter.isUpdate(weatherContainer,countyCode)) {
-            weatherPresenter.loadWeather(activity,countyCode,this);
+            weatherPresenter.loadWeather(activity,countyCode,requestCallback);
         } else {
             if(weatherContainer==null){
                 if(countyCode!=null){
                     weatherContainer=Utility.getWeatherContainer(activity,countyCode);
                 }
                 if(weatherContainer==null){
-                    weatherPresenter.loadWeather(activity,countyCode,this);
+                    weatherPresenter.loadWeather(activity,countyCode,requestCallback);
                 }
             }
             updateView(weatherContainer);//无论是否为null都要进行更新操作
@@ -237,7 +235,7 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
     public void onPause() {
         super.onPause();
         if(weatherPresenter!=null)
-            weatherPresenter.saveWeatherMsg(weatherContainer,countyCode);
+            weatherPresenter.saveWeatherMsg(weatherContainer, countyCode);
     }
 
     @Override
@@ -246,36 +244,42 @@ public class WeatherFragment extends BaseFragment implements RequestCallback {
         ButterKnife.reset(this);
     }
 
+    private AbstractRequestCallback requestCallback=new AbstractRequestCallback(activity) {
+        @Override
+        public void onSuccess(String content) {
+            LogUtils.d(TAG, content + "");
+            ReponseForcecastWeather weatherData = GsonUtils.getClass(content, ReponseForcecastWeather.class);
+            if(weatherData==null){
+                onFail(R.string.error_denode);
+                return ;
+            }
+            weatherContainer = weatherData.getWeatherContainer();
 
-    @Override
-    public void onSuccess(String content) {
-        LogUtils.d(TAG, content + "");
-        ReponseForcecastWeather weatherData = GsonUtils.getClass(content, ReponseForcecastWeather.class);
-        if(weatherData==null){
-            onFail(R.string.error_denode);
-            return ;
+            //更新UI
+            updateView(weatherContainer);
+            //保存缓存数据
+            if(weatherPresenter!=null)
+                weatherPresenter.saveWeatherMsg(weatherContainer,countyCode);
         }
-        weatherContainer = weatherData.getWeatherContainer();
 
-        //更新UI
-        updateView(weatherContainer);
-        //保存缓存数据
-        if(weatherPresenter!=null)
-            weatherPresenter.saveWeatherMsg(weatherContainer,countyCode);
-    }
-
-    @Override
-    public void onFail(int resErrormsgInt) {
-        String errorMessage=null;
-        if(resErrormsgInt!=0){
-            errorMessage=getResources().getString(resErrormsgInt);
-        }else{
-            errorMessage=getResources().getString(R.string.error_donnot_knowledge);
-
+        @Override
+        public void onFail(String errorMsg) {
+            errorUpdateView(errorMsg);
         }
-        LogUtils.e(TAG,errorMessage);
-        errorUpdateView(errorMessage);
-    }
+
+        @Override
+        public void onFail(int resErrormsgInt) {
+            String errorMessage=null;
+            if(resErrormsgInt!=0){
+                errorMessage=getResources().getString(resErrormsgInt);
+            }else{
+                errorMessage=getResources().getString(R.string.error_donnot_knowledge);
+
+            }
+            LogUtils.e(TAG,errorMessage);
+            errorUpdateView(errorMessage);
+        }
+    };
 
     @Override
     public boolean handleMessage(Message msg) {

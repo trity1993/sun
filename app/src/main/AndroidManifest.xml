@@ -27,7 +27,7 @@
         <activity android:name=".activities.ChooseAreaActivityApp">
 
         </activity>
-        <activity android:name=".activities.LoginActivity"></activity>
+        <activity android:name=".activities.sign.LoginActivity"></activity>
         <activity android:name=".activities.SettingActivityApp"
             android:label="@string/title_activity_setting">
 

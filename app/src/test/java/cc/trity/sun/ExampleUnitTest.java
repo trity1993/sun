@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import cc.trity.sun.model.Global;
+import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.model.weathersponse.ReponseForcecastWeather;
 
 import static org.junit.Assert.assertEquals;
@@ -28,7 +28,7 @@ public class ExampleUnitTest {
     @Ignore
     @Test
     public void test_string_subString() throws Exception{
-        String appId= Global.APP_ID;
+        String appId= AppConstants.APP_ID;
         String subAppid=appId.substring(0, 6);
         assertEquals("02031c",subAppid);
     }

@@ -8,6 +8,7 @@ public class URLData {
     private long expires;//缓存设计，缓存多久时间
     private String netType;//get 还是post请求
     private String url;//连接
+    private String mockClass;//模拟数据生成的类
 
     public String getKey() {
         return key;
@@ -39,5 +40,13 @@ public class URLData {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getMockClass() {
+        return mockClass;
+    }
+
+    public void setMockClass(String mockClass) {
+        this.mockClass = mockClass;
     }
 }

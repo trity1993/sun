@@ -1,9 +1,9 @@
-package cc.trity.sun.model;
+package cc.trity.sun.engine;
 
 /**
  * Created by TryIT on 2016/1/14.
  */
-public class Global {
+public class AppConstants {
 
     public static final String URL_WEATHER="http://open.weather.com.cn/data/";
     public static final String URL_SHARE_APP="http://www.pgyer.com/T_sun";
@@ -18,4 +18,7 @@ public class Global {
     public static int pageLength=1;
     public static int REQUEST_ALARM_RECEIVER=2;
     public static boolean isStartService=true;//监控多个fragment的情况
+
+    public final static String Email = "Email";
+    public final static String NeedCallback = "NeedCallback";
 }

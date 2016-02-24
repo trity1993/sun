@@ -8,6 +8,12 @@
     <Node
         Expires="1000"
         Key="getWeatherForecast"
-        NetType="get"
+        NetType="GET"
+        Url="http://open.weather.com.cn/data/" />
+    <Node
+        Expires="0"
+        Key="login"
+        NetType="POST"
+        MockClass="cc.trity.sun.mockdata.MockLoginSuccessInfo"
         Url="http://open.weather.com.cn/data/" />
 </url>

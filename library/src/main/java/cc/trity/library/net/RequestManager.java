@@ -55,7 +55,7 @@ public class RequestManager {
      * 取消网络请求,面对httpUrlConnection如何取消网络请求
      */
     public void cancelRequest() {
-        if ((requestList != null) && (requestList.size() > 0)) {
+        /*if ((requestList != null) && (requestList.size() > 0)) {
             for (final HttpRequest request : requestList) {
                 if (request != null) {
 //                    try {
@@ -66,6 +66,6 @@ public class RequestManager {
 //                    }
                 }
             }
-        }
+        }*/
     }
 }

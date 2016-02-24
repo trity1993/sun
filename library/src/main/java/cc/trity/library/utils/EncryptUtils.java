@@ -42,7 +42,7 @@ public class EncryptUtils {
         final StringBuffer sBuf=new StringBuffer(b.length*2);
         for(final byte element:b){
             sBuf.append(HEX_DIGITS[(element & 0xf0)>>>4]);
-            sBuf.append(HEX_DIGITS[(element & 0xf0)]);
+            sBuf.append(HEX_DIGITS[(element & 0x0f)]);
         }
         return sBuf.toString();
     }

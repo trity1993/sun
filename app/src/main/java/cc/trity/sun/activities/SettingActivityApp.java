@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
 import cc.trity.library.utils.CommonUtils;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.base.AppBasePrefActivity;
-import cc.trity.sun.model.Global;
+import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.service.WeatherForegroundService;
 
 /**
@@ -48,13 +48,13 @@ public class SettingActivityApp extends AppBasePrefActivity implements Preferenc
         if (preference == checkboxPrefs) {
             boolean isStartService=(Boolean)newValue;
             if(isStartService){
-                this.sendBroadcast(new Intent(Global.BROADCAST_START_SERVICE));
+                this.sendBroadcast(new Intent(AppConstants.BROADCAST_START_SERVICE));
             }else{
                 CommonUtils.showToast(this, "正在关闭...");
                 this.stopService(new Intent(this, WeatherForegroundService.class));
             }
             SharedPreferences.Editor editor=mSharedPrefs.edit();
-            editor.putBoolean(Global.SHARE_PREF_SERVICE,isStartService);
+            editor.putBoolean(AppConstants.SHARE_PREF_SERVICE,isStartService);
             editor.commit();
         }
         return true;

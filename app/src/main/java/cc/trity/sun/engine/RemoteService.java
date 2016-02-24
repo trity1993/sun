@@ -1,5 +1,7 @@
 package cc.trity.sun.engine;
 
+import android.util.Log;
+
 import java.util.List;
 
 import cc.trity.library.activity.BaseActivity;
@@ -7,8 +9,12 @@ import cc.trity.library.net.DefaultThreadPool;
 import cc.trity.library.net.HttpRequest;
 import cc.trity.library.net.RequestCallback;
 import cc.trity.library.net.RequestParameter;
+import cc.trity.library.net.Response;
 import cc.trity.library.net.URLData;
 import cc.trity.library.net.UrlConfigManager;
+import cc.trity.library.utils.GsonUtils;
+import cc.trity.library.utils.LogUtils;
+import cc.trity.sun.mockdata.MockService;
 
 /**
  * 网络异步请求的操作类
@@ -16,6 +22,7 @@ import cc.trity.library.net.UrlConfigManager;
  * Created by TryIT on 2016/2/5.
  */
 public class RemoteService {
+    private static final String TAG="RemoteService";
     private static RemoteService service = null;
 
     private RemoteService() {
@@ -43,12 +50,31 @@ public class RemoteService {
                        final List<RequestParameter> params,
                        final String cacheKey,
                        final RequestCallback callBack,boolean isForceUpdate) {
+
         final URLData urlData = UrlConfigManager.findURL(activity, apiKey);
-        if(isForceUpdate){
-            urlData.setExpires(0);
+
+        if(urlData.getMockClass()!=null){//说明有模拟数据，则直接返回数据
+            try{
+                MockService mockService=(MockService)Class.forName(urlData.getMockClass()).newInstance();
+                String strResponse=mockService.getJsonData();
+                final Response response= GsonUtils.getClass(strResponse,Response.class);
+                if(callBack!=null){
+                    if(response.isError()){
+                        callBack.onFail(response.getErrorMessage());
+                    }else{
+                        callBack.onSuccess(response.getResult());
+                    }
+                }
+            }catch (Exception e){
+                LogUtils.e(TAG, Log.getStackTraceString(e));
+            }
+        }else{
+            if(isForceUpdate){
+                urlData.setExpires(0);
+            }
+            HttpRequest request = activity.getRequestManager().createRequest(
+                    urlData, params,cacheKey, callBack);
+            DefaultThreadPool.getInstance().execute(request);
         }
-        HttpRequest request = activity.getRequestManager().createRequest(
-                urlData, params,cacheKey, callBack);
-        DefaultThreadPool.getInstance().execute(request);
     }
 }

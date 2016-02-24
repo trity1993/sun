@@ -21,7 +21,7 @@ import cc.trity.library.utils.LogUtils;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.base.AppBaseActivity;
 import cc.trity.sun.db.DataBaseManager;
-import cc.trity.sun.model.Global;
+import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.model.city.City;
 import cc.trity.sun.model.city.County;
 import cc.trity.sun.model.city.Province;
@@ -129,7 +129,7 @@ public class ChooseAreaActivityApp extends AppBaseActivity {
     public void loadData() {
         //加载城市city.xml的数据
         try {
-            provinceList= PlaceSaxParseHandler.getProvicneModel(getAssets().open(Global.ASSETS_CITY));
+            provinceList= PlaceSaxParseHandler.getProvicneModel(getAssets().open(AppConstants.ASSETS_CITY));
             if(provinceList!=null){
                 queryProvinces();  // 加载省级数据
             }
@@ -204,7 +204,7 @@ public class ChooseAreaActivityApp extends AppBaseActivity {
         Intent intent = new Intent();
         intent.putExtra("county_code", paramsCode);
         intent.putExtra("county_name", paramsName);
-        Global.pageLength++;
+        AppConstants.pageLength++;
         activity.setResult(RESULT_OK,intent);
         finish();
     }

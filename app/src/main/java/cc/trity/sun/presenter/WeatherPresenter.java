@@ -16,7 +16,7 @@ import cc.trity.library.utils.TimeUtils;
 import cc.trity.sun.R;
 import cc.trity.sun.engine.RemoteService;
 import cc.trity.sun.listener.HttpCallbackListener;
-import cc.trity.sun.model.Global;
+import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.model.weathersponse.WeatherDetail;
 import cc.trity.sun.model.WeatherMsg;
@@ -71,7 +71,7 @@ public class WeatherPresenter {
         //生成url
         if(NetWorkUtils.isNetworkAvailable(context)){
             //执行网络请求的操作
-            List<RequestParameter> parameterList=HttpManager.getReqParameters(true,countyCode,Global.URL_WEATHER);
+            List<RequestParameter> parameterList=HttpManager.getReqParameters(true,countyCode, AppConstants.URL_WEATHER);
             RemoteService.getInstance().invoke(baseActivity,"getWeatherForecast",parameterList,countyCode,requestCallback);
         }else{
             requestCallback.onFail(R.string.error_network_die);
@@ -213,10 +213,10 @@ public class WeatherPresenter {
      * @param weatherMsg
      */
     public void toCreateForGround(WeatherMsg weatherMsg){
-        if(Global.isStartService){
-            Global.isStartService=false;
+        if(AppConstants.isStartService){
+            AppConstants.isStartService=false;
             Intent intent=new Intent(context, WeatherForegroundService.class);
-            intent.putExtra(Global.INTENT_WEATHER_MSG, weatherMsg);
+            intent.putExtra(AppConstants.INTENT_WEATHER_MSG, weatherMsg);
             context.startService(intent);
         }
 

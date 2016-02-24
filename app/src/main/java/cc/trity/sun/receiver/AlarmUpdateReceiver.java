@@ -13,7 +13,7 @@ import cc.trity.library.utils.GsonUtils;
 import cc.trity.library.utils.NetWorkUtils;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.listener.HttpCallbackListener;
-import cc.trity.sun.model.Global;
+import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.model.weathersponse.ReponseForcecastWeather;
 import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.model.WeatherMsg;
@@ -42,7 +42,7 @@ public class AlarmUpdateReceiver extends BroadcastReceiver {
                         if(weatherPresenter!=null){
                             WeatherMsg weatherMsg=weatherPresenter.updateData(weatherContainer,county.getPlaceName());
                             if(weatherMsg!=null){
-                                Global.isStartService=true;
+                                AppConstants.isStartService=true;
                                 weatherPresenter.toCreateForGround(weatherMsg);
                             }
                         }

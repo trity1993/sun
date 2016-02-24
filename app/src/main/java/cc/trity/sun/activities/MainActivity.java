@@ -17,7 +17,7 @@ import cc.trity.sun.activities.base.AppBaseActivity;
 import cc.trity.sun.adapters.EndlessLoopAdapter;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.fragments.WeatherFragment;
-import cc.trity.sun.model.Global;
+import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.model.city.County;
 import cc.trity.sun.view.CirclePageIndicator;
 
@@ -83,7 +83,7 @@ public class MainActivity extends AppBaseActivity {
         }
         //读取sharePrf是否打开前台线程
         SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
-        Global.isStartService=sharedPreferences.getBoolean(Global.SHARE_PREF_SERVICE, true);
+        AppConstants.isStartService=sharedPreferences.getBoolean(AppConstants.SHARE_PREF_SERVICE, true);
     }
 
     @Override
