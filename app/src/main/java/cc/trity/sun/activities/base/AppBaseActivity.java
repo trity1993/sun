@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import cc.trity.library.activity.BaseActivity;
 import cc.trity.sun.ActivityCollector;
 import cc.trity.sun.R;
+import cc.trity.sun.activities.SettingActivity;
 
 /**
  * Created by TryIT on 2016/1/13.
@@ -20,6 +21,8 @@ public abstract class AppBaseActivity extends BaseActivity {
     protected boolean needCallback;//是否需要回调
 
     private ProgressDialog progressDialog;
+
+    protected int resToolBgColor=-1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,9 @@ public abstract class AppBaseActivity extends BaseActivity {
         switch (item.getItemId()){
             case android.R.id.home://相应 actionbar的后退按钮
                 onBackPressed();
+                break;
+            case R.id.action_setting:
+                SettingActivity.actionStart(AppBaseActivity.this, resToolBgColor);
                 break;
         }
         return super.onOptionsItemSelected(item);

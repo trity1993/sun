@@ -88,7 +88,7 @@ public class FourShowFragment extends BaseFragment {
         weatherRecyclerAdapter.setOnItemClickListener(new OnRecyclerItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                CommonUtils.showToast(activity, "click=" + position);
+                CommonUtils.showSnackbar(view, "click=" + position);
             }
         });
         fragRvShow.setHasFixedSize(true);

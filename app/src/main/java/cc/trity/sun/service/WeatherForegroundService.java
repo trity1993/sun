@@ -17,7 +17,7 @@ import cc.trity.library.utils.LogUtils;
 import cc.trity.library.utils.TimeUtils;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.MainActivity;
-import cc.trity.sun.activities.SettingActivityApp;
+import cc.trity.sun.activities.SettingActivity;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.receiver.AlarmUpdateReceiver;
@@ -81,7 +81,7 @@ public class WeatherForegroundService extends Service {
                 .setLargeIcon(largeIcon) ;/*天气图标*/
 
         //添加设置的action
-        notificationIntent.setClass(this, SettingActivityApp.class);
+        notificationIntent.setClass(this, SettingActivity.class);
         pdIntent=PendingIntent.getActivity(this,requestID,notificationIntent,PendingIntent.FLAG_CANCEL_CURRENT);
         mBuilder.addAction(R.mipmap.ic_settings_white_24dp, "设置", pdIntent);
 

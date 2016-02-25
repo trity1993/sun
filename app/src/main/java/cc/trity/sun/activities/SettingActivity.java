@@ -1,5 +1,6 @@
 package cc.trity.sun.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.CheckBoxPreference;
@@ -15,7 +16,7 @@ import cc.trity.sun.service.WeatherForegroundService;
 /**
  * 设置页
  */
-public class SettingActivityApp extends AppBasePrefActivity implements Preference.OnPreferenceClickListener {
+public class SettingActivity extends AppBasePrefActivity implements Preference.OnPreferenceClickListener {
     private SharedPreferences mSharedPrefs;
     private CheckBoxPreference checkboxPrefs;
 
@@ -26,7 +27,7 @@ public class SettingActivityApp extends AppBasePrefActivity implements Preferenc
     }
 
     public void initPreference() {
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(SettingActivityApp.this);
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(SettingActivity.this);
         PreferenceManager mPreferenceManager = bpfragment.getPreferenceManager();
         checkboxPrefs=(CheckBoxPreference)mPreferenceManager.findPreference("check_update_preference");
         checkboxPrefs.setOnPreferenceChangeListener(this);
@@ -64,5 +65,11 @@ public class SettingActivityApp extends AppBasePrefActivity implements Preferenc
     public boolean onPreferenceClick(Preference preference) {
 
         return false;
+    }
+
+    public static void actionStart(Context context,int resBgColor){
+        Intent intentSet = new Intent(context, SettingActivity.class);
+        intentSet.putExtra("resBgColor", resBgColor);
+        context.startActivity(intentSet);
     }
 }

@@ -27,7 +27,7 @@ import cc.trity.sun.model.city.County;
 import cc.trity.sun.model.city.Province;
 import cc.trity.sun.sdk.PlaceSaxParseHandler;
 
-public class ChooseAreaActivityApp extends AppBaseActivity {
+public class ChooseAreaActivity extends AppBaseActivity {
     private static final String TAG="ChooseAreaActivity";
     public static final int LEVEL_PROVINCE = 0;
     public static final int LEVEL_CITY = 1;
@@ -67,7 +67,6 @@ public class ChooseAreaActivityApp extends AppBaseActivity {
      */
     private int currentLevel;
 
-    private int resToolBg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,17 +79,16 @@ public class ChooseAreaActivityApp extends AppBaseActivity {
     @Override
     public void initVariables() {
         Intent intent=getIntent();
-        resToolBg=intent.getIntExtra("resBgColor",-1);
-        if(resToolBg!=-1)
-            resToolBg=getResources().getColor(resToolBg);
+        resToolBgColor=intent.getIntExtra("resBgColor",-1);
     }
 
     @Override
     public void initView(Bundle save) {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        if(resToolBg!=-1){
-            toolbar.setBackgroundColor(resToolBg);
+        if(resToolBgColor!=-1){//说明是由前者进行传递过来
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setBackgroundColor(getResources().getColor(resToolBgColor));
         }
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dataList);
@@ -119,7 +117,7 @@ public class ChooseAreaActivityApp extends AppBaseActivity {
 
                     LogUtils.d(TAG, "countyCode=" + countyCode);
 
-                    toMainAct(ChooseAreaActivityApp.this,countyCode,countyName);
+                    toMainAct(ChooseAreaActivity.this,countyCode,countyName);
                 }
             }
         });
@@ -190,7 +188,7 @@ public class ChooseAreaActivityApp extends AppBaseActivity {
     }
 
     private void saveCounties(County county){
-        DataBaseManager dataBaseManager=DataBaseManager.getInstance(ChooseAreaActivityApp.this);
+        DataBaseManager dataBaseManager=DataBaseManager.getInstance(ChooseAreaActivity.this);
         dataBaseManager.saveCounty(county);
     }
 

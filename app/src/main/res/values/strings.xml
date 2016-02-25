@@ -7,6 +7,7 @@
     <!--错误信息-->
     <string name="error_location_code">位置获取错误，请重新选择地点</string>
     <string name="error_network_refresh">请重新连接网络，并下拉尝试刷新</string>
+    <string name="error_max_page">最多可以设置8个地方，先已经达到最大</string>
 
     <string name="title_activity_setting">设置</string>
     <string name="setting_title_choose">人性化自由选择</string>

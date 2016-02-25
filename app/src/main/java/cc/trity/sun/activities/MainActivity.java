@@ -16,8 +16,9 @@ import cc.trity.sun.R;
 import cc.trity.sun.activities.base.AppBaseActivity;
 import cc.trity.sun.adapters.EndlessLoopAdapter;
 import cc.trity.sun.db.DataBaseManager;
-import cc.trity.sun.fragments.WeatherFragment;
 import cc.trity.sun.engine.AppConstants;
+import cc.trity.sun.fragments.FourShowFragment;
+import cc.trity.sun.fragments.WeatherFragment;
 import cc.trity.sun.model.city.County;
 import cc.trity.sun.view.CirclePageIndicator;
 
@@ -67,15 +68,15 @@ public class MainActivity extends AppBaseActivity {
         lenght=countyList.size();
 
         if(lenght==0){
-            Intent intent = new Intent(MainActivity.this, ChooseAreaActivityApp.class);
+            Intent intent = new Intent(MainActivity.this, ChooseAreaActivity.class);
             startActivityForResult(intent, MainActivity.ADD_FRAGMENT);
             return;
         }
 
         for (int i = 0; i < lenght; i++) {
             county=countyList.get(i);
-            Fragment fragment = WeatherFragment.newInstance(resInt[i%4], resDrawableInt[i%4], county.getWeaterCode(), county.getPlaceName());
-//            Fragment fragment=new FourShowFragment();
+//            Fragment fragment = WeatherFragment.newInstance(resInt[i%4], resDrawableInt[i%4], county.getWeaterCode(), county.getPlaceName(),lenght);
+            Fragment fragment=new FourShowFragment();
             fragmentList.add(fragment);
         }
         //读取sharePrf是否打开前台线程
@@ -91,7 +92,7 @@ public class MainActivity extends AppBaseActivity {
             //循环多一次，倍数增加
             for (int i = 0; i < lenght; i++) {
                 county=countyList.get(i);
-                Fragment fragment = WeatherFragment.newInstance(resInt[i], resDrawableInt[i], county.getWeaterCode(), county.getPlaceName());
+                Fragment fragment = WeatherFragment.newInstance(resInt[i], resDrawableInt[i], county.getWeaterCode(), county.getPlaceName(),lenght);
                 fragmentList.add(fragment);
             }
             endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, Integer.MAX_VALUE);
@@ -118,8 +119,8 @@ public class MainActivity extends AppBaseActivity {
 
         fragmentList.clear();
         for (int i = 0; i < lenght; i++) {
-            County county=countyList.get(i);
-            Fragment fragment = WeatherFragment.newInstance(resInt[i%4], resDrawableInt[i%4], county.getWeaterCode(), county.getPlaceName());
+            county=countyList.get(i);
+            Fragment fragment = WeatherFragment.newInstance(resInt[i%4], resDrawableInt[i%4], county.getWeaterCode(), county.getPlaceName(),lenght);
             fragmentList.add(fragment);
         }
 
@@ -128,7 +129,8 @@ public class MainActivity extends AppBaseActivity {
         } else if (lenght <= 3) {
             //循环多一次，倍数增加
             for (int i = 0; i < lenght; i++) {
-                Fragment fragment = WeatherFragment.newInstance(resInt[i%4], resDrawableInt[i%4], countyCode, countyName);
+                county=countyList.get(i);
+                Fragment fragment = WeatherFragment.newInstance(resInt[i%4], resDrawableInt[i%4], county.getWeaterCode(), county.getPlaceName(),lenght);
                 fragmentList.add(fragment);
             }
             endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, Integer.MAX_VALUE);

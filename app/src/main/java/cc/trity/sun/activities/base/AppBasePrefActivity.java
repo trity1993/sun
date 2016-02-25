@@ -39,6 +39,8 @@ public abstract class AppBasePrefActivity extends AppBaseActivity implements OnP
         trySetupToolbar(toolbar);
         if(resToolBg!=-1){
             toolbar.setBackgroundColor(getResources().getColor(resToolBg));
+        }else{
+//            toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         }
         //用fragment来进行代替布局，使用一种嵌套的方式，使得用上PreferenceFragment进行显示
         bpfragment=BasePreferenceFragment.newInstance(this);

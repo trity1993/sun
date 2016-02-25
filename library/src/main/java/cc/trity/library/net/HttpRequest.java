@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 import cc.trity.library.BaseApplication;
 import cc.trity.library.cache.CacheManager;
@@ -145,6 +146,7 @@ public class HttpRequest implements Runnable {
                 httpURLConnection.setRequestMethod(REQUEST_POST);
                 httpURLConnection.setDoInput(true);
                 httpURLConnection.setDoOutput(true);
+                httpURLConnection.setUseCaches(false);
                 //额外设置
                 httpURLConnection.setConnectTimeout(3000);
                 httpURLConnection.setReadTimeout(8000);
@@ -174,6 +176,11 @@ public class HttpRequest implements Runnable {
 
                 InputStream inputStream = httpURLConnection.getInputStream();
                 if (inputStream != null) {
+                    //判断是否使用gzip进行压缩
+                    if(httpURLConnection.getContentEncoding()!=null
+                            &&httpURLConnection.getContentEncoding().contains("gzip")){
+                        inputStream=new GZIPInputStream(inputStream);
+                    }
                     BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream));
                     String line = null;
                     final StringBuffer sbuf = new StringBuffer();
@@ -236,7 +243,7 @@ public class HttpRequest implements Runnable {
 
         } catch (Exception e) {
             LogUtils.e(TAG, Log.getStackTraceString(e));
-            handleNetworkError(R.string.error_donnot_knowledge);
+            handleNetworkError(R.string.error_network_die);
         } finally {
             if (httpURLConnection != null) {
                 httpURLConnection.disconnect();
@@ -292,6 +299,7 @@ public class HttpRequest implements Runnable {
         if(httpURLConnection!=null){
             httpURLConnection.setRequestProperty(ACCEPT_CHARSET, "UTF-8,*");
             httpURLConnection.setRequestProperty(USER_AGENT, "Young Heart Android App ");
+            httpURLConnection.setRequestProperty("Accept-Encoding", "gzip");
         }
 
         /*httpHeaders.clear();

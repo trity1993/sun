@@ -1,6 +1,8 @@
 package cc.trity.library.utils;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
+import android.view.View;
 import android.widget.Toast;
 
 /**
@@ -15,6 +17,13 @@ public final class CommonUtils {
 
     public static void showToast(Context context, int resInt) {
         Toast.makeText(context, resInt, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showSnackbar(View parentView,String msg){
+        Snackbar.make(parentView,msg,Snackbar.LENGTH_SHORT).show();
+    }
+    public static void showSnackbar(View parentView,int resInt){
+        Snackbar.make(parentView,resInt,Snackbar.LENGTH_SHORT).show();
     }
 
 }

@@ -26,9 +26,9 @@ import cc.trity.library.utils.GsonUtils;
 import cc.trity.library.utils.LogUtils;
 import cc.trity.library.utils.TimeUtils;
 import cc.trity.sun.R;
-import cc.trity.sun.activities.ChooseAreaActivityApp;
+import cc.trity.sun.activities.ChooseAreaActivity;
 import cc.trity.sun.activities.MainActivity;
-import cc.trity.sun.activities.SettingActivityApp;
+import cc.trity.sun.activities.SettingActivity;
 import cc.trity.sun.fragments.base.BaseFragment;
 import cc.trity.sun.listener.AbstractRequestCallback;
 import cc.trity.sun.model.WeatherMsg;
@@ -57,7 +57,7 @@ public class WeatherFragment extends BaseFragment {
     @InjectView(R.id.txt_location_temp)
     TextView txtLocationTemp;
 
-    private int resBgColor, resbg;
+    private int resBgColor, resbg,pageSize;
     private String countyCode, countyName;
     private int hour;
 
@@ -72,11 +72,12 @@ public class WeatherFragment extends BaseFragment {
     }
 
     public static WeatherFragment newInstance(int resBgColor, int resbg,
-                                              String countyCode, String countyName) {
+                                              String countyCode, String countyName,int pageSize) {
         WeatherFragment weatherFragment = new WeatherFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("resBgColor", resBgColor);
         bundle.putInt("resBg", resbg);
+        bundle.putInt("pageSize", pageSize);
         bundle.putString("countyCode", countyCode);
         bundle.putString("countyName", countyName);
         weatherFragment.setArguments(bundle);
@@ -92,6 +93,7 @@ public class WeatherFragment extends BaseFragment {
             resbg = bundle.getInt("resBg");
             countyCode = bundle.getString("countyCode");
             countyName = bundle.getString("countyName");
+            pageSize = bundle.getInt("pageSize");
         }
         hour = Integer.valueOf(TimeUtils.getCurentTime("HH"));
 
@@ -124,14 +126,17 @@ public class WeatherFragment extends BaseFragment {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_add:
-                        Intent intent = new Intent(activity, ChooseAreaActivityApp.class);
-                        intent.putExtra("resBgColor", resBgColor);
-                        activity.startActivityForResult(intent, MainActivity.ADD_FRAGMENT);
+                        if(pageSize<=8){
+                            Intent intent = new Intent(activity, ChooseAreaActivity.class);
+                            intent.putExtra("resBgColor", resBgColor);
+                            activity.startActivityForResult(intent, MainActivity.ADD_FRAGMENT);
+                        }else{
+                            CommonUtils.showToast(activity,R.string.error_max_page);
+                        }
+
                         break;
                     case R.id.action_setting:
-                        Intent intentSet = new Intent(activity, SettingActivityApp.class);
-                        intentSet.putExtra("resBgColor", resBgColor);
-                        startActivity(intentSet);
+                        SettingActivity.actionStart(activity, resBgColor);
                         break;
                 }
                 return true;
@@ -221,12 +226,16 @@ public class WeatherFragment extends BaseFragment {
     }
 
     public void errorUpdateView(String errorMesg){
-        CommonUtils.showToast(activity, errorMesg);
+//        CommonUtils.showToast(activity, errorMesg);
+        CommonUtils.showSnackbar(rlLayout,errorMesg);
         if (swipeRefresh != null)
             swipeRefresh.setRefreshing(false);
     }
+
     public void errorCountyCode(){
-        CommonUtils.showToast(activity, R.string.error_location_code);
+//        CommonUtils.showToast(activity, R.string.error_location_code);
+        CommonUtils.showSnackbar(rlLayout,  R.string.error_location_code);
+
         if (swipeRefresh != null)
             swipeRefresh.setRefreshing(false);
     }
@@ -271,12 +280,12 @@ public class WeatherFragment extends BaseFragment {
         public void onFail(int resErrormsgInt) {
             String errorMessage=null;
             if(resErrormsgInt!=0){
-                errorMessage=getResources().getString(resErrormsgInt);
+                errorMessage=activity.getResources().getString(resErrormsgInt);
             }else{
-                errorMessage=getResources().getString(R.string.error_donnot_knowledge);
+                errorMessage=activity.getResources().getString(R.string.error_donnot_knowledge);
 
             }
-            LogUtils.e(TAG,errorMessage);
+//            LogUtils.e(TAG,errorMessage);
             errorUpdateView(errorMessage);
         }
     };

@@ -24,11 +24,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ChooseAreaActivityApp">
+        <activity android:name=".activities.ChooseAreaActivity">
 
         </activity>
         <activity android:name=".activities.sign.LoginActivity"></activity>
-        <activity android:name=".activities.SettingActivityApp"
+        <activity android:name=".activities.SettingActivity"
             android:label="@string/title_activity_setting">
 
         </activity>
