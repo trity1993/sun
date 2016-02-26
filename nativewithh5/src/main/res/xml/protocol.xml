@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<url>
+    <Node
+        Key="gotoPersonCenter"
+        Target="com.example.youngheart.MovieDetailActivity"
+        />
+
+    <Node
+        Key="gotoMovieDetail"
+        Target="cc.trity.sun.activities.h5.MoveDetailActivity"
+        />
+
+    <Node
+        Key="gotoNewsList"
+        Target="com.example.youngheart.NewsListActivity"
+        />
+</url>
+<!--约定的协议-->

@@ -18,7 +18,7 @@ public class UrlConfigManager {
     private static ArrayList<URLData> urlList;
 
     private static void fetchUrlDataFromXml(final Activity activity) {
-        urlList = new ArrayList<URLData>();
+        urlList = new ArrayList<>();
 
         final XmlResourceParser xmlParser = activity.getApplication()
                 .getResources().getXml(cc.trity.tritylibrary.R.xml.url);
