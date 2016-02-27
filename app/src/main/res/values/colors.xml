@@ -11,4 +11,6 @@
     <color name="pink_bg">#ff2259</color>
     <color name="green_bg">#00d8a2</color>
     <color name="blue_bg">#49ccd4</color>
+    <color name="gray_bg">#303030</color>
+    <color name="gray_bg_alapha">#77303030</color>
 </resources>

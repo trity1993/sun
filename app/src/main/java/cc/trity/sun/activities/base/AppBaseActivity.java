@@ -24,10 +24,13 @@ public abstract class AppBaseActivity extends BaseActivity {
 
     protected int resToolBgColor=-1;
 
+    protected boolean isFirstOpen=true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityCollector.addActivity(this);
+
     }
     /**
      * 初始化toolbar

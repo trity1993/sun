@@ -18,4 +18,8 @@
     <string name="setting_content_about">关于我</string>
     <string name="setting_summary_blog">Trity的博客</string>
     <string name="setting_content_update_version">手动检查更新</string>
+
+    <string name="pop_title">快速引导</string>
+    <string name="pop_content">左移或者右移来改变城市\n双指缩小显示4座城市\n双指放大天气预报的详情信息</string>
+
 </resources>

@@ -17,10 +17,10 @@ import cc.trity.sun.activities.base.AppBaseActivity;
 import cc.trity.sun.adapters.EndlessLoopAdapter;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.engine.AppConstants;
-import cc.trity.sun.fragments.FourShowFragment;
 import cc.trity.sun.fragments.WeatherFragment;
 import cc.trity.sun.model.city.County;
 import cc.trity.sun.view.CirclePageIndicator;
+import cc.trity.sun.view.TipViewController;
 
 public class MainActivity extends AppBaseActivity {
     public static final int ADD_FRAGMENT=0;
@@ -57,6 +57,9 @@ public class MainActivity extends AppBaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         this.init(savedInstanceState);
+        if(isFirstOpen){
+            new TipViewController(this).showView();
+        }
     }
 
     @Override
@@ -75,8 +78,8 @@ public class MainActivity extends AppBaseActivity {
 
         for (int i = 0; i < lenght; i++) {
             county=countyList.get(i);
-//            Fragment fragment = WeatherFragment.newInstance(resInt[i%4], resDrawableInt[i%4], county.getWeaterCode(), county.getPlaceName(),lenght);
-            Fragment fragment=new FourShowFragment();
+            Fragment fragment = WeatherFragment.newInstance(resInt[i%4], resDrawableInt[i%4], county.getWeaterCode(), county.getPlaceName(),lenght);
+//            Fragment fragment=new FourShowFragment();
             fragmentList.add(fragment);
         }
         //读取sharePrf是否打开前台线程

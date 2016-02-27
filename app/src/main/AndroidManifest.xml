@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- 网络状态 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--19以下需要这么设置-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
         android:name=".SunApplication"
@@ -19,13 +21,11 @@
             android:name=".activities.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
 
-            <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            -->
         </activity>
         <activity android:name=".activities.ChooseAreaActivity" />
         <activity android:name=".activities.sign.LoginActivity" />
@@ -45,11 +45,6 @@
         </receiver>
 
         <activity android:name=".activities.h5.H5Activity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".activities.h5.MoveDetailActivity"></activity>
     </application>
