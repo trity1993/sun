@@ -4,6 +4,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="degree">&#176;C</string>
+    <string name="degree_logo">&#176;</string>
     <!--错误信息-->
     <string name="error_location_code">位置获取错误，请重新选择地点</string>
     <string name="error_network_refresh">请重新连接网络，并下拉尝试刷新</string>
@@ -21,5 +22,5 @@
 
     <string name="pop_title">快速引导</string>
     <string name="pop_content">左移或者右移来改变城市\n双指缩小显示4座城市\n双指放大天气预报的详情信息</string>
-
+    <string name="splash_power_by">power by trity</string>
 </resources>

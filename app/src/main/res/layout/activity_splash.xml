@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="cc.trity.sun.activities.SplashActivity">
+
+    <RelativeLayout
+        android:id="@+id/frame_splash_layout"
+        android:layout_width="@dimen/splash_degree_layout"
+        android:layout_height="@dimen/splash_degree_layout"
+        android:layout_centerInParent="true"
+        android:background="@drawable/corner_green_logo_bg">
+
+        <TextView
+            android:id="@+id/txt_splash_num"
+            style="@style/BaseTitle.Splash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/round_logo_bg"
+            android:gravity="center"
+            android:text="1" />
+
+        <TextView
+            style="@style/BaseTitle.Splash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingBottom="@dimen/space_normal"
+            android:paddingLeft="@dimen/splash_degree_padding"
+            android:text="@string/degree_logo"
+            android:textColor="@color/green_bg" />
+    </RelativeLayout>
+
+    <TextView
+        style="@style/BaseTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frame_splash_layout"
+        android:layout_marginTop="@dimen/space_normal"
+        android:gravity="center"
+        android:text="@string/splash_power_by" />
+
+</RelativeLayout>

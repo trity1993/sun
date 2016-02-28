@@ -11,4 +11,8 @@
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="BaseTitle.Splash" parent="BaseTitle">
+        <item name="android:textColor">@color/green_bg</item>
+
+    </style>
 </resources>

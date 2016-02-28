@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- 网络状态 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!--19以下需要这么设置-->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <!-- 19以下需要这么设置 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".SunApplication"
@@ -20,12 +20,11 @@
         <activity
             android:name=".activities.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
-
-            <intent-filter>
+           <!-- <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity android:name=".activities.ChooseAreaActivity" />
         <activity android:name=".activities.sign.LoginActivity" />
@@ -44,9 +43,15 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activities.h5.H5Activity">
+        <activity android:name=".activities.h5.H5Activity"></activity>
+        <activity android:name=".activities.h5.MoveDetailActivity" />
+        <activity android:name=".activities.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity android:name=".activities.h5.MoveDetailActivity"></activity>
     </application>
 
 </manifest>

@@ -2,7 +2,6 @@ package cc.trity.sun.fragments;
 
 
 import android.os.Bundle;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,9 +20,9 @@ import cc.trity.sun.adapters.WeatherRecyclerAdapter;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.fragments.base.BaseFragment;
 import cc.trity.sun.listener.OnRecyclerItemClickListener;
-import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.model.city.County;
+import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.presenter.WeatherPresenter;
 import cc.trity.sun.utils.Utility;
 
@@ -83,7 +82,7 @@ public class FourShowFragment extends BaseFragment {
     }
 
     @Override
-    public void initView() {
+    public void initView(Bundle savedInstanceState) {
         weatherRecyclerAdapter=new WeatherRecyclerAdapter(activity,weatherMsgList);
         weatherRecyclerAdapter.setOnItemClickListener(new OnRecyclerItemClickListener() {
             @Override
@@ -108,13 +107,8 @@ public class FourShowFragment extends BaseFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_four_show, container, false);
         ButterKnife.inject(this, view);
-        this.init();
+        this.init(savedInstanceState);
         return view;
-    }
-
-    @Override
-    public boolean handleMessage(Message msg) {
-        return false;
     }
 
     @Override

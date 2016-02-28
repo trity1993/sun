@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -66,7 +65,7 @@ public class WeatherFragment extends BaseFragment {
     private WeatherPresenter weatherPresenter;
 
 
-    Handler handler = new Handler(this);
+    Handler handler = new Handler();
 
     public WeatherFragment() {
     }
@@ -106,13 +105,13 @@ public class WeatherFragment extends BaseFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
         ButterKnife.inject(this, view);
-        this.initView();
+        this.initView(savedInstanceState);
         return view;
     }
 
 
     @Override
-    public void initView() {
+    public void initView(Bundle savedInstanceState) {
         //设置背景
         rlLayout.setBackgroundResource(resbg);
 
@@ -289,9 +288,4 @@ public class WeatherFragment extends BaseFragment {
             errorUpdateView(errorMessage);
         }
     };
-
-    @Override
-    public boolean handleMessage(Message msg) {
-        return false;
-    }
 }

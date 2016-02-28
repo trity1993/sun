@@ -1,5 +1,6 @@
 package cc.trity.sun.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -143,6 +144,11 @@ public class MainActivity extends AppBaseActivity {
         viewpagerMain.setAdapter(endlessLoopAdapter);
         indicator.setViewPagerFixedLength(viewpagerMain, lenght);
 
+    }
+
+    public static void toMainAct(Context context){
+        Intent intent=new Intent(context,MainActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
