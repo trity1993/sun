@@ -23,4 +23,7 @@
     <string name="pop_title">快速引导</string>
     <string name="pop_content">左移或者右移来改变城市\n双指缩小显示4座城市\n双指放大天气预报的详情信息</string>
     <string name="splash_power_by">power by trity</string>
+
+    <string name="locating">正在定位…</string>
+    <string name="locate_fail">自动定位失败，请稍后再试</string>
 </resources>

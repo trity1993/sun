@@ -1,16 +1,16 @@
 package cc.trity.nativewithh5.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
+import cc.trity.library.activity.BaseActivity;
 import cc.trity.nativewithh5.engine.Dispatcher;
 
 /**
  * Created by TryIT on 2016/2/25.
  */
-public class H5BaseActivity extends AppCompatActivity{
+public abstract class H5BaseActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

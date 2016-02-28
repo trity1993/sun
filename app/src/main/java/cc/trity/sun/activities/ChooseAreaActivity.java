@@ -17,6 +17,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cc.trity.library.activity.BaseActivity;
 import cc.trity.library.utils.LogUtils;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.base.AppBaseActivity;
@@ -117,7 +118,7 @@ public class ChooseAreaActivity extends AppBaseActivity {
 
                     LogUtils.d(TAG, "countyCode=" + countyCode);
 
-                    toMainAct(ChooseAreaActivity.this,countyCode,countyName);
+                    toResultForMainAct(ChooseAreaActivity.this, countyCode, countyName);
                 }
             }
         });
@@ -198,13 +199,19 @@ public class ChooseAreaActivity extends AppBaseActivity {
      * @param paramsCode
      * @param paramsName
      */
-    public void toMainAct(Activity activity, String paramsCode, String paramsName) {
+    public void toResultForMainAct(Activity activity, String paramsCode, String paramsName) {
         Intent intent = new Intent();
         intent.putExtra("county_code", paramsCode);
         intent.putExtra("county_name", paramsName);
         AppConstants.pageLength++;
         activity.setResult(RESULT_OK,intent);
         finish();
+    }
+
+    public static void toStartChooseAreaAct(BaseActivity context,int resBgColor){
+        Intent intent = new Intent(context, ChooseAreaActivity.class);
+        intent.putExtra("resBgColor", resBgColor);
+        context.startActivityForResult(intent, MainActivity.ADD_FRAGMENT);
     }
 
     /**

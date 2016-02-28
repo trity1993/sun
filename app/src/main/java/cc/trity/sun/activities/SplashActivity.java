@@ -5,15 +5,20 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.TextView;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cc.trity.library.utils.CommonUtils;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.base.AppBaseActivity;
+import cc.trity.sun.baidlocatesdk.BadiLoactionHelper;
 
-public class SplashActivity extends AppBaseActivity implements Handler.Callback {
+public class SplashActivity extends AppBaseActivity implements Handler.Callback,BDLocationListener {
 
     @InjectView(R.id.txt_splash_num)
     TextView txtSplashNum;
@@ -29,6 +34,10 @@ public class SplashActivity extends AppBaseActivity implements Handler.Callback 
         setContentView(R.layout.activity_splash);
         ButterKnife.inject(this);
         this.init(savedInstanceState);
+
+        BadiLoactionHelper badiLoactionHelper=new BadiLoactionHelper(getApplicationContext(),this);
+        badiLoactionHelper.initBaiduLocation();
+        badiLoactionHelper.requestLocation();
     }
 
     @Override
@@ -78,5 +87,23 @@ public class SplashActivity extends AppBaseActivity implements Handler.Callback 
         if(exec!=null)
             exec.shutdownNow();
         super.onDestroy();
+    }
+
+    @Override
+    public void onReceiveLocation(BDLocation location) {
+        if (location == null) {
+            CommonUtils.showToast(this,R.string.locate_fail);
+            return;
+        }
+        int code = location.getLocType();
+        String mCity = location.getCity();
+        if (code == 161 && mCity != null) {
+            // 定位成功，执行对应的操作
+            CommonUtils.showToast(this,mCity);
+
+        } else {
+            // 定位失败
+            CommonUtils.showToast(this, R.string.locate_fail);
+        }
     }
 }

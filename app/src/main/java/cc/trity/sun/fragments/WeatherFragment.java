@@ -1,7 +1,6 @@
 package cc.trity.sun.fragments;
 
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,10 +24,10 @@ import cc.trity.library.utils.LogUtils;
 import cc.trity.library.utils.TimeUtils;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.ChooseAreaActivity;
-import cc.trity.sun.activities.MainActivity;
 import cc.trity.sun.activities.SettingActivity;
 import cc.trity.sun.fragments.base.BaseFragment;
 import cc.trity.sun.listener.AbstractRequestCallback;
+import cc.trity.sun.listener.ZoomTouchListener;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.model.weathersponse.ReponseForcecastWeather;
 import cc.trity.sun.model.weathersponse.WeatherContainer;
@@ -59,6 +57,7 @@ public class WeatherFragment extends BaseFragment {
     private int resBgColor, resbg,pageSize;
     private String countyCode, countyName;
     private int hour;
+
 
     private WeatherContainer weatherContainer;
 
@@ -126,9 +125,7 @@ public class WeatherFragment extends BaseFragment {
                 switch (item.getItemId()) {
                     case R.id.action_add:
                         if(pageSize<=8){
-                            Intent intent = new Intent(activity, ChooseAreaActivity.class);
-                            intent.putExtra("resBgColor", resBgColor);
-                            activity.startActivityForResult(intent, MainActivity.ADD_FRAGMENT);
+                            ChooseAreaActivity.toStartChooseAreaAct(activity,resBgColor);
                         }else{
                             CommonUtils.showToast(activity,R.string.error_max_page);
                         }
@@ -162,12 +159,7 @@ public class WeatherFragment extends BaseFragment {
                 }
             }
         });
-        refreshRlLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
+        refreshRlLayout.setOnTouchListener(new ZoomTouchListener(activity));
 
         handler.postDelayed(new Runnable() {
             @Override

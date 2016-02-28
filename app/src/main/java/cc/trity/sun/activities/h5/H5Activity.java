@@ -1,5 +1,7 @@
 package cc.trity.sun.activities.h5;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
@@ -28,6 +30,27 @@ public class H5Activity extends H5BaseActivity {
         h5Webview.addJavascriptInterface(new JSInteface1(), "baobao");
 
     }
+
+    public static void toH5Act(Context context){
+        Intent intent=new Intent(context,H5Activity.class);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void initVariables() {
+
+    }
+
+    @Override
+    public void initView(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void loadData() {
+
+    }
+
     class JSInteface1 {
         @JavascriptInterface
         public void callAndroidMethod(int a, float b, String c, boolean d) {

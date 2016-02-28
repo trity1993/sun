@@ -72,8 +72,7 @@ public class MainActivity extends AppBaseActivity {
         lenght=countyList.size();
 
         if(lenght==0){
-            Intent intent = new Intent(MainActivity.this, ChooseAreaActivity.class);
-            startActivityForResult(intent, MainActivity.ADD_FRAGMENT);
+            ChooseAreaActivity.toStartChooseAreaAct(this, -1);
             return;
         }
 
@@ -113,6 +112,7 @@ public class MainActivity extends AppBaseActivity {
 
     @Override
     public void loadData() {
+
     }
 
     public void updateView(){
@@ -162,4 +162,5 @@ public class MainActivity extends AppBaseActivity {
             }
         }
     }
+
 }
