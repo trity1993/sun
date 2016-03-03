@@ -19,8 +19,13 @@ import java.util.Locale;
 import cc.trity.library.utils.FileUtils;
 import cc.trity.library.utils.GsonUtils;
 import cc.trity.library.utils.LogUtils;
+import cc.trity.sun.engine.AppConstants;
+import cc.trity.sun.model.city.City;
+import cc.trity.sun.model.city.County;
+import cc.trity.sun.model.city.Province;
 import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.model.city.BasePlace;
+import cc.trity.sun.sdk.PlaceSaxParseHandler;
 
 public class Utility {
 	private static final String TAG="Utility";
@@ -112,6 +117,43 @@ public class Utility {
 			return null;
 		}
 		return listPlace;
+	}
+
+	public static String getCountryCode(String provinceName, String cityName, String countyName, Context context) {
+		List<Province> listProvince;
+		try {
+			listProvince = PlaceSaxParseHandler.getProvicneModel
+					(context.getAssets().open(AppConstants.ASSETS_CITY));
+		} catch (Exception e) {
+			LogUtils.e("ChooseAreaPresent", Log.getStackTraceString(e));
+			return null;
+		}
+		String countyTmpCode=null;//一种替代方式，对应的区或者县没有code，只能这么替代了。
+		if (listProvince != null) {
+			for (Province provinceTmp : listProvince) {
+				if (provinceTmp.getPlaceName().equals(provinceName)) {
+					List<City> listCity = provinceTmp.getCityList();
+					for (City cityTmp : listCity) {
+						if (cityTmp.getPlaceName().equals(cityName)) {
+							List<County> listCounty = cityTmp.getCountyList();
+							for (County countyTmp : listCounty) {
+								if(countyTmp.getPlaceName().equals(cityName)){
+									countyTmpCode=countyTmp.getWeaterCode();
+								}
+								if (countyTmp.getPlaceName().equals(countyName)) {
+									return countyTmp.getWeaterCode();
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		if(countyTmpCode!=null){
+			return countyTmpCode;
+		}
+
+		return null;
 	}
 
 }

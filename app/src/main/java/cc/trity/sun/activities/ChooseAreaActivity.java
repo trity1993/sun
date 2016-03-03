@@ -80,7 +80,7 @@ public class ChooseAreaActivity extends AppBaseActivity {
     @Override
     public void initVariables() {
         Intent intent=getIntent();
-        resToolBgColor=intent.getIntExtra("resBgColor",-1);
+        resToolBgColor=intent.getIntExtra(AppConstants.INTENT_BG_COLOR,-1);
     }
 
     @Override
@@ -188,6 +188,10 @@ public class ChooseAreaActivity extends AppBaseActivity {
         }
     }
 
+    /**
+     * 保存当前选择的县信息
+     * @param county
+     */
     private void saveCounties(County county){
         DataBaseManager dataBaseManager=DataBaseManager.getInstance(ChooseAreaActivity.this);
         dataBaseManager.saveCounty(county);
@@ -201,8 +205,8 @@ public class ChooseAreaActivity extends AppBaseActivity {
      */
     public void toResultForMainAct(Activity activity, String paramsCode, String paramsName) {
         Intent intent = new Intent();
-        intent.putExtra("county_code", paramsCode);
-        intent.putExtra("county_name", paramsName);
+        intent.putExtra(AppConstants.COUNTRY_CODE, paramsCode);
+        intent.putExtra(AppConstants.COUNTRY_NAME, paramsName);
         AppConstants.pageLength++;
         activity.setResult(RESULT_OK,intent);
         finish();
@@ -210,7 +214,7 @@ public class ChooseAreaActivity extends AppBaseActivity {
 
     public static void toStartChooseAreaAct(BaseActivity context,int resBgColor){
         Intent intent = new Intent(context, ChooseAreaActivity.class);
-        intent.putExtra("resBgColor", resBgColor);
+        intent.putExtra(AppConstants.INTENT_BG_COLOR, resBgColor);
         context.startActivityForResult(intent, MainActivity.ADD_FRAGMENT);
     }
 

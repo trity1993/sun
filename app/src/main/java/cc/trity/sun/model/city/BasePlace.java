@@ -7,7 +7,7 @@ package cc.trity.sun.model.city;
 public class BasePlace {
     private String id;
 
-    private String placeName;
+    protected String placeName;
 
 
     public String getId() {

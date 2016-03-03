@@ -5,6 +5,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="degree">&#176;C</string>
     <string name="degree_logo">&#176;</string>
+    <string name="test_degree">16&#176;</string>
     <!--错误信息-->
     <string name="error_location_code">位置获取错误，请重新选择地点</string>
     <string name="error_network_refresh">请重新连接网络，并下拉尝试刷新</string>
@@ -26,4 +27,5 @@
 
     <string name="locating">正在定位…</string>
     <string name="locate_fail">自动定位失败，请稍后再试</string>
+    <string name="locate_fail_select">自动定位失败，请手动选择城市</string>
 </resources>

@@ -9,6 +9,7 @@ import android.view.Menu;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.trity.sun.R;
+import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.listener.OnPreferenceListener;
 
 /**
@@ -23,7 +24,7 @@ public abstract class AppBasePrefActivity extends AppBaseActivity implements OnP
     protected BasePreferenceFragment bpfragment;
     @Override
     public void initVariables() {
-        resToolBg=getIntent().getIntExtra("resBgColor",-1);
+        resToolBg=getIntent().getIntExtra(AppConstants.INTENT_BG_COLOR,-1);
     }
 
     @Override

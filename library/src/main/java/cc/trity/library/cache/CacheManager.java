@@ -113,7 +113,7 @@ public class CacheManager {
 
     public synchronized boolean putIntoCache(final CacheItem item) {
         if (FileUtils.getDiskCacheDirSize(context) > SDCARD_MIN_SPACE) {
-            FileUtils.saveObject(APP_CACHE_PATH, item);
+            FileUtils.saveObject(APP_CACHE_PATH+File.separator+item.getKey(), item);
             return true;
         }
         return false;

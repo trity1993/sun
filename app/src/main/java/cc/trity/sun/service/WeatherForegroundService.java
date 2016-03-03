@@ -3,6 +3,7 @@ package cc.trity.sun.service;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -118,5 +119,19 @@ public class WeatherForegroundService extends Service {
         Intent intent = new Intent(this, AlarmUpdateReceiver.class);
         PendingIntent pdIntent=PendingIntent.getBroadcast(this, AppConstants.REQUEST_ALARM_RECEIVER,intent,PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP,TimeUtils.getTimemills(date, AppConstants.MATCH_DATE_MINUTE),pdIntent);
+    }
+
+    /**
+     * 创建前台线程
+     * @param weatherMsg
+     */
+    public static void toCreateForGround(Context context,WeatherMsg weatherMsg){
+        if(AppConstants.isStartService){
+            AppConstants.isStartService=false;
+            Intent intent=new Intent(context, WeatherForegroundService.class);
+            intent.putExtra(AppConstants.INTENT_WEATHER_MSG, weatherMsg);
+            context.startService(intent);
+        }
+
     }
 }

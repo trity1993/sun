@@ -1,13 +1,14 @@
 package cc.trity.sun.engine;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.util.List;
 
-import cc.trity.library.activity.BaseActivity;
 import cc.trity.library.net.DefaultThreadPool;
 import cc.trity.library.net.HttpRequest;
 import cc.trity.library.net.RequestCallback;
+import cc.trity.library.net.RequestManager;
 import cc.trity.library.net.RequestParameter;
 import cc.trity.library.net.Response;
 import cc.trity.library.net.URLData;
@@ -38,20 +39,20 @@ public class RemoteService {
         return RemoteService.service;
     }
 
-    public void invoke(final BaseActivity activity,
+    public void invoke(final Context context,
                        final String apiKey,
                        final List<RequestParameter> params,
                        final String cacheKey,
                        final RequestCallback callBack) {
-        invoke(activity,apiKey,params,cacheKey,callBack,false);
+        invoke(context,apiKey,params,cacheKey,callBack,false);
     }
-    public void invoke(final BaseActivity activity,
+    public void invoke(final Context context,
                        final String apiKey,
                        final List<RequestParameter> params,
                        final String cacheKey,
                        final RequestCallback callBack,boolean isForceUpdate) {
 
-        final URLData urlData = UrlConfigManager.findURL(activity, apiKey);
+        final URLData urlData = UrlConfigManager.findURL(context, apiKey);
 
         if(urlData.getMockClass()!=null){//说明有模拟数据，则直接返回数据
             try{
@@ -72,8 +73,8 @@ public class RemoteService {
             if(isForceUpdate){
                 urlData.setExpires(0);
             }
-            HttpRequest request = activity.getRequestManager().createRequest(
-                    urlData, params,cacheKey, callBack);
+            HttpRequest request = RequestManager.getInstance().createRequest(
+                    urlData, params, cacheKey, callBack);
             DefaultThreadPool.getInstance().execute(request);
         }
     }

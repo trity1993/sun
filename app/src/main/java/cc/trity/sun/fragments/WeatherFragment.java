@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,9 +23,11 @@ import cc.trity.library.utils.CommonUtils;
 import cc.trity.library.utils.GsonUtils;
 import cc.trity.library.utils.LogUtils;
 import cc.trity.library.utils.TimeUtils;
+import cc.trity.library.utils.Utils;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.ChooseAreaActivity;
 import cc.trity.sun.activities.SettingActivity;
+import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.fragments.base.BaseFragment;
 import cc.trity.sun.listener.AbstractRequestCallback;
 import cc.trity.sun.listener.ZoomTouchListener;
@@ -32,6 +35,7 @@ import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.model.weathersponse.ReponseForcecastWeather;
 import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.presenter.WeatherPresenter;
+import cc.trity.sun.service.WeatherForegroundService;
 import cc.trity.sun.utils.Utility;
 
 /**
@@ -53,10 +57,13 @@ public class WeatherFragment extends BaseFragment {
     RelativeLayout refreshRlLayout;
     @InjectView(R.id.txt_location_temp)
     TextView txtLocationTemp;
+    @InjectView(R.id.transit)
+    View transit;
 
-    private int resBgColor, resbg,pageSize;
+    private int resBgColor, resbg,pageSize,pageNum;
     private String countyCode, countyName;
     private int hour;
+    private long delayMillis=1000;
 
 
     private WeatherContainer weatherContainer;
@@ -70,14 +77,16 @@ public class WeatherFragment extends BaseFragment {
     }
 
     public static WeatherFragment newInstance(int resBgColor, int resbg,
-                                              String countyCode, String countyName,int pageSize) {
+                                              String countyCode, String countyName,
+                                              int pageSize,int pageNum) {
         WeatherFragment weatherFragment = new WeatherFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("resBgColor", resBgColor);
+        bundle.putInt(AppConstants.INTENT_BG_COLOR, resBgColor);
         bundle.putInt("resBg", resbg);
         bundle.putInt("pageSize", pageSize);
-        bundle.putString("countyCode", countyCode);
-        bundle.putString("countyName", countyName);
+        bundle.putInt("pageNum", pageNum);
+        bundle.putString(AppConstants.COUNTRY_CODE, countyCode);
+        bundle.putString(AppConstants.COUNTRY_NAME, countyName);
         weatherFragment.setArguments(bundle);
 
         return weatherFragment;
@@ -87,13 +96,14 @@ public class WeatherFragment extends BaseFragment {
     public void initVariables() {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            resBgColor = bundle.getInt("resBgColor");
+            resBgColor = bundle.getInt(AppConstants.INTENT_BG_COLOR);
             resbg = bundle.getInt("resBg");
-            countyCode = bundle.getString("countyCode");
-            countyName = bundle.getString("countyName");
+            countyCode = bundle.getString(AppConstants.COUNTRY_CODE);
+            countyName = bundle.getString(AppConstants.COUNTRY_NAME);
             pageSize = bundle.getInt("pageSize");
+            pageNum=bundle.getInt("pageNum",-1);
         }
-        hour = Integer.valueOf(TimeUtils.getCurentTime("HH"));
+        hour = Utils.convertToInt(TimeUtils.getCurentTime("HH"));
 
         weatherPresenter=WeatherPresenter.getInstance(activity);
     }
@@ -138,15 +148,7 @@ public class WeatherFragment extends BaseFragment {
                 return true;
             }
         });
-        //地点
-        if (countyName != null)
-            locationWeatherText.setText(countyName);
-        //天气图标
-        if (hour > 18 || hour < 6) {
-            imgWeatherFlag.setImageResource(R.mipmap.icon_sunny_night);
-        } else {
-            imgWeatherFlag.setImageResource(R.mipmap.icon_sunny);
-        }
+
         //设置swipeRefresh
         swipeRefresh.setColorSchemeColors(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -159,7 +161,16 @@ public class WeatherFragment extends BaseFragment {
                 }
             }
         });
+        //设置缩放手势
         refreshRlLayout.setOnTouchListener(new ZoomTouchListener(activity));
+
+        //设置view出现的情况
+        if(pageNum==0){
+            setLocationVisibile(true);
+            delayMillis=1000;
+        }else{
+            setViewAppear();
+        }
 
         handler.postDelayed(new Runnable() {
             @Override
@@ -169,7 +180,7 @@ public class WeatherFragment extends BaseFragment {
                     loadData();
                 }
             }
-        }, 1000);
+        }, delayMillis);
 
     }
 
@@ -190,7 +201,21 @@ public class WeatherFragment extends BaseFragment {
                     weatherPresenter.loadWeather(activity,countyCode,requestCallback);
                 }
             }
+            setViewAppear();
             updateView(weatherContainer);//无论是否为null都要进行更新操作
+        }
+        setLocationVisibile(false);
+    }
+
+    public void setViewAppear(){
+        //地点
+        if (countyName != null)
+            locationWeatherText.setText(countyName);
+        //天气图标
+        if (hour > 18 || hour < 6) {
+            imgWeatherFlag.setImageResource(R.mipmap.icon_sunny_night);
+        } else {
+            imgWeatherFlag.setImageResource(R.mipmap.icon_sunny);
         }
     }
 
@@ -208,7 +233,7 @@ public class WeatherFragment extends BaseFragment {
 
                 }
 
-                weatherPresenter.toCreateForGround(weatherMsg);
+                WeatherForegroundService.toCreateForGround(activity,weatherMsg);
             }
         }
         if (swipeRefresh != null){
@@ -218,7 +243,7 @@ public class WeatherFragment extends BaseFragment {
 
     public void errorUpdateView(String errorMesg){
 //        CommonUtils.showToast(activity, errorMesg);
-        CommonUtils.showSnackbar(rlLayout,errorMesg);
+        CommonUtils.showSnackbar(rlLayout,errorMesg);//多次弹出的时候，会有空指针的情况
         if (swipeRefresh != null)
             swipeRefresh.setRefreshing(false);
     }
@@ -229,6 +254,27 @@ public class WeatherFragment extends BaseFragment {
 
         if (swipeRefresh != null)
             swipeRefresh.setRefreshing(false);
+    }
+
+    public void setLocationVisibile(boolean isVisibile){
+        int gone=View.GONE;
+        int visit=View.VISIBLE;
+
+        if(isVisibile){
+            imgWeatherFlag.setVisibility(gone);
+            txtLocationTemp.setVisibility(gone);
+            locationWeatherText.setVisibility(gone);
+
+            transit.setVisibility(visit);
+            transit.startAnimation(AnimationUtils.loadAnimation(activity,R.anim.anim_alpha_scale));
+        }else{
+            imgWeatherFlag.setVisibility(visit);
+            txtLocationTemp.setVisibility(visit);
+            locationWeatherText.setVisibility(visit);
+
+            transit.setVisibility(gone);
+            transit.clearAnimation();
+        }
     }
 
     @Override

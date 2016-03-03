@@ -16,10 +16,16 @@ public class BaseApplication extends Application {
         super.onCreate();
         context=getApplicationContext();
         CacheManager.getInstance(context).initCacheDir();
+        initCrashHandler(context);
+
+    }
+    private void initCrashHandler(Context mContext){
+        CrashHandler crashHandler=CrashHandler.getInstance(mContext);
     }
 
     public static Context getContext() {
         return context;
     }
+
 
 }

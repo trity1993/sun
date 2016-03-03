@@ -1,5 +1,6 @@
 package cc.trity.sun.model;
 
+import cc.trity.library.utils.Utils;
 import cc.trity.sun.engine.AppConstants;
 
 /**
@@ -38,7 +39,7 @@ public class WeatherRequest {
      * @return
      */
     public String generateUrl() {
-        appid=appid.substring(0,6);
+        appid= Utils.safeSubString(appid,0,6);
         return new String(AppConstants.URL_WEATHER + "?" +
                 "areaid=" + areaid + "&" + "type=" + type + "&" + "date=" + date +
                 "&" + "appid=" + appid+"&"+"key="+key);

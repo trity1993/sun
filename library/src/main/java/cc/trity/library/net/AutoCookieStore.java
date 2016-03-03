@@ -73,6 +73,8 @@ public class AutoCookieStore implements CookieStore {
 
     @Override
     public void add(URI uri, HttpCookie cookie) {
+        if(cookie==null||uri==null)
+            return ;
         LogUtils.d(TAG, "add " + cookie.toString());
 
         List<HttpCookie> cookies = mapCookies.get(uri);//尝试读取，没有则进行加入操作

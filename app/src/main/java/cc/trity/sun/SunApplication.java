@@ -1,6 +1,5 @@
 package cc.trity.sun;
 
-import android.content.Context;
 import android.os.StrictMode;
 
 import cc.trity.library.BaseApplication;
@@ -9,18 +8,12 @@ import cc.trity.library.BaseApplication;
  * Created by TryIT on 2016/1/11.
  */
 public class SunApplication extends BaseApplication {
-    private static final boolean DEVELOPER_MODE=true;
+    private static final boolean DEVELOPER_MODE=false;
 
     @Override
     public void onCreate() {
         super.onCreate();
-//        initCrashHandler(context);
         setUpDebug();
-    }
-
-    private void initCrashHandler(Context mContext){
-        CrashHandler crashHandler=CrashHandler.getInstance();
-        crashHandler.collectDeviceInfo(mContext);
     }
 
     private void setUpDebug(){

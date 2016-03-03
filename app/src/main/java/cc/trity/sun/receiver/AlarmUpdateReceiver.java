@@ -19,6 +19,7 @@ import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.model.city.County;
 import cc.trity.sun.presenter.WeatherPresenter;
+import cc.trity.sun.service.WeatherForegroundService;
 
 /**
  * 定时6，11，18 进行启动service进行刷新工作
@@ -26,7 +27,7 @@ import cc.trity.sun.presenter.WeatherPresenter;
  */
 public class AlarmUpdateReceiver extends BroadcastReceiver {
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         CommonUtils.showToast(context, "AlarmUpdateReceiver 已接受到");
         if(NetWorkUtils.isNetworkAvailable(context)){
             final WeatherPresenter weatherPresenter=WeatherPresenter.getInstance(context);
@@ -43,7 +44,7 @@ public class AlarmUpdateReceiver extends BroadcastReceiver {
                             WeatherMsg weatherMsg=weatherPresenter.updateData(weatherContainer,county.getPlaceName());
                             if(weatherMsg!=null){
                                 AppConstants.isStartService=true;
-                                weatherPresenter.toCreateForGround(weatherMsg);
+                                WeatherForegroundService.toCreateForGround(context,weatherMsg);
                             }
                         }
                     }

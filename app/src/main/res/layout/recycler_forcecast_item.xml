@@ -1,0 +1,75 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/space_small">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/space_normal">
+
+        <ImageView
+            android:id="@+id/img_weather_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/little_icon_sunny" />
+
+        <TextView
+            android:id="@+id/txt_forcecast_date"
+            style="@style/BaseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="saturday 9/3" />
+
+        <TextView
+            android:id="@+id/txt_forcecast_temp"
+            style="@style/BaseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/test_degree" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/llayout_forcecast_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/txt_day_temp"
+            style="@style/BaseTitle.forcecast"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/gray_bg"
+            android:drawableTop="@mipmap/little_icon_sunny"
+            android:gravity="center"
+            android:text="白天" />
+        <TextView
+            style="@style/BaseTitle.forcecast"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/gray_bg"
+            android:drawableTop="@mipmap/little_icon_sunny"
+            android:gravity="center"
+            android:text="中午" />
+
+        <TextView
+            android:id="@+id/txt_night_temp"
+            style="@style/BaseTitle.forcecast"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/gray_bg"
+            android:drawableTop="@mipmap/little_icon_sunny"
+            android:gravity="center"
+
+            android:text="黑夜" />
+    </LinearLayout>
+
+</LinearLayout>

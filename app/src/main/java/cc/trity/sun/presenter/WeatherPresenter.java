@@ -1,7 +1,6 @@
 package cc.trity.sun.presenter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
 
 import java.util.List;
@@ -13,16 +12,16 @@ import cc.trity.library.utils.FileUtils;
 import cc.trity.library.utils.GsonUtils;
 import cc.trity.library.utils.NetWorkUtils;
 import cc.trity.library.utils.TimeUtils;
+import cc.trity.library.utils.Utils;
 import cc.trity.sun.R;
+import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.engine.RemoteService;
 import cc.trity.sun.listener.HttpCallbackListener;
-import cc.trity.sun.engine.AppConstants;
+import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.model.weathersponse.WeatherDetail;
-import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.networks.HttpManager;
 import cc.trity.sun.networks.HttpNetWorkTools;
-import cc.trity.sun.service.WeatherForegroundService;
 import cc.trity.sun.utils.Utility;
 
 /**
@@ -90,24 +89,24 @@ public class WeatherPresenter {
         weatherContainer = Utility.getWeatherContainer(context, countyCode);
         if (weatherContainer == null)
             return false;
-        long dateHM = Long.valueOf(weatherContainer.getReleaseTime().trim());
-        long curDate = Long.valueOf(TimeUtils.getCurentTime("yyyyMMddHHmm"));
+        long dateHM = Utils.convertToLong(weatherContainer.getReleaseTime().trim());
+        long curDate = Utils.convertToLong(TimeUtils.getCurentTime("yyyyMMddHHmm"));
 
         StringBuilder sbDay=new StringBuilder(TimeUtils.getCurentTime("yyyyMMdd"));
         sbDay.append("0600");
-        long updateTime=Long.valueOf(sbDay.toString());
+        long updateTime=Utils.convertToLong(sbDay.toString());
         if (dateHM < updateTime && curDate >= updateTime) {
             return true;
         }
 
         sbDay.replace(8,12,"1100");
-        updateTime=Long.valueOf(sbDay.toString());
+        updateTime=Utils.convertToLong(sbDay.toString());
         if (dateHM < updateTime && curDate >= updateTime) {
             return true;
         }
 
         sbDay.replace(8, 12, "1800");
-        updateTime=Long.valueOf(sbDay.toString());
+        updateTime=Utils.convertToLong(sbDay.toString());
         if (dateHM < updateTime && curDate >= updateTime) {
             return true;
         }
@@ -132,7 +131,7 @@ public class WeatherPresenter {
         StringBuilder temp = new StringBuilder();
         WeatherDetail weatherDetail = weatherContainer.getWeatherDetailList().get(0);
 
-        int hour = Integer.valueOf(TimeUtils.getCurentTime("HH"));
+        int hour = Utils.convertToInt(TimeUtils.getCurentTime("HH"));
         if (hour > 18 || hour < 6) {
             temp.append(weatherDetail.getNightTemp());
             imgIconNum = weatherDetail.getNightNum();
@@ -154,7 +153,7 @@ public class WeatherPresenter {
         //设置图标
         if(TextUtils.isEmpty(imgIconNum))
             return null;
-        int num = Integer.valueOf(imgIconNum);
+        int num = Utils.convertToInt(imgIconNum);
         //资源id
         int resId=0;
         int resLittleId=0;
@@ -206,19 +205,5 @@ public class WeatherPresenter {
             String jsonWeatherInfo = GsonUtils.createGsonString(weatherContainer);
             Utility.saveCountyWeatherInfo(context, countyCode, jsonWeatherInfo);
         }
-    }
-
-    /**
-     * 创建前台线程
-     * @param weatherMsg
-     */
-    public void toCreateForGround(WeatherMsg weatherMsg){
-        if(AppConstants.isStartService){
-            AppConstants.isStartService=false;
-            Intent intent=new Intent(context, WeatherForegroundService.class);
-            intent.putExtra(AppConstants.INTENT_WEATHER_MSG, weatherMsg);
-            context.startService(intent);
-        }
-
     }
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import cc.trity.library.utils.LogUtils;
+import cc.trity.library.utils.Utils;
 
 /**
  * 处理html页面事件的事件分发
@@ -24,19 +25,19 @@ public class Dispatcher {
         if (pos == -1) {
             findKey = url;
         } else {
-            findKey = url.substring(0, pos);
+            findKey= Utils.safeSubString(url,0,pos);
 
             //得到对应的键值
-            String strParams = url.substring(pos);
+            String strParams = Utils.safeSubString(url,pos);
             String[] pairs = strParams.split("&");
             for (String strKeyAndValue : pairs) {
                 String[] arr = strKeyAndValue.split("=");
                 String key = arr[0];
                 String value = arr[1];
                 if (value.startsWith("(int)")) {
-                    intent.putExtra(key, Integer.valueOf(value.substring(5)));
+                    intent.putExtra(key, Utils.convertToInt(Utils.safeSubString(value, 5)));
                 } else if (value.startsWith("(Double)")) {
-                    intent.putExtra(key, Double.valueOf(value.substring(8)));
+                    intent.putExtra(key, Double.valueOf(Utils.safeSubString(value, 8)));
                 } else {
                     intent.putExtra(key, value);
                 }

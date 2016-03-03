@@ -61,13 +61,16 @@ public class TipViewController implements View.OnClickListener, View.OnTouchList
     /**
      * 清除当前的view
      */
-    private void removePoppedViewAndClear() {
+    public void removePoppedViewAndClear() {
         if(windowManager!=null&&wholeView!=null){
             windowManager.removeView(wholeView);
+            // remove listeners
+            contentView.setOnClickListener(null);
+            wholeView.setOnTouchListener(null);
+
+            wholeView=null;
         }
-        // remove listeners
-        contentView.setOnClickListener(null);
-        wholeView.setOnTouchListener(null);
+
     }
 
     /**

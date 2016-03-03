@@ -1,5 +1,7 @@
 package cc.trity.sun.sdk;
 
+import android.util.Log;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -13,6 +15,7 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import cc.trity.library.utils.LogUtils;
 import cc.trity.sun.model.city.City;
 import cc.trity.sun.model.city.County;
 import cc.trity.sun.model.city.Province;
@@ -28,20 +31,25 @@ public class PlaceSaxParseHandler extends DefaultHandler {
     private City city;
     private County county;
 
-    public static List<Province> getProvicneModel(InputStream in) throws Exception {
+    public static List<Province> getProvicneModel(InputStream in){
         PlaceSaxParseHandler handler = null;
         // 得到SAX解析工厂
         SAXParserFactory factory = SAXParserFactory.newInstance();
-        // 创建解析器
-        SAXParser parser = factory.newSAXParser();
-        XMLReader xmlreader = parser.getXMLReader();
-        // 得到输入流
-        InputSource is = new InputSource(in);
-        // 得到SAX解析实现类
-        handler = new PlaceSaxParseHandler();
-        xmlreader.setContentHandler(handler);
-        // 开始解析
-        xmlreader.parse(is);
+        try{
+            // 创建解析器
+            SAXParser parser = factory.newSAXParser();
+            XMLReader xmlreader = parser.getXMLReader();
+            // 得到输入流
+            InputSource is = new InputSource(in);
+            // 得到SAX解析实现类
+            handler = new PlaceSaxParseHandler();
+            xmlreader.setContentHandler(handler);
+            // 开始解析
+            xmlreader.parse(is);
+        }catch (Exception e){
+            LogUtils.e(TAG, Log.getStackTraceString(e));
+            return null;
+        }
 
         return handler.provinceList;
     }

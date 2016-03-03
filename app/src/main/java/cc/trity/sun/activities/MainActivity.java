@@ -13,6 +13,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cc.trity.library.utils.CommonUtils;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.base.AppBaseActivity;
 import cc.trity.sun.adapters.EndlessLoopAdapter;
@@ -21,10 +22,11 @@ import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.fragments.WeatherFragment;
 import cc.trity.sun.model.city.County;
 import cc.trity.sun.view.CirclePageIndicator;
+import cc.trity.sun.view.CubeOutTransformer;
 import cc.trity.sun.view.TipViewController;
 
 public class MainActivity extends AppBaseActivity {
-    public static final int ADD_FRAGMENT=0;
+    public static final int ADD_FRAGMENT = 0;
     private static final String TAG = "MainActivity";
 
     @InjectView(R.id.viewpager_main)
@@ -42,15 +44,16 @@ public class MainActivity extends AppBaseActivity {
             , R.drawable.corner_pink_bg
             , R.drawable.corner_green_bg
             , R.drawable.corner_blue_bg};
-    List<Fragment> fragmentList=new ArrayList<>();
+    List<Fragment> fragmentList = new ArrayList<>();
     List<County> countyList;
 
     int lenght = 1;
 
-    County county=null;
+    County county = null;
     EndlessLoopAdapter endlessLoopAdapter = null;
-    DataBaseManager dataBaseManager=null;
+    DataBaseManager dataBaseManager = null;
 
+    private TipViewController tipView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,33 +61,38 @@ public class MainActivity extends AppBaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         this.init(savedInstanceState);
-        if(isFirstOpen){
-            new TipViewController(this).showView();
+        if (isFirstOpen) {
+            tipView=new TipViewController(this);
+            tipView.showView();
         }
     }
 
     @Override
     public void initVariables() {
 
-        dataBaseManager=DataBaseManager.getInstance(MainActivity.this);
-        countyList=dataBaseManager.loadCounties();
+        dataBaseManager = DataBaseManager.getInstance(MainActivity.this);
+        countyList = dataBaseManager.loadCounties();
 
-        lenght=countyList.size();
+        //加载Intent
+//        Intent intentLocate=getIntent();
 
-        if(lenght==0){
+        lenght = countyList.size();
+
+        if (lenght == 0) {
+            CommonUtils.showToast(MainActivity.this, R.string.locate_fail_select);
             ChooseAreaActivity.toStartChooseAreaAct(this, -1);
-            return;
+            return;//此return并不能导致oncreate的return
         }
 
         for (int i = 0; i < lenght; i++) {
-            county=countyList.get(i);
-            Fragment fragment = WeatherFragment.newInstance(resInt[i%4], resDrawableInt[i%4], county.getWeaterCode(), county.getPlaceName(),lenght);
+            county = countyList.get(i);
+            Fragment fragment = WeatherFragment.newInstance(resInt[i % 4], resDrawableInt[i % 4], county.getWeaterCode(), county.getPlaceName(), lenght, i);
 //            Fragment fragment=new FourShowFragment();
             fragmentList.add(fragment);
         }
         //读取sharePrf是否打开前台线程
-        SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
-        AppConstants.isStartService=sharedPreferences.getBoolean(AppConstants.SHARE_PREF_SERVICE, true);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        AppConstants.isStartService = sharedPreferences.getBoolean(AppConstants.SHARE_PREF_SERVICE, true);
     }
 
     @Override
@@ -94,8 +102,8 @@ public class MainActivity extends AppBaseActivity {
         } else if (lenght <= 3) {
             //循环多一次，倍数增加
             for (int i = 0; i < lenght; i++) {
-                county=countyList.get(i);
-                Fragment fragment = WeatherFragment.newInstance(resInt[i], resDrawableInt[i], county.getWeaterCode(), county.getPlaceName(),lenght);
+                county = countyList.get(i);
+                Fragment fragment = WeatherFragment.newInstance(resInt[i], resDrawableInt[i], county.getWeaterCode(), county.getPlaceName(), lenght, i);
                 fragmentList.add(fragment);
             }
             endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, Integer.MAX_VALUE);
@@ -104,7 +112,7 @@ public class MainActivity extends AppBaseActivity {
         }
         viewpagerMain.setAdapter(endlessLoopAdapter);
         viewpagerMain.setCurrentItem(lenght * 100);//设置再中间可以左右滑动
-//        viewpagerMain.setPageTransformer(true, new CubeOutTransformer());
+        viewpagerMain.setPageTransformer(true, new CubeOutTransformer());
         indicator.setViewPagerFixedLength(viewpagerMain, lenght);
         indicator.setSnap(true);
 
@@ -115,16 +123,16 @@ public class MainActivity extends AppBaseActivity {
 
     }
 
-    public void updateView(){
+    public void updateView() {
 
         countyList.clear();
         countyList.addAll(dataBaseManager.loadCounties());
-        lenght=countyList.size();
+        lenght = countyList.size();
 
         fragmentList.clear();
         for (int i = 0; i < lenght; i++) {
-            county=countyList.get(i);
-            Fragment fragment = WeatherFragment.newInstance(resInt[i%4], resDrawableInt[i%4], county.getWeaterCode(), county.getPlaceName(),lenght);
+            county = countyList.get(i);
+            Fragment fragment = WeatherFragment.newInstance(resInt[i % 4], resDrawableInt[i % 4], county.getWeaterCode(), county.getPlaceName(), lenght, i);
             fragmentList.add(fragment);
         }
 
@@ -133,8 +141,8 @@ public class MainActivity extends AppBaseActivity {
         } else if (lenght <= 3) {
             //循环多一次，倍数增加
             for (int i = 0; i < lenght; i++) {
-                county=countyList.get(i);
-                Fragment fragment = WeatherFragment.newInstance(resInt[i%4], resDrawableInt[i%4], county.getWeaterCode(), county.getPlaceName(),lenght);
+                county = countyList.get(i);
+                Fragment fragment = WeatherFragment.newInstance(resInt[i % 4], resDrawableInt[i % 4], county.getWeaterCode(), county.getPlaceName(), lenght, i);
                 fragmentList.add(fragment);
             }
             endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, Integer.MAX_VALUE);
@@ -146,21 +154,32 @@ public class MainActivity extends AppBaseActivity {
 
     }
 
-    public static void toMainAct(Context context){
-        Intent intent=new Intent(context,MainActivity.class);
+    public static void toMainAct(Context context, boolean isSuccessLoacte) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(AppConstants.IS_LOACTE_SUCCESS, isSuccessLoacte);
         context.startActivity(intent);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK){
-            switch (requestCode){
-                case ADD_FRAGMENT:
+        switch (requestCode) {
+            case ADD_FRAGMENT:
+                if (resultCode == RESULT_OK) {
                     updateView();
-                    break;
-            }
+
+                } else if (resultCode == RESULT_CANCELED) {
+                    finish();
+                }
+                break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(tipView!=null)
+            tipView.removePoppedViewAndClear();
+        super.onDestroy();
     }
 
 }

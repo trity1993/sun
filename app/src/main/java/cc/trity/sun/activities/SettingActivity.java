@@ -69,7 +69,7 @@ public class SettingActivity extends AppBasePrefActivity implements Preference.O
 
     public static void actionStart(Context context,int resBgColor){
         Intent intentSet = new Intent(context, SettingActivity.class);
-        intentSet.putExtra("resBgColor", resBgColor);
+        intentSet.putExtra(AppConstants.INTENT_BG_COLOR, resBgColor);
         context.startActivity(intentSet);
     }
 }

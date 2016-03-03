@@ -1,6 +1,6 @@
 package cc.trity.library.net;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.res.XmlResourceParser;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -17,11 +17,11 @@ import java.util.ArrayList;
 public class UrlConfigManager {
     private static ArrayList<URLData> urlList;
 
-    private static void fetchUrlDataFromXml(final Activity activity) {
+    private static void fetchUrlDataFromXml(final Context context) {
         urlList = new ArrayList<>();
 
-        final XmlResourceParser xmlParser = activity.getApplication()
-                .getResources().getXml(cc.trity.tritylibrary.R.xml.url);
+        final XmlResourceParser xmlParser =
+                context.getResources().getXml(cc.trity.tritylibrary.R.xml.url);
 
         int eventCode;
         try {
@@ -61,11 +61,11 @@ public class UrlConfigManager {
         }
     }
 
-    public static URLData findURL(final Activity activity,
+    public static URLData findURL(final Context context,
                                   final String findKey) {
         // 如果urlList还没有数据（第一次），或者被回收了，那么（重新）加载xml
         if (urlList == null || urlList.isEmpty())
-            fetchUrlDataFromXml(activity);
+            fetchUrlDataFromXml(context);
 
         for (URLData data : urlList) {
             if (findKey.equals(data.getKey())) {

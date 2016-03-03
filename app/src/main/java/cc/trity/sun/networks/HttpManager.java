@@ -7,6 +7,7 @@ import java.util.List;
 
 import cc.trity.library.net.RequestParameter;
 import cc.trity.library.utils.TimeUtils;
+import cc.trity.library.utils.Utils;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.model.WeatherRequest;
 import cc.trity.sun.utils.URLEncoderUtils;
@@ -71,7 +72,7 @@ public class HttpManager {
         String newUrl=generateUrl(requestParameters, urlStr);
         if(!TextUtils.isEmpty(newUrl)){
             requestParameters.set(requestParameters.size()-1,new RequestParameter("appid"
-                    , AppConstants.APP_ID.substring(0,6)));
+                    , Utils.safeSubString(AppConstants.APP_ID,0,6)));
             String encryptKey= URLEncoderUtils.standardURLEncoder(newUrl, AppConstants.PRIVATE_KEY);
 
             RequestParameter parameter4=new RequestParameter("key",encryptKey);

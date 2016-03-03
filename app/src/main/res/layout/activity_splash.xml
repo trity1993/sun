@@ -39,6 +39,7 @@
 
     <TextView
         style="@style/BaseTitle"
+        android:id="@+id/txt_splash_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/frame_splash_layout"

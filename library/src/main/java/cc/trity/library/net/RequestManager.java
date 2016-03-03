@@ -9,9 +9,21 @@ import java.util.List;
  */
 public class RequestManager {
     private List<HttpRequest> requestList = null;
-    public RequestManager(){
+
+    private static RequestManager requestManager=null;
+
+    private RequestManager(){
         // 异步请求列表
         requestList=new ArrayList<>();
+    }
+
+    public static RequestManager getInstance(){
+        if(requestManager==null){
+            synchronized (RequestManager.class){
+                requestManager=new RequestManager();
+            }
+        }
+        return requestManager;
     }
 
     /**
