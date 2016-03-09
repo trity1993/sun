@@ -84,7 +84,7 @@ public class ForecastActivity extends AppBaseActivity {
         forecastLineChart.paddingData(list);
     }
 
-    private static void showWeatherForecastAct(Context context, int resbgcolor) {
+    public static void showWeatherForecastAct(Context context, int resbgcolor) {
         Intent intent = new Intent(context, ForecastActivity.class);
         intent.putExtra(AppConstants.INTENT_BG_COLOR, resbgcolor);
         context.startActivity(intent);

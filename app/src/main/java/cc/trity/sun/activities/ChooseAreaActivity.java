@@ -193,7 +193,7 @@ public class ChooseAreaActivity extends AppBaseActivity {
      * @param county
      */
     private void saveCounties(County county){
-        DataBaseManager dataBaseManager=DataBaseManager.getInstance(ChooseAreaActivity.this);
+        DataBaseManager dataBaseManager=new DataBaseManager(ChooseAreaActivity.this);
         dataBaseManager.saveCounty(county);
     }
 

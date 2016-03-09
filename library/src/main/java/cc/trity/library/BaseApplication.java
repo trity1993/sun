@@ -20,7 +20,7 @@ public class BaseApplication extends Application {
 
     }
     private void initCrashHandler(Context mContext){
-        CrashHandler crashHandler=CrashHandler.getInstance(mContext);
+        CrashHandler.getInstance(mContext);
     }
 
     public static Context getContext() {

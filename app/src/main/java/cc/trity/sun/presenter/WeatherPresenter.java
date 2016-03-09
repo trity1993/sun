@@ -32,18 +32,10 @@ public class WeatherPresenter {
     private static final String TAG="WeatherPresenter";
 
     private Context context;
-    private static WeatherPresenter weatherPresenter;
-    private WeatherPresenter(Context context){
+    public WeatherPresenter(Context context){
         this.context=context;
     }
-    public static WeatherPresenter getInstance(Context context){
-        if(weatherPresenter==null){
-            synchronized (WeatherPresenter.class){
-                return weatherPresenter=new WeatherPresenter(context);
-            }
-        }
-        return weatherPresenter;
-    }
+
 
     /**
      * 加载天气信息

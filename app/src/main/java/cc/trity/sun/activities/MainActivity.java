@@ -70,7 +70,7 @@ public class MainActivity extends AppBaseActivity {
     @Override
     public void initVariables() {
 
-        dataBaseManager = DataBaseManager.getInstance(MainActivity.this);
+        dataBaseManager = new DataBaseManager(MainActivity.this);
         countyList = dataBaseManager.loadCounties();
 
         //加载Intent

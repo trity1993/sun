@@ -30,8 +30,8 @@ public class AlarmUpdateReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
         CommonUtils.showToast(context, "AlarmUpdateReceiver 已接受到");
         if(NetWorkUtils.isNetworkAvailable(context)){
-            final WeatherPresenter weatherPresenter=WeatherPresenter.getInstance(context);
-            DataBaseManager dataBaseManager= DataBaseManager.getInstance(context);
+            final WeatherPresenter weatherPresenter=new WeatherPresenter(context);
+            DataBaseManager dataBaseManager= new DataBaseManager(context);
             List<County> countyList= dataBaseManager.loadCounties();
             if(countyList!=null&&countyList.size()>=0){
                 final County county=countyList.get(0);

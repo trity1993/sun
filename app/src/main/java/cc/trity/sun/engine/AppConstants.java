@@ -17,6 +17,7 @@ public class AppConstants {
     public static final String COUNTRY_NAME="county_name";
     public static final String COUNTRY_CODE="county_code";
     public static final String DEFAULT_STRING_VALUE="";
+    public static final int DEFAULT_INTEGER_VALUE=-1;
     public static int pageLength=1;
     public static int REQUEST_ALARM_RECEIVER=2;
     public static boolean isStartService=true;//监控多个fragment的情况

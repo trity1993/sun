@@ -57,7 +57,7 @@ public class FourShowFragment extends BaseFragment {
 
     @Override
     public void initVariables() {
-        dataBaseManager = DataBaseManager.getInstance(activity);
+        dataBaseManager = new DataBaseManager(activity);
         countyList = dataBaseManager.loadCounties();
 
         lenght = countyList.size();
@@ -65,7 +65,7 @@ public class FourShowFragment extends BaseFragment {
         County county = null;
         WeatherContainer container=null;
 
-        weatherPresenter=WeatherPresenter.getInstance(activity);
+        weatherPresenter=new WeatherPresenter(activity);
         weatherMsgList=new ArrayList<>();
 
         for (int i = 0; i < lenght; i++) {

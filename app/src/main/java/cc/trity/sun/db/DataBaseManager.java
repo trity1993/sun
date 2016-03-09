@@ -27,22 +27,12 @@ public class DataBaseManager {
      */
     public static final int VERSION = 2;
 
-    private static DataBaseManager dataBaseManager;
     private SQLiteDatabase db;
 
-    private DataBaseManager(Context context) {
+    public DataBaseManager(Context context) {
         WeatherOpenHelper weatherOpenHelper = new WeatherOpenHelper(context,
                 DB_NAME, null, VERSION);
         db = weatherOpenHelper.getWritableDatabase();
-    }
-
-    public static DataBaseManager getInstance(Context context) {
-        if (dataBaseManager == null) {
-            synchronized (DataBaseManager.class) {
-                dataBaseManager = new DataBaseManager(context);
-            }
-        }
-        return dataBaseManager;
     }
 
     /**

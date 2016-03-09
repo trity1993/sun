@@ -30,7 +30,7 @@ import cc.trity.sun.activities.SettingActivity;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.fragments.base.BaseFragment;
 import cc.trity.sun.listener.AbstractRequestCallback;
-import cc.trity.sun.listener.ZoomTouchListener;
+import cc.trity.sun.listener.ZoomTouchImplListener;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.model.weathersponse.ReponseForcecastWeather;
 import cc.trity.sun.model.weathersponse.WeatherContainer;
@@ -105,7 +105,7 @@ public class WeatherFragment extends BaseFragment {
         }
         hour = Utils.convertToInt(TimeUtils.getCurentTime("HH"));
 
-        weatherPresenter=WeatherPresenter.getInstance(activity);
+        weatherPresenter=new WeatherPresenter(activity);
     }
 
     @Override
@@ -162,7 +162,8 @@ public class WeatherFragment extends BaseFragment {
             }
         });
         //设置缩放手势
-        refreshRlLayout.setOnTouchListener(new ZoomTouchListener(activity));
+//        refreshRlLayout.setOnTouchListener(new ZoomTouchListener(activity));
+        refreshRlLayout.setOnTouchListener(new ZoomTouchImplListener(activity));
 
         //设置view出现的情况
         if(pageNum==0){

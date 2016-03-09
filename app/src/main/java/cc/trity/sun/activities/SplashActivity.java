@@ -148,7 +148,7 @@ public class SplashActivity extends AppBaseActivity implements BDLocationListene
      * @param county
      */
     private boolean saveCounties(County county) {
-        DataBaseManager dataBaseManager = DataBaseManager.getInstance(SplashActivity.this);
+        DataBaseManager dataBaseManager = new DataBaseManager(SplashActivity.this);
         return dataBaseManager.updateCounty(county);
     }
 
