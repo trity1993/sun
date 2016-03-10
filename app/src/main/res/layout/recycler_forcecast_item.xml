@@ -49,15 +49,6 @@
             android:drawableTop="@mipmap/little_icon_sunny"
             android:gravity="center"
             android:text="白天" />
-        <TextView
-            style="@style/BaseTitle.forcecast"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/gray_bg"
-            android:drawableTop="@mipmap/little_icon_sunny"
-            android:gravity="center"
-            android:text="中午" />
 
         <TextView
             android:id="@+id/txt_night_temp"
@@ -68,7 +59,6 @@
             android:background="@color/gray_bg"
             android:drawableTop="@mipmap/little_icon_sunny"
             android:gravity="center"
-
             android:text="黑夜" />
     </LinearLayout>
 

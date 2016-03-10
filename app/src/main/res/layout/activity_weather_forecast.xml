@@ -3,13 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/green_bg"
     tools:context=".activities.ForecastActivity">
     <cc.trity.sun.view.LineChart
-        android:background="@color/green_bg"
         android:id="@+id/forecast_lineChart"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
     <include layout="@layout/toolbar_layout"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/forecast_recycler"
         android:layout_alignParentBottom="true"

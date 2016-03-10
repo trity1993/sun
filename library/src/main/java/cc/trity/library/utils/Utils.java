@@ -9,6 +9,7 @@ import android.text.TextUtils;
 public class Utils {
     private static final String defaultStr="";
     private static final int defaultInteger=-1;
+
     public static String safeSubString(String str,int start,int end){
         if(TextUtils.isEmpty(str)){
             return defaultStr;
@@ -21,6 +22,7 @@ public class Utils {
         }
         return defaultStr;
     }
+
     public static String safeSubString(String str,int start){
         if(TextUtils.isEmpty(str)){
             return defaultStr;
@@ -53,6 +55,7 @@ public class Utils {
             }
         }
     }
+
     public final static long convertToLong(Object value) {
         if (value == null || "".equals(value.toString().trim())) {
             return defaultInteger;

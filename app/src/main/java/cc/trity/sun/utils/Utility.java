@@ -19,6 +19,7 @@ import java.util.Locale;
 import cc.trity.library.utils.FileUtils;
 import cc.trity.library.utils.GsonUtils;
 import cc.trity.library.utils.LogUtils;
+import cc.trity.sun.R;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.model.city.City;
 import cc.trity.sun.model.city.County;
@@ -76,9 +77,18 @@ public class Utility {
 		editor.commit();
 	}
 
+	/**
+	 * 从sharePre中将key=countyCode对应的值value=WeatherContainer，以json的格式进行取出
+	 * @param context
+	 * @param countyCode
+	 * @return
+	 */
 	public static WeatherContainer getWeatherContainer(Context context,String countyCode){
+		if(countyCode==null)
+			return null;
 		SharedPreferences sharePre=PreferenceManager.getDefaultSharedPreferences(context);
-		String jsonStr=sharePre.getString(countyCode,"");
+		String jsonStr=sharePre.getString(countyCode, "");
+		LogUtils.d(TAG, jsonStr);
 		if(!TextUtils.isEmpty(jsonStr)){
 			return GsonUtils.getClass(jsonStr, WeatherContainer.class);
 		}
@@ -154,6 +164,16 @@ public class Utility {
 		}
 
 		return null;
+	}
+
+	/**
+	 * 返回摄氏度的匹配字符串
+	 * @param context
+	 * @return
+	 */
+	public static String getTempMatch(Context context){
+		String degreeStr = context.getResources().getString(R.string.degree);
+		return "%s"+degreeStr;
 	}
 
 }

@@ -1,61 +1,92 @@
 package cc.trity.sun.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by TryIT on 2016/3/2.
  */
-public class ForcecastItem {
-    private int weatherLittleImage;
-    private String weatherTemp,Date,weatherDayTemp,weatherNightTemp;
+public class ForcecastItem extends WeatherMsg {
+    private String releaseTime;
+    private String dayTemp,nightTemp;
+    private int resDayImage,resNightImage;
 
     public ForcecastItem() {
     }
 
-    public ForcecastItem(int weatherLittleImage, String weatherTemp,
-                         String date, String weatherDayTemp, String weatherNightTemp) {
-        this.weatherLittleImage = weatherLittleImage;
-        this.weatherTemp = weatherTemp;
-        Date = date;
-        this.weatherDayTemp = weatherDayTemp;
-        this.weatherNightTemp = weatherNightTemp;
+    ForcecastItem(Parcel source) {
+        super(source);
+
+        this.releaseTime=source.readString();
+        this.dayTemp=source.readString();
+        this.nightTemp=source.readString();
+
+        this.resDayImage=source.readInt();
+        this.resNightImage=source.readInt();
     }
 
-    public int getWeatherLittleImage() {
-        return weatherLittleImage;
+    public static final Parcelable.Creator<ForcecastItem> CREATOR
+            =new Parcelable.Creator<ForcecastItem>(){
+        @Override
+        public ForcecastItem createFromParcel(Parcel source) {
+            return new ForcecastItem(source);
+        }
+
+        @Override
+        public ForcecastItem[] newArray(int size) {
+            return new ForcecastItem[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+
+        dest.writeString(releaseTime);
+        dest.writeString(dayTemp);
+        dest.writeString(nightTemp);
+
+        dest.writeInt(resDayImage);
+        dest.writeInt(resNightImage);
     }
 
-    public void setWeatherLittleImage(int weatherLittleImage) {
-        this.weatherLittleImage = weatherLittleImage;
+    public String getReleaseTime() {
+        return releaseTime;
     }
 
-    public String getWeatherTemp() {
-        return weatherTemp;
+    public void setReleaseTime(String releaseTime) {
+        this.releaseTime = releaseTime;
     }
 
-    public void setWeatherTemp(String weatherTemp) {
-        this.weatherTemp = weatherTemp;
+    public String getDayTemp() {
+        return dayTemp;
     }
 
-    public String getDate() {
-        return Date;
+    public void setDayTemp(String dayTemp) {
+        this.dayTemp = dayTemp;
     }
 
-    public void setDate(String date) {
-        Date = date;
+    public String getNightTemp() {
+        return nightTemp;
     }
 
-    public String getWeatherDayTemp() {
-        return weatherDayTemp;
+    public void setNightTemp(String nightTemp) {
+        this.nightTemp = nightTemp;
     }
 
-    public void setWeatherDayTemp(String weatherDayTemp) {
-        this.weatherDayTemp = weatherDayTemp;
+    public int getResDayImage() {
+        return resDayImage;
     }
 
-    public String getWeatherNightTemp() {
-        return weatherNightTemp;
+    public void setResDayImage(int resDayImage) {
+        this.resDayImage = resDayImage;
     }
 
-    public void setWeatherNightTemp(String weatherNightTemp) {
-        this.weatherNightTemp = weatherNightTemp;
+    public int getResNightImage() {
+        return resNightImage;
+    }
+
+    public void setResNightImage(int resNightImage) {
+        this.resNightImage = resNightImage;
     }
 }

@@ -10,9 +10,7 @@ import android.os.Parcelable;
 public class WeatherMsg implements Parcelable {
     private String weatherDetail;
     private String weatherTemp;
-    private String airQuality;
     private String weatherLocation;
-    private int airQualityImg;
     private int weatherImage;
     private int weatherLittleImage;
     private int weatherBackground;
@@ -23,11 +21,9 @@ public class WeatherMsg implements Parcelable {
         this.weatherDetail=source.readString();
         this.weatherTemp=source.readString();
         this.weatherLocation=source.readString();
-        this.airQuality=source.readString();
 
         this.weatherImage=source.readInt();
         this.weatherLittleImage=source.readInt();
-        this.airQualityImg=source.readInt();
         this.weatherBackground=source.readInt();
     }
 
@@ -56,10 +52,8 @@ public class WeatherMsg implements Parcelable {
         dest.writeString(weatherTemp);
         dest.writeString(weatherLocation);
 
-        dest.writeString(airQuality);
         dest.writeInt(weatherImage);
         dest.writeInt(weatherLittleImage);
-        dest.writeInt(airQualityImg);
         dest.writeInt(weatherBackground);
 
     }
@@ -86,22 +80,6 @@ public class WeatherMsg implements Parcelable {
 
     public void setWeatherTemp(String weatherTemp) {
         this.weatherTemp = weatherTemp;
-    }
-
-    public String getAirQuality() {
-        return airQuality;
-    }
-
-    public void setAirQuality(String airQuality) {
-        this.airQuality = airQuality;
-    }
-
-    public int getAirQualityImg() {
-        return airQualityImg;
-    }
-
-    public void setAirQualityImg(int airQualityImg) {
-        this.airQualityImg = airQualityImg;
     }
 
     public int getWeatherImage() {

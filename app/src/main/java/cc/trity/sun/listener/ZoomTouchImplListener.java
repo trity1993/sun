@@ -5,19 +5,14 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
-import cc.trity.sun.activities.ForecastActivity;
-import cc.trity.sun.activities.h5.H5Activity;
-
 /**
  * 通过封装好的ScaleGestureDetector的放大和缩小的手势进行实现相关的效果
  * Created by TryIT on 2016/3/6.
  */
-public class ZoomTouchImplListener implements View.OnTouchListener,ScaleGestureDetector.OnScaleGestureListener {
+public abstract class ZoomTouchImplListener implements View.OnTouchListener,ScaleGestureDetector.OnScaleGestureListener {
     private static final String TAG="ZoomTouchImplListener";
     private ScaleGestureDetector scaleGestureDetector;
-    private Context context;
     public ZoomTouchImplListener(Context context){
-        this.context=context;
         scaleGestureDetector=new ScaleGestureDetector(context,this);
     }
     @Override
@@ -35,9 +30,9 @@ public class ZoomTouchImplListener implements View.OnTouchListener,ScaleGestureD
     public void onScaleEnd(ScaleGestureDetector detector) {
         float scale=detector.getScaleFactor();
         if(scale>1){//放大
-            H5Activity.toH5Act(context);
+            onZoomIn();
         }else{//缩小
-            ForecastActivity.showWeatherForecastAct(context,-1);
+            onZoomOut();
         }
     }
 
@@ -45,4 +40,13 @@ public class ZoomTouchImplListener implements View.OnTouchListener,ScaleGestureD
     public boolean onTouch(View v, MotionEvent event) {
         return scaleGestureDetector.onTouchEvent(event);
     }
+
+    /**
+     * 执行双指缩小的操作
+     */
+    public abstract void onZoomOut();
+    /**
+     * 执行双指放大的操作
+     */
+    public abstract void onZoomIn();
 }

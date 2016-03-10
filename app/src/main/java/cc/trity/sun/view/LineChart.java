@@ -16,9 +16,11 @@ import cc.trity.sun.model.ChartItem;
  */
 public class LineChart extends View {
 
-    public static final int DEFAULT_LOGITUDE_NUM = 15;
+    public static final int DEFAULT_LOGITUDE_NUM = 16;
     public static final int DEFAULT_LATITUDE_NUM = 15;
     public static final int DEFAULT_SEPARATOR = 10;
+
+    public static final int DEFAULT_RADIUS = 10; //画圆点的半径：radius
 
     private float longitudeSpacing;
     private float latitudeSpacing;
@@ -91,41 +93,54 @@ public class LineChart extends View {
         paint.setColor(Color.WHITE);
         paint.setTextSize(20);
 
-        float dataRate = viewHeight / (maxHight - minHight);
+        float dataHeigh=viewHeight-(latitudeSpacing*2);//得到实际数据的显示区域
+
+        float dataRate = dataHeigh / (maxHight - minHight);
 
         int xIndex = 2;
+        //画x,y轴
+        for (int i = 0; i < chartItemSize; i++) {
+            //y轴的赋值
+            canvas.drawText((int)(latitudeSpacing * xIndex / dataRate) + "", viewWidth-longitudeSpacing, viewHeight - latitudeSpacing * xIndex, paint);
+            xIndex += 3;
+
+        }
+
+        xIndex=2;
+
+        for (int i = 0; i < chartItemSize; i++) {
+            //x轴的赋值
+            canvas.drawText(String.valueOf(i+1), longitudeSpacing * xIndex, latitudeSpacing * (DEFAULT_LATITUDE_NUM-1), paint);
+            xIndex += 3;
+
+        }
+
+        xIndex=2;
+
         ChartItem chartItem=null;
+
         for (int i = 0; i < chartItemSize; i++) {
 
             chartItem = chartItemList.get(i);
-            //x轴的赋值
-            canvas.drawText(chartItem.getDate(), longitudeSpacing * xIndex, longitudeSpacing * 14, paint);
 
-
-//            canvas.drawText(chartItem.getTempDay() + "", longitudeSpacing * (xIndex - 1), viewHeight-(chartItem.getTempDay() -minHight)* dataRate, paint);
-//            canvas.drawText(chartItem.getTempNight() + "", longitudeSpacing * (xIndex + 1), viewHeight-(chartItem.getTempNight()-minHight) * dataRate, paint);
             //画数据的对应点
-            canvas.drawCircle( longitudeSpacing * (xIndex - 1), viewHeight-(chartItem.getTempDay() -minHight)* dataRate,10,paint);
-            canvas.drawCircle( longitudeSpacing * (xIndex + 1), viewHeight-(chartItem.getTempNight()-minHight) * dataRate,10,paint);
+            canvas.drawCircle(longitudeSpacing * (xIndex - 1), dataHeigh - (chartItem.getTempDay() - minHight) * dataRate,DEFAULT_RADIUS,paint);
+            canvas.drawCircle( longitudeSpacing * (xIndex + 1), dataHeigh - (chartItem.getTempNight() - minHight) * dataRate, DEFAULT_RADIUS, paint);
 
             //两点的链接线
-            canvas.drawLine(longitudeSpacing * (xIndex - 1), viewHeight-(chartItem.getTempDay() -minHight)* dataRate, longitudeSpacing * (xIndex + 1), viewHeight-(chartItem.getTempNight()-minHight) * dataRate, paint);
-
-
-            //y轴的赋值
-            canvas.drawText((int)(latitudeSpacing * xIndex / dataRate) + "", latitudeSpacing, viewHeight - latitudeSpacing * xIndex, paint);
+            canvas.drawLine
+                    (longitudeSpacing * (xIndex - 1), dataHeigh-(chartItem.getTempDay() -minHight)* dataRate, longitudeSpacing * (xIndex + 1), dataHeigh-(chartItem.getTempNight()-minHight) * dataRate, paint);
 
             xIndex += 3;
         }
+
         xIndex=2;
 
         //划线
-
         for (int i = 0;i<chartItemSize ; ) {
             chartItem = chartItemList.get(i);
-//longitudeSpacing * (xIndex + 1), viewHeight-(chartItem.getTempNight()-minHight) * dataRate
             float x = longitudeSpacing * (xIndex + 1);
-            float y = viewHeight-(chartItem.getTempNight() -minHight)* dataRate;
+            float y = dataHeigh-(chartItem.getTempNight() -minHight)* dataRate;
 
             xIndex += 3;
             i++;
@@ -133,7 +148,7 @@ public class LineChart extends View {
                 chartItem = chartItemList.get(i);
 
                 float endX=longitudeSpacing * (xIndex -1);
-                float endY=viewHeight-(chartItem.getTempDay() -minHight)* dataRate;
+                float endY=dataHeigh-(chartItem.getTempDay() -minHight)* dataRate;
 
                 canvas.drawLine(x, y, endX, endY, paint);
             }

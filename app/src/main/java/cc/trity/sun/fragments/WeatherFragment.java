@@ -26,7 +26,9 @@ import cc.trity.library.utils.TimeUtils;
 import cc.trity.library.utils.Utils;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.ChooseAreaActivity;
+import cc.trity.sun.activities.ForecastActivity;
 import cc.trity.sun.activities.SettingActivity;
+import cc.trity.sun.activities.h5.H5Activity;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.fragments.base.BaseFragment;
 import cc.trity.sun.listener.AbstractRequestCallback;
@@ -162,8 +164,18 @@ public class WeatherFragment extends BaseFragment {
             }
         });
         //设置缩放手势
-//        refreshRlLayout.setOnTouchListener(new ZoomTouchListener(activity));
-        refreshRlLayout.setOnTouchListener(new ZoomTouchImplListener(activity));
+        refreshRlLayout.setOnTouchListener(new ZoomTouchImplListener(activity){
+
+            @Override
+            public void onZoomOut() {
+                H5Activity.toH5Act(activity);
+            }
+
+            @Override
+            public void onZoomIn() {
+                ForecastActivity.showWeatherForecastAct(activity, resBgColor, countyCode);
+            }
+        });
 
         //设置view出现的情况
         if(pageNum==0){
@@ -257,6 +269,10 @@ public class WeatherFragment extends BaseFragment {
             swipeRefresh.setRefreshing(false);
     }
 
+    /**
+     * 设置是否显示过渡动画
+     * @param isVisibile
+     */
     public void setLocationVisibile(boolean isVisibile){
         int gone=View.GONE;
         int visit=View.VISIBLE;

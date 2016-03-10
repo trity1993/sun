@@ -15,13 +15,17 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cc.trity.library.utils.Utils;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.base.AppBaseActivity;
 import cc.trity.sun.adapters.ForceCastRAdapter;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.model.ChartItem;
 import cc.trity.sun.model.ForcecastItem;
+import cc.trity.sun.model.weathersponse.WeatherContainer;
+import cc.trity.sun.presenter.WeatherPresenter;
 import cc.trity.sun.utils.UIUtils;
+import cc.trity.sun.utils.Utility;
 import cc.trity.sun.view.LineChart;
 
 public class ForecastActivity extends AppBaseActivity {
@@ -34,6 +38,9 @@ public class ForecastActivity extends AppBaseActivity {
     RecyclerView recyclerView;
 
     private List<ForcecastItem> forcecastList;
+
+    private WeatherContainer weatherContainer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,12 +51,19 @@ public class ForecastActivity extends AppBaseActivity {
 
     @Override
     public void initVariables() {
-        forcecastList=new ArrayList<>();
-        for(int i=0;i<5;i++){
-            ForcecastItem forcecastItem=new ForcecastItem(R.mipmap.little_icon_sunny,
-                    "21","saturday 9/11","23","10");
-            forcecastList.add(forcecastItem);
+
+        Intent intent=getIntent();
+        String countyCode=intent.getStringExtra(AppConstants.COUNTRY_CODE);
+
+        weatherContainer= Utility.getWeatherContainer(this, countyCode);
+        if(weatherContainer!=null){
+
+            WeatherPresenter weatherPresenter=new WeatherPresenter(this);
+
+            forcecastList=weatherPresenter.getForcecastData(weatherContainer);
         }
+
+
     }
 
     @Override
@@ -61,9 +75,11 @@ public class ForecastActivity extends AppBaseActivity {
         if (resToolBgColor != -1) {//说明是由前者进行传递过来
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setBackgroundColor(getResources().getColor(resToolBgColor));
+        }else{
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setBackgroundColor(Color.parseColor("#0000d8a2"));
         }
-        //设置recyclerview
+        //设置recyclerview,设置宽高
         ViewGroup.LayoutParams layoutParams=recyclerView.getLayoutParams();
         layoutParams.height= UIUtils.getDisplayMetrics(ForecastActivity.this).heightPixels/3;
         ForceCastRAdapter forceCastRAdapter=new ForceCastRAdapter(ForecastActivity.this,forcecastList);
@@ -74,19 +90,28 @@ public class ForecastActivity extends AppBaseActivity {
     @Override
     public void loadData() {
         List<ChartItem> list = new ArrayList<>();
-        for (int i = 1; i <= 5; i++) {
+
+        int leng=forcecastList.size();
+        for(int i=0;i<leng;i++){
             ChartItem chartItem = new ChartItem();
+
             chartItem.setDate(i + "");
-            chartItem.setTempDay(10 + (int) (Math.random() * 10));
-            chartItem.setTempNight((int) (Math.random() * 10));
+            chartItem.setTempDay(Utils.convertToInt(forcecastList.get(i).getDayTemp()));
+            chartItem.setTempNight(Utils.convertToInt(forcecastList.get(i).getNightTemp()));
             list.add(chartItem);
         }
+
         forecastLineChart.paddingData(list);
     }
 
-    public static void showWeatherForecastAct(Context context, int resbgcolor) {
+    /**
+     * @param context
+     * @param resbgcolor 背景颜色
+     */
+    public static void showWeatherForecastAct(Context context, int resbgcolor,String countyCode) {
         Intent intent = new Intent(context, ForecastActivity.class);
         intent.putExtra(AppConstants.INTENT_BG_COLOR, resbgcolor);
+        intent.putExtra(AppConstants.COUNTRY_CODE, countyCode);
         context.startActivity(intent);
     }
 

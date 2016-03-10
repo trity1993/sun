@@ -47,6 +47,19 @@ public class TimeUtils {
     }
 
     /**
+     * 将时间格式的数据重新获取后，再重新匹配新的匹配符进行格式化
+     * @param dateStr
+     * @param dateMatch
+     * @param newMatch
+     * @return
+     */
+    public static String getAssignFormatTime(String dateStr,String dateMatch,String newMatch){
+        long dateTimemills= getTimemills(dateStr, dateMatch);
+
+        return getAssignFormatTime(dateTimemills,newMatch);
+    }
+
+    /**
      * 通过Date.toString()的格式匹配为：EEE, d MMM yyyy HH:mm:ss z
      * 来转换为北京时间 东八区的时间
      * @param dateStr

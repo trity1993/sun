@@ -3,6 +3,7 @@ package cc.trity.sun.presenter;
 import android.content.Context;
 import android.text.TextUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cc.trity.library.activity.BaseActivity;
@@ -17,6 +18,7 @@ import cc.trity.sun.R;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.engine.RemoteService;
 import cc.trity.sun.listener.HttpCallbackListener;
+import cc.trity.sun.model.ForcecastItem;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.model.weathersponse.WeatherDetail;
@@ -62,8 +64,8 @@ public class WeatherPresenter {
         //生成url
         if(NetWorkUtils.isNetworkAvailable(context)){
             //执行网络请求的操作
-            List<RequestParameter> parameterList=HttpManager.getReqParameters(true,countyCode, AppConstants.URL_WEATHER);
-            RemoteService.getInstance().invoke(baseActivity,"getWeatherForecast",parameterList,countyCode,requestCallback);
+            List<RequestParameter> parameterList=HttpManager.getReqParameters(true, countyCode, AppConstants.URL_WEATHER);
+            RemoteService.getInstance().invoke(baseActivity, "getWeatherForecast", parameterList, countyCode, requestCallback);
         }else{
             requestCallback.onFail(R.string.error_network_die);
         }
@@ -168,6 +170,90 @@ public class WeatherPresenter {
         weatherMsg.setWeatherLittleImage(resLittleId);
 
         return weatherMsg;
+    }
+
+    /**
+     * 得到预报所需要的数据
+     * @param weatherContainer
+     * @return
+     */
+    public List<ForcecastItem> getForcecastData(WeatherContainer weatherContainer) {
+        if (weatherContainer == null) {
+            return null;
+        }
+        List<ForcecastItem> forcecastItems=new ArrayList<>();
+
+        //加载天气编码的名称
+        String[] weatherName=context.getResources().getStringArray(R.array.weather_names);
+        //加载图片资源
+        int[] resDayImages= FileUtils.getResourseArray(context, R.array.weather_little_icon);
+        int[] resNightImages=FileUtils.getResourseArray(context, R.array.weather_little_night_icon);
+        int[] resImages;
+        String imgIconNum,imgDayIconNum,imgNightIconNum;
+        List<WeatherDetail> weatherDetails = weatherContainer.getWeatherDetailList();
+
+        if(weatherDetails!=null&&weatherDetails.size()!=0){
+            for(WeatherDetail weatherDetail:weatherDetails){
+                String temp=null;
+                int hour = Utils.convertToInt(TimeUtils.getCurentTime("HH"));
+                if (hour > 18 || hour < 6) {
+                    temp=weatherDetail.getNightTemp();
+                    imgIconNum = weatherDetail.getNightNum();
+                    resImages=FileUtils.getResourseArray(context, R.array.weather_little_night_icon);
+                } else {
+                    temp=weatherDetail.getDayTemp();
+                    imgIconNum = weatherDetail.getDayNum();
+                    resImages=FileUtils.getResourseArray(context, R.array.weather_little_icon);
+                }
+                //得到早上和下午Image编号
+                imgDayIconNum=weatherDetail.getDayNum();
+                imgNightIconNum=weatherDetail.getNightNum();
+
+                if (TextUtils.isEmpty(temp)) {
+                    return null;
+                }
+
+                //设置图标
+                int num = Utils.convertToInt(imgIconNum);
+                int dayNum = Utils.convertToInt(imgDayIconNum);
+                int nightNum = Utils.convertToInt(imgNightIconNum);
+
+                String curDateStr= weatherContainer.getReleaseTime();
+
+                ForcecastItem forcecastItem = new ForcecastItem();
+                forcecastItem.setReleaseTime(TimeUtils.getAssignFormatTime(curDateStr,AppConstants.MATCH_DATE_MINUTE,"dd/MM"));//重新设置时间格式
+                forcecastItem.setWeatherTemp(temp);
+                forcecastItem.setWeatherDetail(weatherName[num]);
+
+                forcecastItem.setDayTemp(weatherDetail.getDayTemp());
+                forcecastItem.setNightTemp(weatherDetail.getNightTemp());
+
+                forcecastItem.setWeatherLittleImage(checkResImg(resImages, num));
+                forcecastItem.setResDayImage(checkResImg(resDayImages, dayNum));
+                forcecastItem.setResNightImage(checkResImg(resNightImages, nightNum));
+
+                forcecastItems.add(forcecastItem);
+            }
+
+        }
+
+        return forcecastItems;
+    }
+
+    /**
+     * 检测返回的数据图片所代表的编码是否符合要求
+     * @param resImgs
+     * @param index
+     * @return
+     */
+    public int checkResImg(int[] resImgs,int index){
+        if (index == 53) {
+            return resImgs[resImgs.length - 1];
+        } else if (index == 99) {
+            return R.mipmap.ic_launcher;
+        } else {
+            return resImgs[index];
+        }
     }
 
     /**

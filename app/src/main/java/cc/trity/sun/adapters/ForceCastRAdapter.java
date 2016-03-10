@@ -14,6 +14,7 @@ import java.util.List;
 
 import cc.trity.sun.R;
 import cc.trity.sun.model.ForcecastItem;
+import cc.trity.sun.utils.Utility;
 
 /**
  * Created by TryIT on 2016/2/18.
@@ -46,10 +47,24 @@ public class ForceCastRAdapter extends RecyclerView.Adapter<ForceCastRAdapter.Vi
         ForcecastItem forcecastItem=forcecastList.get(position);
 
         holder.imgWeatherFlag.setImageResource(forcecastItem.getWeatherLittleImage());
-        holder.txtDate.setText(forcecastItem.getDate());
-        holder.txtTemp.setText(forcecastItem.getWeatherTemp());
-        holder.txtDayTemp.setText(forcecastItem.getWeatherDayTemp());
-        holder.txtNightTemp.setText(forcecastItem.getWeatherNightTemp());
+        holder.txtDate.setText(forcecastItem.getReleaseTime());
+        holder.txtTemp.setText(String.format(Utility.getTempMatch(activity), forcecastItem.getWeatherTemp()));
+
+
+        //点击后子项的设置
+        holder.txtDayTemp.setText(String.format(Utility.getTempMatch(activity), forcecastItem.getDayTemp()));
+        holder.txtNightTemp.setText(String.format(Utility.getTempMatch(activity), forcecastItem.getNightTemp()));
+        if(android.os.Build.VERSION.SDK_INT >= 21){
+            holder.txtDayTemp.setCompoundDrawablesWithIntrinsicBounds
+                    (null, activity.getResources().getDrawable(forcecastItem.getResDayImage(), null), null, null);
+            holder.txtNightTemp.setCompoundDrawablesWithIntrinsicBounds
+                    (null, activity.getResources().getDrawable(forcecastItem.getResNightImage(), null), null, null);
+        }else{
+            holder.txtDayTemp.setCompoundDrawablesWithIntrinsicBounds
+                    (null, activity.getResources().getDrawable(forcecastItem.getResDayImage()), null, null);
+            holder.txtNightTemp.setCompoundDrawablesWithIntrinsicBounds
+                    (null, activity.getResources().getDrawable(forcecastItem.getResNightImage()), null,null);
+        }
 
     }
 
