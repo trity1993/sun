@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import cc.trity.library.activity.BaseActivity;
 import cc.trity.library.net.RequestCallback;
 import cc.trity.library.net.RequestParameter;
 import cc.trity.library.utils.FileUtils;
@@ -17,13 +16,11 @@ import cc.trity.library.utils.Utils;
 import cc.trity.sun.R;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.engine.RemoteService;
-import cc.trity.sun.listener.HttpCallbackListener;
 import cc.trity.sun.model.ForcecastItem;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.model.weathersponse.WeatherDetail;
 import cc.trity.sun.networks.HttpManager;
-import cc.trity.sun.networks.HttpNetWorkTools;
 import cc.trity.sun.utils.Utility;
 
 /**
@@ -38,34 +35,18 @@ public class WeatherPresenter {
         this.context=context;
     }
 
-
-    /**
-     * 加载天气信息
-     * @param countyCode
-     * @param httpCallbackListener
-     */
-    public void loadWeather(String countyCode,HttpCallbackListener httpCallbackListener){
-        //生成url
-        if(NetWorkUtils.isNetworkAvailable(context)){
-            String url = HttpManager.getReqAdress(true, countyCode);
-            HttpNetWorkTools.sendRequestWithHttpURLConnection(url, httpCallbackListener);
-        }else{
-            httpCallbackListener.onError(null);
-        }
-    }
-
     /**
      * 异步加载weather天气
-     * @param baseActivity
+     * @param context
      * @param countyCode
      * @param requestCallback
      */
-    public void loadWeather(BaseActivity baseActivity,String countyCode,RequestCallback requestCallback){
+    public void loadWeather(Context context,String countyCode,RequestCallback requestCallback){
         //生成url
         if(NetWorkUtils.isNetworkAvailable(context)){
             //执行网络请求的操作
             List<RequestParameter> parameterList=HttpManager.getReqParameters(true, countyCode, AppConstants.URL_WEATHER);
-            RemoteService.getInstance().invoke(baseActivity, "getWeatherForecast", parameterList, countyCode, requestCallback);
+            RemoteService.getInstance().invoke(context, "getWeatherForecast", parameterList, countyCode, requestCallback);
         }else{
             requestCallback.onFail(R.string.error_network_die);
         }

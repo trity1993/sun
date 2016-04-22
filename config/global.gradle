@@ -1,0 +1,31 @@
+//Note: 定义全局的gradle依赖包, 统一管理lib版本号
+
+ext{
+    compile_sdk_version = 22
+    build_tools_version = '23.0.2'
+    min_sdk_version = 15
+    target_sdk_version = 22
+
+    support_version = '22.2.1'
+    retrofit_version = '2.0.0-beta2'
+    libs=[
+        /**
+         * commons
+         */
+        v4                   : "com.android.support:support-v4:$support_version",
+        v7                   : "com.android.support:appcompat-v7:$support_version",
+        recyclerView         : "com.android.support:recyclerview-v7:$support_version",
+        annotations          : "com.android.support:support-annotations:$support_version",
+        design               : "com.android.support:design:$support_version",
+        /**
+         * android test
+         */
+        junit                : 'junit:junit:4.12',
+        /**
+         * alternative
+         */
+        gson                 : 'com.google.code.gson:gson:2.5',
+        butterknife          : 'com.jakewharton:butterknife:6.1.0',
+        robolectric          : 'org.robolectric:shadows-multidex:3.0',
+    ]
+}

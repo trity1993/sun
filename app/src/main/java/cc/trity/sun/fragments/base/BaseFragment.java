@@ -4,7 +4,7 @@ package cc.trity.sun.fragments.base;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import cc.trity.library.activity.BaseActivity;
+import cc.trity.library.activity.BaseAppCompatActivity;
 import cc.trity.library.api.BaseInit;
 
 /**
@@ -12,7 +12,7 @@ import cc.trity.library.api.BaseInit;
  */
 public abstract class BaseFragment extends Fragment implements BaseInit {
     protected static final String TAG="BaseFragment";
-    protected BaseActivity activity;
+    protected BaseAppCompatActivity activity;
 
     public BaseFragment() {
         // Required empty public constructor
@@ -22,7 +22,7 @@ public abstract class BaseFragment extends Fragment implements BaseInit {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activity=(BaseActivity)getActivity();
+        activity=(BaseAppCompatActivity)getActivity();
 //        setHasOptionsMenu(true);
         initVariables();
 

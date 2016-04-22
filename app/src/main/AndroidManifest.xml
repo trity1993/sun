@@ -49,14 +49,6 @@
         <activity
             android:name=".activities.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
-
-            <!--
-             <intent-filter>
-                 <action android:name="android.intent.action.MAIN" />
-
-                 <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
-            -->
         </activity>
         <activity android:name=".activities.ChooseAreaActivity" />
         <activity android:name=".activities.sign.LoginActivity" />
@@ -87,11 +79,6 @@
 
 
         <activity android:name=".activities.ForecastActivity">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
         </activity>
     </application>
 

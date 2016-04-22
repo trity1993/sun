@@ -56,8 +56,6 @@ public class SplashActivity extends AppBaseActivity implements BDLocationListene
 
     @Override
     public void initView(Bundle savedInstanceState) {
-//        final Animation alapaAnim= android.view.animation.AnimationUtils.loadAnimation(SplashActivity.this,R.anim.anim_alpha_scale);
-//        txtSplashNum.startAnimation(alapaAnim);
     }
 
     @Override

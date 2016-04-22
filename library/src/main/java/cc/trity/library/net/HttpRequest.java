@@ -334,9 +334,9 @@ public class HttpRequest implements Runnable {
 
                 Date serverDateUAT = TimeUtils.getGMT8Time(serverDate);
                 if(serverDate!=null){
-                    deltaBetweenServerAndClientTime = serverDateUAT.getTime()
+                   /* deltaBetweenServerAndClientTime = serverDateUAT.getTime()
                             + 8 * 60 * 60 * 1000
-                            - System.currentTimeMillis();
+                            - System.currentTimeMillis();*/
                 }
             }
         }

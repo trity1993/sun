@@ -1,21 +1,46 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "23.0.2"
+
+    compileSdkVersion rootProject.ext.compile_sdk_version
+    buildToolsVersion rootProject.ext.build_tools_version
 
     defaultConfig {
         applicationId "cc.trity.sun"
-        minSdkVersion 14
-        targetSdkVersion 22
+        minSdkVersion rootProject.ext.min_sdk_version
+        targetSdkVersion rootProject.ext.target_sdk_version
         versionCode 1
         versionName "1.0"
     }
+
+    signingConfigs {
+        trity_dev {
+            storeFile file("trity.jks")
+            storePassword "trity0314"
+            keyAlias "trity"
+            keyPassword "trity0314"
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false //是否保留调试信息
+            shrinkResources true //去除无用资源
+            minifyEnabled false //混淆处理 debug包用于开发时使用, 一般不需要混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro' //混淆配置
+            signingConfig signingConfigs.trity_dev //签名
         }
+
+    }
+
+    // 多渠道
+    productFlavors {
+
+        /**
+         * 后边的全都是生产环境, 一行一个渠道包
+         *
+         */
+        production {}
     }
 
     sourceSets {
@@ -27,19 +52,18 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('libs/locSDK_6.13.jar')
-
-    testCompile 'junit:junit:4.12'
-    testCompile "org.robolectric:shadows-multidex:3.0"
-
-
     compile project(':library')
     compile project(':nativewithh5')
 
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:recyclerview-v7:22.2.1'
-    compile 'com.android.support:support-v4:22.2.1'
-    compile 'com.android.support:design:22.2.1'
-    compile 'com.jakewharton:butterknife:6.1.0'
+
+    Map<String, String> libs = rootProject.ext.libs;
+    compile libs.v7
+    compile libs.recyclerView
+    compile libs.v4
+    compile libs.design
+    compile libs.butterknife
+
+    testCompile libs.junit
+    testCompile libs.robolectric
 
 }

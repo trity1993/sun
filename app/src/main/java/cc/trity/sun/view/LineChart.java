@@ -99,7 +99,7 @@ public class LineChart extends View {
 
         int xIndex = 2;
         //画x,y轴
-        for (int i = 0; i < chartItemSize; i++) {
+        for (int i = 0; i < 5; i++) {
             //y轴的赋值
             canvas.drawText((int)(latitudeSpacing * xIndex / dataRate) + "", viewWidth-longitudeSpacing, viewHeight - latitudeSpacing * xIndex, paint);
             xIndex += 3;
@@ -108,7 +108,7 @@ public class LineChart extends View {
 
         xIndex=2;
 
-        for (int i = 0; i < chartItemSize; i++) {
+        for (int i = 0; i < 5; i++) {
             //x轴的赋值
             canvas.drawText(String.valueOf(i+1), longitudeSpacing * xIndex, latitudeSpacing * (DEFAULT_LATITUDE_NUM-1), paint);
             xIndex += 3;

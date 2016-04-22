@@ -9,14 +9,14 @@ import android.preference.PreferenceManager;
 
 import cc.trity.library.utils.CommonUtils;
 import cc.trity.sun.R;
-import cc.trity.sun.activities.base.AppBasePrefActivity;
+import cc.trity.sun.activities.base.PrefAppBaseActivity;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.service.WeatherForegroundService;
 
 /**
  * 设置页
  */
-public class SettingActivity extends AppBasePrefActivity implements Preference.OnPreferenceClickListener {
+public class SettingActivity extends PrefAppBaseActivity implements Preference.OnPreferenceClickListener {
     private SharedPreferences mSharedPrefs;
     private CheckBoxPreference checkboxPrefs;
 

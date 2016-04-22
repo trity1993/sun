@@ -26,6 +26,7 @@ import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.presenter.WeatherPresenter;
 import cc.trity.sun.utils.UIUtils;
 import cc.trity.sun.utils.Utility;
+import cc.trity.sun.view.DividerItemDecoration;
 import cc.trity.sun.view.LineChart;
 
 public class ForecastActivity extends AppBaseActivity {
@@ -82,9 +83,16 @@ public class ForecastActivity extends AppBaseActivity {
         //设置recyclerview,设置宽高
         ViewGroup.LayoutParams layoutParams=recyclerView.getLayoutParams();
         layoutParams.height= UIUtils.getDisplayMetrics(ForecastActivity.this).heightPixels/3;
+
+        //加入分割线
+        RecyclerView.ItemDecoration itemDecoration = new
+                DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
+        recyclerView.addItemDecoration(itemDecoration);
+
         ForceCastRAdapter forceCastRAdapter=new ForceCastRAdapter(ForecastActivity.this,forcecastList);
         recyclerView.setAdapter(forceCastRAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
     @Override

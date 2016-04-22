@@ -6,12 +6,7 @@
     android:padding="@dimen/space_small"
     android:layout_gravity="center"
     android:measureAllChildren="true">
-    <View
-        android:id="@+id/transit"
-        android:layout_centerInParent="true"
-        android:layout_width="@dimen/space_normal"
-        android:layout_height="@dimen/space_normal"
-        android:background="@drawable/round_transit"/>
+
     <ImageView
         android:id="@+id/img_weather_flag"
         android:layout_width="wrap_content"

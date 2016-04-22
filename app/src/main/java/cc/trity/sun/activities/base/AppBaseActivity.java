@@ -8,15 +8,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import cc.trity.library.activity.BaseActivity;
-import cc.trity.sun.ActivityCollector;
+import cc.trity.library.activity.BaseAppCompatActivity;
+import cc.trity.library.ActivityCollector;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.SettingActivity;
 
 /**
  * Created by TryIT on 2016/1/13.
  */
-public abstract class AppBaseActivity extends BaseActivity {
+public abstract class AppBaseActivity extends BaseAppCompatActivity {
 
     protected boolean needCallback;//是否需要回调
 
@@ -82,27 +82,6 @@ public abstract class AppBaseActivity extends BaseActivity {
     protected void onDestroy() {
         ActivityCollector.removeActivity(this);
         super.onDestroy();
-    }
-
-    /**
-     * 显示进度对话框
-     */
-    protected void showProgressDialog(String showMesg) {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage(showMesg);
-            progressDialog.setCanceledOnTouchOutside(false);
-        }
-        progressDialog.show();
-    }
-
-    /**
-     * 关闭进度对话框
-     */
-    protected void closeProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
     }
 
 }

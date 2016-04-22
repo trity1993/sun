@@ -17,7 +17,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import cc.trity.library.activity.BaseActivity;
+import cc.trity.library.activity.BaseAppCompatActivity;
 import cc.trity.library.utils.LogUtils;
 import cc.trity.sun.R;
 import cc.trity.sun.activities.base.AppBaseActivity;
@@ -212,7 +212,7 @@ public class ChooseAreaActivity extends AppBaseActivity {
         finish();
     }
 
-    public static void toStartChooseAreaAct(BaseActivity context,int resBgColor){
+    public static void toStartChooseAreaAct(BaseAppCompatActivity context,int resBgColor){
         Intent intent = new Intent(context, ChooseAreaActivity.class);
         intent.putExtra(AppConstants.INTENT_BG_COLOR, resBgColor);
         context.startActivityForResult(intent, MainActivity.ADD_FRAGMENT);

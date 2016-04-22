@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -59,14 +60,14 @@ public class WeatherFragment extends BaseFragment {
     RelativeLayout refreshRlLayout;
     @InjectView(R.id.txt_location_temp)
     TextView txtLocationTemp;
-    @InjectView(R.id.transit)
+
     View transit;
+    FrameLayout fLayoutRoot;
 
     private int resBgColor, resbg,pageSize,pageNum;
     private String countyCode, countyName;
     private int hour;
     private long delayMillis=1000;
-
 
     private WeatherContainer weatherContainer;
 
@@ -114,15 +115,30 @@ public class WeatherFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_weather, container, false);
-        ButterKnife.inject(this, view);
-        this.initView(savedInstanceState);
+        View view = inflater.inflate(R.layout.transit_layout, container, false);
+        initTransitView(view);
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadData();
+            }
+        }, delayMillis);
         return view;
     }
 
 
     @Override
     public void initView(Bundle savedInstanceState) {
+
+        View view=View.inflate(activity, R.layout.fragment_weather, fLayoutRoot);
+        ButterKnife.inject(this, view);
+
+        ViewGroup viewGroup=(ViewGroup)fLayoutRoot.getParent();
+        viewGroup.removeView(fLayoutRoot);
+        fLayoutRoot=null;
+        viewGroup.addView(view);
+
         //设置背景
         rlLayout.setBackgroundResource(resbg);
 
@@ -136,10 +152,10 @@ public class WeatherFragment extends BaseFragment {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_add:
-                        if(pageSize<=8){
-                            ChooseAreaActivity.toStartChooseAreaAct(activity,resBgColor);
-                        }else{
-                            CommonUtils.showToast(activity,R.string.error_max_page);
+                        if (pageSize <= 8) {
+                            ChooseAreaActivity.toStartChooseAreaAct(activity, resBgColor);
+                        } else {
+                            CommonUtils.showToast(activity, R.string.error_max_page);
                         }
 
                         break;
@@ -151,20 +167,30 @@ public class WeatherFragment extends BaseFragment {
             }
         });
 
-        //设置swipeRefresh
+        inistReFreshLayout();
+
+        setViewAppear();
+
+    }
+
+    /**
+     * 设置swipeRefresh
+     */
+    private void inistReFreshLayout(){
+
         swipeRefresh.setColorSchemeColors(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
 
                 WeatherFragment.this.loadData();
-                if (swipeRefresh != null){
+                if (swipeRefresh != null) {
                     swipeRefresh.setRefreshing(false);
                 }
             }
         });
         //设置缩放手势
-        refreshRlLayout.setOnTouchListener(new ZoomTouchImplListener(activity){
+        refreshRlLayout.setOnTouchListener(new ZoomTouchImplListener(activity) {
 
             @Override
             public void onZoomOut() {
@@ -177,24 +203,6 @@ public class WeatherFragment extends BaseFragment {
             }
         });
 
-        //设置view出现的情况
-        if(pageNum==0){
-            setLocationVisibile(true);
-            delayMillis=1000;
-        }else{
-            setViewAppear();
-        }
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (swipeRefresh != null) {
-                    swipeRefresh.setRefreshing(true);
-                    loadData();
-                }
-            }
-        }, delayMillis);
-
     }
 
     @Override
@@ -203,6 +211,10 @@ public class WeatherFragment extends BaseFragment {
             errorCountyCode();
             return;
         }
+        if(fLayoutRoot!=null){
+            this.initView(null);
+        }
+
         if (weatherPresenter.isUpdate(weatherContainer,countyCode)) {
             weatherPresenter.loadWeather(activity,countyCode,requestCallback);
         } else {
@@ -214,10 +226,9 @@ public class WeatherFragment extends BaseFragment {
                     weatherPresenter.loadWeather(activity,countyCode,requestCallback);
                 }
             }
-            setViewAppear();
+
             updateView(weatherContainer);//无论是否为null都要进行更新操作
         }
-        setLocationVisibile(false);
     }
 
     public void setViewAppear(){
@@ -233,6 +244,7 @@ public class WeatherFragment extends BaseFragment {
     }
 
     public void updateView(WeatherContainer weatherContainer){
+
         if(weatherPresenter!=null){
             WeatherMsg weatherMsg=weatherPresenter.updateData(weatherContainer,countyName);
             if(weatherMsg!=null){
@@ -263,35 +275,25 @@ public class WeatherFragment extends BaseFragment {
 
     public void errorCountyCode(){
 //        CommonUtils.showToast(activity, R.string.error_location_code);
-        CommonUtils.showSnackbar(rlLayout,  R.string.error_location_code);
+        CommonUtils.showSnackbar(rlLayout, R.string.error_location_code);
 
         if (swipeRefresh != null)
             swipeRefresh.setRefreshing(false);
     }
 
     /**
-     * 设置是否显示过渡动画
-     * @param isVisibile
+     * 设置显示过渡动画
      */
-    public void setLocationVisibile(boolean isVisibile){
-        int gone=View.GONE;
-        int visit=View.VISIBLE;
+    public void initTransitView(View view){
 
-        if(isVisibile){
-            imgWeatherFlag.setVisibility(gone);
-            txtLocationTemp.setVisibility(gone);
-            locationWeatherText.setVisibility(gone);
+        transit=view.findViewById(R.id.transit);
+        fLayoutRoot=(FrameLayout)view.findViewById(R.id.flayout_root);
 
-            transit.setVisibility(visit);
-            transit.startAnimation(AnimationUtils.loadAnimation(activity,R.anim.anim_alpha_scale));
-        }else{
-            imgWeatherFlag.setVisibility(visit);
-            txtLocationTemp.setVisibility(visit);
-            locationWeatherText.setVisibility(visit);
-
-            transit.setVisibility(gone);
-            transit.clearAnimation();
+        if(resbg>0){
+            fLayoutRoot.setBackgroundResource(resbg);
         }
+        transit.startAnimation(AnimationUtils.loadAnimation(activity,R.anim.anim_alpha_scale));
+
     }
 
     @Override

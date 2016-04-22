@@ -1,1 +1,1 @@
-include ':app', ':library', ':nativewithh5'
+include ':app', ':library', ':nativewithh5', ':opensdk'

@@ -1,0 +1,9 @@
+apply from: '../config/library.gradle'
+apply plugin: 'com.android.library'
+
+dependencies {
+    Map<String, String> libs = rootProject.ext.libs;
+
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile libs.junit
+}

@@ -12,12 +12,12 @@ import cc.trity.library.utils.CommonUtils;
 import cc.trity.library.utils.GsonUtils;
 import cc.trity.library.utils.NetWorkUtils;
 import cc.trity.sun.db.DataBaseManager;
-import cc.trity.sun.listener.HttpCallbackListener;
 import cc.trity.sun.engine.AppConstants;
-import cc.trity.sun.model.weathersponse.ReponseForcecastWeather;
-import cc.trity.sun.model.weathersponse.WeatherContainer;
+import cc.trity.sun.listener.AbstractRequestCallback;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.model.city.County;
+import cc.trity.sun.model.weathersponse.ReponseForcecastWeather;
+import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.presenter.WeatherPresenter;
 import cc.trity.sun.service.WeatherForegroundService;
 
@@ -35,10 +35,11 @@ public class AlarmUpdateReceiver extends BroadcastReceiver {
             List<County> countyList= dataBaseManager.loadCounties();
             if(countyList!=null&&countyList.size()>=0){
                 final County county=countyList.get(0);
-                weatherPresenter.loadWeather(county.getWeaterCode(), new HttpCallbackListener() {
+                weatherPresenter.loadWeather(context,county.getWeaterCode(), new AbstractRequestCallback(context) {
+
                     @Override
-                    public void onFinish(String response) {
-                        ReponseForcecastWeather weatherData = GsonUtils.getClass(response, ReponseForcecastWeather.class);
+                    public void onSuccess(String content) {
+                        ReponseForcecastWeather weatherData = GsonUtils.getClass(content, ReponseForcecastWeather.class);
                         WeatherContainer weatherContainer = weatherData.getWeatherContainer();
                         if(weatherPresenter!=null){
                             WeatherMsg weatherMsg=weatherPresenter.updateData(weatherContainer,county.getPlaceName());
@@ -48,8 +49,9 @@ public class AlarmUpdateReceiver extends BroadcastReceiver {
                             }
                         }
                     }
+
                     @Override
-                    public void onError(Exception e) {
+                    public void onFail(String errorMsg) {
 
                     }
                 });

@@ -81,7 +81,7 @@ public class ForceCastRAdapter extends RecyclerView.Adapter<ForceCastRAdapter.Vi
         ImageView imgWeatherFlag;
         TextView txtDate,txtTemp,txtDayTemp,txtNightTemp;
         LinearLayout llayoutDetail;
-        boolean isShow=true;
+        boolean isShow=false;
 
         public ViewHolder(View itemView) {
             super(itemView);
