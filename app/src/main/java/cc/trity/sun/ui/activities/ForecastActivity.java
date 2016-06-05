@@ -137,6 +137,6 @@ public class ForecastActivity extends AppBaseActivity {
     public void onBackPressed() {
         ActivitySplitAnimationUtil.prepareAnimation(this);
         ActivitySplitAnimationUtil.animateBack(this,1000);
-        super.onBackPressed();
+//        super.onBackPressed();
     }
 }

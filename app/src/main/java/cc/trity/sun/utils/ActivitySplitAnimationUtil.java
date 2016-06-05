@@ -102,6 +102,8 @@ public class ActivitySplitAnimationUtil {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         clean(destActivity,isCleanBmp);
+                        if(isCleanBmp)
+                            destActivity.finish();
                     }
 
                     @Override
