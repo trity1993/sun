@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cc.trity.sun.activities.h5.MoveDetailActivity">
+    tools:context=".ui.view.activities.h5.MoveDetailActivity">
 
     <WebView
         android:id="@+id/wvAds"

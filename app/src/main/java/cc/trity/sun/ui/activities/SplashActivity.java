@@ -1,4 +1,4 @@
-package cc.trity.sun.activities;
+package cc.trity.sun.ui.activities;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,10 +17,10 @@ import cc.trity.library.utils.CommonUtils;
 import cc.trity.library.utils.LogUtils;
 import cc.trity.library.utils.Utils;
 import cc.trity.sun.R;
-import cc.trity.sun.activities.base.AppBaseActivity;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.location.BadiLoactionHelper;
 import cc.trity.sun.model.city.County;
+import cc.trity.sun.ui.activities.base.AppBaseActivity;
 import cc.trity.sun.utils.Utility;
 
 public class SplashActivity extends AppBaseActivity implements BDLocationListener, Handler.Callback {

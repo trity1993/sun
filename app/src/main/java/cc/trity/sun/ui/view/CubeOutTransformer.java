@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cc.trity.sun.view;
+package cc.trity.sun.ui.view;
 
 import android.view.View;
 

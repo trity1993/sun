@@ -1,4 +1,4 @@
-package cc.trity.sun.activities.base;
+package cc.trity.sun.ui.activities.base;
 
 import android.app.ProgressDialog;
 import android.content.res.Configuration;
@@ -8,10 +8,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import cc.trity.library.activity.BaseAppCompatActivity;
 import cc.trity.library.ActivityCollector;
+import cc.trity.library.activity.BaseAppCompatActivity;
 import cc.trity.sun.R;
-import cc.trity.sun.activities.SettingActivity;
+import cc.trity.sun.ui.activities.SettingActivity;
 
 /**
  * Created by TryIT on 2016/1/13.

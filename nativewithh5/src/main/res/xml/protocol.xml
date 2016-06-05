@@ -7,7 +7,7 @@
 
     <Node
         Key="gotoMovieDetail"
-        Target="cc.trity.sun.activities.h5.MoveDetailActivity"
+        Target="MoveDetailActivity"
         />
 
     <Node

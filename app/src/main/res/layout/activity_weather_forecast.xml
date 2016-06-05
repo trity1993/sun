@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/green_bg"
-    tools:context=".activities.ForecastActivity">
-    <cc.trity.sun.view.LineChart
+    tools:context=".ui.view.activities.ForecastActivity">
+    <cc.trity.sun.ui.view.LineChart
         android:id="@+id/forecast_lineChart"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

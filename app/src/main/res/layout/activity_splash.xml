@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="cc.trity.sun.activities.SplashActivity">
+    tools:context=".ui.view.activities.SplashActivity">
 
     <RelativeLayout
         android:id="@+id/frame_splash_layout"

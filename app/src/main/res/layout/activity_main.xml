@@ -4,13 +4,13 @@
     android:id="@+id/frame_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity">
+    tools:context=".ui.view.activities.MainActivity">
     <android.support.v4.view.ViewPager
         android:layout_below="@+id/toolbar"
         android:id="@+id/viewpager_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-    <cc.trity.sun.view.CirclePageIndicator
+    <cc.trity.sun.ui.view.CirclePageIndicator
         android:id="@+id/indicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

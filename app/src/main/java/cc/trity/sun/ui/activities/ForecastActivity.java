@@ -1,4 +1,4 @@
-package cc.trity.sun.activities;
+package cc.trity.sun.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,17 +17,18 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.trity.library.utils.Utils;
 import cc.trity.sun.R;
-import cc.trity.sun.activities.base.AppBaseActivity;
 import cc.trity.sun.adapters.ForceCastRAdapter;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.model.ChartItem;
 import cc.trity.sun.model.ForcecastItem;
 import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.presenter.WeatherPresenter;
+import cc.trity.sun.ui.activities.base.AppBaseActivity;
+import cc.trity.sun.ui.view.DividerItemDecoration;
+import cc.trity.sun.ui.view.LineChart;
+import cc.trity.sun.utils.ActivitySplitAnimationUtil;
 import cc.trity.sun.utils.UIUtils;
 import cc.trity.sun.utils.Utility;
-import cc.trity.sun.view.DividerItemDecoration;
-import cc.trity.sun.view.LineChart;
 
 public class ForecastActivity extends AppBaseActivity {
 
@@ -45,7 +46,9 @@ public class ForecastActivity extends AppBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivitySplitAnimationUtil.prepareAnimation(this);
         setContentView(R.layout.activity_weather_forecast);
+        ActivitySplitAnimationUtil.animate(this,1000);
         ButterKnife.inject(this);
         this.init(savedInstanceState);
     }
@@ -116,11 +119,11 @@ public class ForecastActivity extends AppBaseActivity {
      * @param context
      * @param resbgcolor 背景颜色
      */
-    public static void showWeatherForecastAct(Context context, int resbgcolor,String countyCode) {
-        Intent intent = new Intent(context, ForecastActivity.class);
+    public static Intent showWeatherForecastAct(Context context,int resbgcolor,String countyCode){
+        Intent intent=new Intent(context,ForecastActivity.class);
         intent.putExtra(AppConstants.INTENT_BG_COLOR, resbgcolor);
         intent.putExtra(AppConstants.COUNTRY_CODE, countyCode);
-        context.startActivity(intent);
+        return intent;
     }
 
     @Override
@@ -128,5 +131,12 @@ public class ForecastActivity extends AppBaseActivity {
         menu.findItem(R.id.action_add).setVisible(false);
         menu.findItem(R.id.action_setting).setVisible(false);
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onBackPressed() {
+        ActivitySplitAnimationUtil.prepareAnimation(this);
+        ActivitySplitAnimationUtil.animateBack(this,1000);
+        super.onBackPressed();
     }
 }

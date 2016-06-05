@@ -1,4 +1,4 @@
-package cc.trity.sun.activities;
+package cc.trity.sun.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,15 +15,15 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.trity.library.utils.CommonUtils;
 import cc.trity.sun.R;
-import cc.trity.sun.activities.base.AppBaseActivity;
 import cc.trity.sun.adapters.EndlessLoopAdapter;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.engine.AppConstants;
-import cc.trity.sun.fragments.WeatherFragment;
+import cc.trity.sun.ui.fragments.WeatherFragment;
 import cc.trity.sun.model.city.County;
-import cc.trity.sun.view.CirclePageIndicator;
-import cc.trity.sun.view.CubeOutTransformer;
-import cc.trity.sun.view.TipViewController;
+import cc.trity.sun.ui.activities.base.AppBaseActivity;
+import cc.trity.sun.ui.view.CirclePageIndicator;
+import cc.trity.sun.ui.view.CubeOutTransformer;
+import cc.trity.sun.ui.view.TipViewController;
 
 public class MainActivity extends AppBaseActivity {
     public static final int ADD_FRAGMENT = 0;
@@ -54,6 +54,7 @@ public class MainActivity extends AppBaseActivity {
     DataBaseManager dataBaseManager = null;
 
     private TipViewController tipView;
+    private boolean isTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class MainActivity extends AppBaseActivity {
             tipView=new TipViewController(this);
             tipView.showView();
         }
+
     }
 
     @Override

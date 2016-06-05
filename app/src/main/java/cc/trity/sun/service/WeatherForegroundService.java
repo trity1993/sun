@@ -17,11 +17,11 @@ import java.util.Date;
 import cc.trity.library.utils.LogUtils;
 import cc.trity.library.utils.TimeUtils;
 import cc.trity.sun.R;
-import cc.trity.sun.activities.MainActivity;
-import cc.trity.sun.activities.SettingActivity;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.receiver.AlarmUpdateReceiver;
+import cc.trity.sun.ui.activities.MainActivity;
+import cc.trity.sun.ui.activities.SettingActivity;
 
 /**
  * 前台线程

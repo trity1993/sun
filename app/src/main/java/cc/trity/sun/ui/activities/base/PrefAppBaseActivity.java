@@ -1,4 +1,4 @@
-package cc.trity.sun.activities.base;
+package cc.trity.sun.ui.activities.base;
 
 import android.os.Bundle;
 import android.preference.Preference;

@@ -8,8 +8,8 @@ import android.content.Intent;
 import cc.trity.library.net.RequestCallback;
 import cc.trity.library.utils.CommonUtils;
 import cc.trity.sun.R;
-import cc.trity.sun.activities.sign.LoginActivity;
 import cc.trity.sun.engine.AppConstants;
+import cc.trity.sun.ui.activities.sign.LoginActivity;
 
 /**
  * 统一错误输出的接口

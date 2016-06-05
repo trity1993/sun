@@ -1,4 +1,4 @@
-package cc.trity.sun.activities;
+package cc.trity.sun.ui.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,13 +20,13 @@ import butterknife.InjectView;
 import cc.trity.library.activity.BaseAppCompatActivity;
 import cc.trity.library.utils.LogUtils;
 import cc.trity.sun.R;
-import cc.trity.sun.activities.base.AppBaseActivity;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.model.city.City;
 import cc.trity.sun.model.city.County;
 import cc.trity.sun.model.city.Province;
 import cc.trity.sun.sdk.PlaceSaxParseHandler;
+import cc.trity.sun.ui.activities.base.AppBaseActivity;
 
 public class ChooseAreaActivity extends AppBaseActivity {
     private static final String TAG="ChooseAreaActivity";
@@ -215,7 +215,7 @@ public class ChooseAreaActivity extends AppBaseActivity {
     public static void toStartChooseAreaAct(BaseAppCompatActivity context,int resBgColor){
         Intent intent = new Intent(context, ChooseAreaActivity.class);
         intent.putExtra(AppConstants.INTENT_BG_COLOR, resBgColor);
-        context.startActivityForResult(intent, MainActivity.ADD_FRAGMENT);
+        context.startActivityForResult(intent, cc.trity.sun.ui.activities.MainActivity.ADD_FRAGMENT);
     }
 
     /**

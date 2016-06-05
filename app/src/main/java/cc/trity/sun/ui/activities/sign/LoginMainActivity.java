@@ -1,4 +1,4 @@
-package cc.trity.sun.activities.sign;
+package cc.trity.sun.ui.activities.sign;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,10 +9,10 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.trity.sun.R;
-import cc.trity.sun.activities.MainActivity;
-import cc.trity.sun.activities.base.AppBaseActivity;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.engine.User;
+import cc.trity.sun.ui.activities.MainActivity;
+import cc.trity.sun.ui.activities.base.AppBaseActivity;
 
 /**
  * 登陆，注册，的转接act

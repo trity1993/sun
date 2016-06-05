@@ -1,4 +1,4 @@
-package cc.trity.sun.activities.h5;
+package cc.trity.sun.ui.activities.h5;
 
 import android.content.Context;
 import android.content.Intent;

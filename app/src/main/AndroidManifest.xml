@@ -47,13 +47,13 @@
         </service>
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
-        <activity android:name=".activities.ChooseAreaActivity" />
-        <activity android:name=".activities.sign.LoginActivity" />
+        <activity android:name=".ui.activities.ChooseAreaActivity" />
+        <activity android:name=".ui.activities.sign.LoginActivity" />
         <activity
-            android:name=".activities.SettingActivity"
+            android:name=".ui.activities.SettingActivity"
             android:label="@string/title_activity_setting" />
 
         <service
@@ -67,9 +67,9 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activities.h5.H5Activity" />
-        <activity android:name=".activities.h5.MoveDetailActivity" />
-        <activity android:name=".activities.SplashActivity">
+        <activity android:name=".ui.activities.h5.H5Activity" />
+        <activity android:name=".ui.activities.h5.MoveDetailActivity" />
+        <activity android:name=".ui.activities.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -78,7 +78,7 @@
         </activity>
 
 
-        <activity android:name=".activities.ForecastActivity">
+        <activity android:name=".ui.activities.ForecastActivity">
         </activity>
     </application>
 

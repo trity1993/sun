@@ -1,4 +1,4 @@
-package cc.trity.sun.activities.sign;
+package cc.trity.sun.ui.activities.sign;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,13 +17,13 @@ import cc.trity.library.net.RequestParameter;
 import cc.trity.library.utils.CommonUtils;
 import cc.trity.library.utils.GsonUtils;
 import cc.trity.sun.R;
-import cc.trity.sun.activities.MainActivity;
-import cc.trity.sun.activities.base.AppBaseActivity;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.engine.RemoteService;
 import cc.trity.sun.engine.User;
 import cc.trity.sun.listener.AbstractRequestCallback;
 import cc.trity.sun.model.UserInfo;
+import cc.trity.sun.ui.activities.MainActivity;
+import cc.trity.sun.ui.activities.base.AppBaseActivity;
 
 public class LoginActivity extends AppBaseActivity {
 

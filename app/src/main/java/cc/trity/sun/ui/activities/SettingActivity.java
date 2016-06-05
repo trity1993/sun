@@ -1,4 +1,4 @@
-package cc.trity.sun.activities;
+package cc.trity.sun.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,9 +9,9 @@ import android.preference.PreferenceManager;
 
 import cc.trity.library.utils.CommonUtils;
 import cc.trity.sun.R;
-import cc.trity.sun.activities.base.PrefAppBaseActivity;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.service.WeatherForegroundService;
+import cc.trity.sun.ui.activities.base.PrefAppBaseActivity;
 
 /**
  * 设置页
