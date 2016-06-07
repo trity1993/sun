@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.trity.library.utils.CommonUtils;
 import cc.trity.sun.R;
-import cc.trity.sun.adapters.WeatherRecyclerAdapter;
+import cc.trity.sun.ui.adapters.WeatherRecyclerAdapter;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.ui.fragments.base.BaseFragment;
 import cc.trity.sun.listener.OnRecyclerItemClickListener;

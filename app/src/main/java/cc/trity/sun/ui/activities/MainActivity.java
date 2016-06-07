@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.trity.library.utils.CommonUtils;
 import cc.trity.sun.R;
-import cc.trity.sun.adapters.EndlessLoopAdapter;
+import cc.trity.sun.ui.adapters.EndlessLoopAdapter;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.ui.fragments.WeatherFragment;
