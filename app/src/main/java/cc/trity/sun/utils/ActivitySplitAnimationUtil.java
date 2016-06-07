@@ -17,6 +17,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -38,6 +39,7 @@ public class ActivitySplitAnimationUtil {
     private static ImageView mTopImage;
     private static ImageView mBottomImage;
     private static AnimatorSet mSetAnim;
+
 
     /**
      * Start a new Activity with a Split animation
@@ -102,8 +104,10 @@ public class ActivitySplitAnimationUtil {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         clean(destActivity,isCleanBmp);
-                        if(isCleanBmp)
+                        if(isCleanBmp){
                             destActivity.finish();
+                            destActivity.overridePendingTransition(0,0);
+                        }
                     }
 
                     @Override
@@ -118,25 +122,37 @@ public class ActivitySplitAnimationUtil {
                 });
 
                 // Animating the 2 parts away from each other
-                Animator anim1 ,anim2;
+                Animator anim1 ,anim2,animAlpha;
                 if(isCleanBmp){
                     anim1= ObjectAnimator.ofFloat(mTopImage, "translationY", mTopImage.getHeight() * -1,0);
                     anim2 = ObjectAnimator.ofFloat(mBottomImage, "translationY", mBottomImage.getHeight(),0);
+                    animAlpha = ObjectAnimator.ofFloat(getSceneRoot(destActivity), "alpha", 1,0);
                 }else{
                     anim1= ObjectAnimator.ofFloat(mTopImage, "translationY", mTopImage.getHeight() * -1);
                     anim2 = ObjectAnimator.ofFloat(mBottomImage, "translationY", mBottomImage.getHeight());
+                    animAlpha = ObjectAnimator.ofFloat(getSceneRoot(destActivity), "alpha", 0,1);
                 }
 
                 if (interpolator != null) {
                     anim1.setInterpolator(interpolator);
                     anim2.setInterpolator(interpolator);
+                    animAlpha.setInterpolator(interpolator);
                 }
 
                 mSetAnim.setDuration(duration);
-                mSetAnim.playTogether(anim1, anim2);
+                mSetAnim.playTogether(animAlpha,anim1, anim2);
                 mSetAnim.start();
             }
         });
+    }
+
+    /**
+     * 得到activity的根view
+     * @param destActivity
+     * @return
+     */
+    public static View getSceneRoot(Activity destActivity) {
+            return ((ViewGroup) destActivity.getWindow().getDecorView()).getChildAt(0);
     }
 
     /**
@@ -261,8 +277,8 @@ public class ActivitySplitAnimationUtil {
          * Setting the bitmap offests to control the visible area
          *
          * @param width		   The bitmap image
-         * @param bmp          The start Y position
-         * @param loc          The end Y position
+         * @param startY          The start Y position
+         * @param endY          The end Y position
          * @return
          */
         public void setImageOffsets(int width, int startY, int endY)

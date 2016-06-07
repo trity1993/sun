@@ -78,7 +78,8 @@
         </activity>
 
 
-        <activity android:name=".ui.activities.ForecastActivity">
+        <activity android:name=".ui.activities.ForecastActivity"
+            android:theme="@style/TranslucentTheme">
         </activity>
     </application>
 
