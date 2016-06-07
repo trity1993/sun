@@ -230,7 +230,7 @@ public class WeatherPresenter {
     public int checkResImg(int[] resImgs,int index){
         if (index == 53) {
             return resImgs[resImgs.length - 1];
-        } else if (index == 99) {
+        } else if (index == 99||index==-1) {
             return R.mipmap.ic_launcher;
         } else {
             return resImgs[index];

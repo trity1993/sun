@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/green_bg"
-    tools:context=".ui.view.activities.ForecastActivity">
-    <cc.trity.sun.ui.view.LineChart
-        android:id="@+id/forecast_lineChart"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    android:orientation="vertical">
 
     <include layout="@layout/toolbar_layout"/>
 
@@ -16,5 +11,5 @@
         android:id="@+id/forecast_recycler"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-</RelativeLayout>
+        android:layout_height="match_parent"/>
+</LinearLayout>

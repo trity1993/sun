@@ -1,10 +1,8 @@
 package cc.trity.sun.ui.fragments;
 
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -55,8 +53,6 @@ public class WeatherFragment extends BaseFragment {
     ImageView imgWeatherFlag;
     @InjectView(R.id.txt_weather_location)
     TextView locationWeatherText;
-    @InjectView(R.id.swipeRefresh_weather_Layout)
-    SwipeRefreshLayout swipeRefresh;
     @InjectView(R.id.srefresh_rl_layout)
     RelativeLayout refreshRlLayout;
     @InjectView(R.id.txt_location_temp)
@@ -136,9 +132,11 @@ public class WeatherFragment extends BaseFragment {
         ButterKnife.inject(this, view);
 
         ViewGroup viewGroup=(ViewGroup)fLayoutRoot.getParent();
-        viewGroup.removeView(fLayoutRoot);
-        fLayoutRoot=null;
-        viewGroup.addView(view);
+        if(viewGroup!=null){
+            viewGroup.removeView(fLayoutRoot);
+            fLayoutRoot=null;
+            viewGroup.addView(view);
+        }
 
         //设置背景
         rlLayout.setBackgroundResource(resbg);
@@ -179,17 +177,6 @@ public class WeatherFragment extends BaseFragment {
      */
     private void inistReFreshLayout(){
 
-        swipeRefresh.setColorSchemeColors(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-
-                WeatherFragment.this.loadData();
-                if (swipeRefresh != null) {
-                    swipeRefresh.setRefreshing(false);
-                }
-            }
-        });
         //设置缩放手势
         refreshRlLayout.setOnTouchListener(new ZoomTouchImplListener(activity) {
 
@@ -200,7 +187,8 @@ public class WeatherFragment extends BaseFragment {
 
             @Override
             public void onZoomIn() {
-                ActivitySplitAnimationUtil.startActivity(getActivity(), ForecastActivity.showWeatherForecastAct(activity, resBgColor, countyCode));
+                ActivitySplitAnimationUtil.startActivity(getActivity()
+                        , ForecastActivity.showWeatherForecastAct(activity, resBgColor, countyCode));
             }
         });
 
@@ -262,24 +250,14 @@ public class WeatherFragment extends BaseFragment {
                 WeatherForegroundService.toCreateForGround(activity,weatherMsg);
             }
         }
-        if (swipeRefresh != null){
-            swipeRefresh.setRefreshing(false);
-        }
     }
 
     public void errorUpdateView(String errorMesg){
-//        CommonUtils.showToast(activity, errorMesg);
         CommonUtils.showSnackbar(rlLayout,errorMesg);//多次弹出的时候，会有空指针的情况
-        if (swipeRefresh != null)
-            swipeRefresh.setRefreshing(false);
     }
 
     public void errorCountyCode(){
-//        CommonUtils.showToast(activity, R.string.error_location_code);
         CommonUtils.showSnackbar(rlLayout, R.string.error_location_code);
-
-        if (swipeRefresh != null)
-            swipeRefresh.setRefreshing(false);
     }
 
     /**
@@ -342,7 +320,6 @@ public class WeatherFragment extends BaseFragment {
                 errorMessage=activity.getResources().getString(R.string.error_donnot_knowledge);
 
             }
-//            LogUtils.e(TAG,errorMessage);
             errorUpdateView(errorMessage);
         }
     };

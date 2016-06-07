@@ -4,15 +4,8 @@
     android:layout_height="match_parent">
 
     <include layout="@layout/toolbar_layout" />
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefresh_weather_Layout"
+    <include layout="@layout/recycler_weather_item"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginBottom="@dimen/space_xlarge">
-
-        <include layout="@layout/recycler_weather_item"/>
-    </android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

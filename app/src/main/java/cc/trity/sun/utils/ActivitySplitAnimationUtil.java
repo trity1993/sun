@@ -213,7 +213,8 @@ public class ActivitySplitAnimationUtil {
     private static void prepare(Activity currActivity, int splitYCoord) {
 
         // Get the content of the activity and put in a bitmap
-        View root = currActivity.getWindow().getDecorView().findViewById(android.R.id.content);
+//        View root = currActivity.getWindow().getDecorView().findViewById(android.R.id.content);
+        View root = getSceneRoot(currActivity);
         root.setDrawingCacheEnabled(true);
         mBitmap = root.getDrawingCache();
 
