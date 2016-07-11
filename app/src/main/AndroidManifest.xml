@@ -48,7 +48,13 @@
 
         <activity
             android:name=".ui.activities.MainActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"></activity>
+            android:configChanges="orientation|keyboardHidden|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ui.activities.ChooseAreaActivity" />
         <activity android:name=".ui.activities.sign.LoginActivity" />
         <activity
@@ -69,11 +75,7 @@
         <activity android:name=".ui.activities.h5.H5Activity" />
         <activity android:name=".ui.activities.h5.MoveDetailActivity" />
         <activity android:name=".ui.activities.SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.activities.ForecastActivity"
