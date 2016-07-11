@@ -28,4 +28,6 @@
     <string name="locating">正在定位…</string>
     <string name="locate_fail">自动定位失败，请稍后再试</string>
     <string name="locate_fail_select">自动定位失败，请手动选择城市</string>
+    <!-- Strings related to guide -->
+    <string name="guide_enter">立即体验</string>
 </resources>

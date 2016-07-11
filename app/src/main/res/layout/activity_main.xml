@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/frame_main_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.view.activities.MainActivity">
+    android:layout_height="match_parent">
     <android.support.v4.view.ViewPager
-        android:layout_below="@+id/toolbar"
         android:id="@+id/viewpager_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-    <cc.trity.sun.ui.view.CirclePageIndicator
-        android:id="@+id/indicator"
+    <LinearLayout
+        android:id="@+id/view_pager_dots"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/space_small"
-        android:layout_gravity="bottom"/>
-</FrameLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" />
+</RelativeLayout>

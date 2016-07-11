@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +24,6 @@ import cc.trity.sun.engine.AppConstants;
 import cc.trity.sun.ui.fragments.WeatherFragment;
 import cc.trity.sun.model.city.County;
 import cc.trity.sun.ui.activities.base.AppBaseActivity;
-import cc.trity.sun.ui.view.CirclePageIndicator;
 import cc.trity.sun.ui.view.CubeOutTransformer;
 import cc.trity.sun.ui.view.TipViewController;
 
@@ -31,8 +33,9 @@ public class MainActivity extends AppBaseActivity {
 
     @InjectView(R.id.viewpager_main)
     ViewPager viewpagerMain;
-    @InjectView(R.id.indicator)
-    CirclePageIndicator indicator;
+
+    @InjectView(R.id.view_pager_dots)
+    LinearLayout llDot;
 
     int[] resInt = new int[]{R.color.yellow_bg
             , R.color.pink_bg
@@ -54,7 +57,6 @@ public class MainActivity extends AppBaseActivity {
     DataBaseManager dataBaseManager = null;
 
     private TipViewController tipView;
-    private boolean isTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +77,6 @@ public class MainActivity extends AppBaseActivity {
         dataBaseManager = new DataBaseManager(MainActivity.this);
         countyList = dataBaseManager.loadCounties();
 
-        //加载Intent
-//        Intent intentLocate=getIntent();
-
         lenght = countyList.size();
 
         if (lenght == 0) {
@@ -89,7 +88,6 @@ public class MainActivity extends AppBaseActivity {
         for (int i = 0; i < lenght; i++) {
             county = countyList.get(i);
             Fragment fragment = WeatherFragment.newInstance(resInt[i % 4], resDrawableInt[i % 4], county.getWeaterCode(), county.getPlaceName(), lenght, i);
-//            Fragment fragment=new FourShowFragment();
             fragmentList.add(fragment);
         }
         //读取sharePrf是否打开前台线程
@@ -115,14 +113,30 @@ public class MainActivity extends AppBaseActivity {
         viewpagerMain.setAdapter(endlessLoopAdapter);
         viewpagerMain.setCurrentItem(lenght * 100);//设置再中间可以左右滑动
         viewpagerMain.setPageTransformer(true, new CubeOutTransformer());
-        indicator.setViewPagerFixedLength(viewpagerMain, lenght);
-        indicator.setSnap(true);
 
     }
 
     @Override
     public void loadData() {
-
+        //进行监听viewPager的滑动操作
+        viewpagerMain.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+            @Override
+            public void onPageSelected(int position) {
+                for (int i = 0; i < llDot.getChildCount(); i++) {
+                    llDot.getChildAt(i).setSelected(false);
+                }
+                llDot.getChildAt(position).setSelected(true);
+            }
+        });
+        //初始化下方圆圈操作
+        LayoutInflater inflater = LayoutInflater.from(this);
+        for (int i = 0; i < lenght; i++) {
+            View view = inflater.inflate(R.layout.item_main_dot, null);
+            if (i == 0) {
+                view.setSelected(true);
+            }
+            llDot.addView(view);
+        }
     }
 
     public void updateView() {
@@ -152,7 +166,6 @@ public class MainActivity extends AppBaseActivity {
             endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, Integer.MAX_VALUE);
         }
         viewpagerMain.setAdapter(endlessLoopAdapter);
-        indicator.setViewPagerFixedLength(viewpagerMain, lenght);
 
     }
 
