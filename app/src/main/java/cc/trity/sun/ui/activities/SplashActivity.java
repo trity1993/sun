@@ -92,7 +92,6 @@ public class SplashActivity extends AppBaseActivity implements BDLocationListene
             txtSplashNum.setText(String.valueOf(DEGREE_MAX_NUM));
         } else {
             txtSplashNum.setText(String.valueOf(nextdegree));
-
         }
         return true;
     }

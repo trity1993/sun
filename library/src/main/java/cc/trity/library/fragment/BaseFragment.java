@@ -1,4 +1,4 @@
-package cc.trity.sun.ui.fragments.base;
+package cc.trity.library.fragment;
 
 
 import android.os.Bundle;
@@ -31,6 +31,9 @@ public abstract class BaseFragment extends Fragment implements BaseInit {
     public void init(Bundle savedInstanceState){
         initView(savedInstanceState);
         loadData();
+    }
+    public String getFragmentTitle() {
+        return null;
     }
 
 }

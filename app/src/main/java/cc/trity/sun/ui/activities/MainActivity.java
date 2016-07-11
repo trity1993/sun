@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,14 +15,15 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cc.trity.library.adapter.viewpager.LoopFPageAdapter;
+import cc.trity.library.fragment.BaseFragment;
 import cc.trity.library.utils.CommonUtils;
 import cc.trity.sun.R;
-import cc.trity.sun.ui.adapters.EndlessLoopAdapter;
 import cc.trity.sun.db.DataBaseManager;
 import cc.trity.sun.engine.AppConstants;
-import cc.trity.sun.ui.fragments.WeatherFragment;
 import cc.trity.sun.model.city.County;
 import cc.trity.sun.ui.activities.base.AppBaseActivity;
+import cc.trity.sun.ui.fragments.WeatherFragment;
 import cc.trity.sun.ui.view.CubeOutTransformer;
 import cc.trity.sun.ui.view.TipViewController;
 
@@ -47,14 +47,14 @@ public class MainActivity extends AppBaseActivity {
             , R.drawable.corner_pink_bg
             , R.drawable.corner_green_bg
             , R.drawable.corner_blue_bg};
-    List<Fragment> fragmentList = new ArrayList<>();
+    List<BaseFragment> fragmentList = new ArrayList<>();
     List<County> countyList;
 
     int lenght = 1;
 
     County county = null;
-    EndlessLoopAdapter endlessLoopAdapter = null;
     DataBaseManager dataBaseManager = null;
+    LoopFPageAdapter loopAdapter;
 
     private TipViewController tipView;
 
@@ -87,7 +87,7 @@ public class MainActivity extends AppBaseActivity {
 
         for (int i = 0; i < lenght; i++) {
             county = countyList.get(i);
-            Fragment fragment = WeatherFragment.newInstance(resInt[i % 4], resDrawableInt[i % 4], county.getWeaterCode(), county.getPlaceName(), lenght, i);
+            BaseFragment fragment = WeatherFragment.newInstance(resInt[i % 4], resDrawableInt[i % 4], county.getWeaterCode(), county.getPlaceName(), lenght, i);
             fragmentList.add(fragment);
         }
         //读取sharePrf是否打开前台线程
@@ -97,27 +97,10 @@ public class MainActivity extends AppBaseActivity {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-        if (lenght == 1) {
-            endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, lenght);
-        } else if (lenght <= 3) {
-            //循环多一次，倍数增加
-            for (int i = 0; i < lenght; i++) {
-                county = countyList.get(i);
-                Fragment fragment = WeatherFragment.newInstance(resInt[i], resDrawableInt[i], county.getWeaterCode(), county.getPlaceName(), lenght, i);
-                fragmentList.add(fragment);
-            }
-            endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, Integer.MAX_VALUE);
-        } else if (lenght >= 4) {
-            endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, Integer.MAX_VALUE);
-        }
-        viewpagerMain.setAdapter(endlessLoopAdapter);
+        loopAdapter=new LoopFPageAdapter(getSupportFragmentManager());
+        viewpagerMain.setAdapter(loopAdapter);
         viewpagerMain.setCurrentItem(lenght * 100);//设置再中间可以左右滑动
         viewpagerMain.setPageTransformer(true, new CubeOutTransformer());
-
-    }
-
-    @Override
-    public void loadData() {
         //进行监听viewPager的滑动操作
         viewpagerMain.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
             @Override
@@ -128,6 +111,11 @@ public class MainActivity extends AppBaseActivity {
                 llDot.getChildAt(position).setSelected(true);
             }
         });
+    }
+
+    @Override
+    public void loadData() {
+
         //初始化下方圆圈操作
         LayoutInflater inflater = LayoutInflater.from(this);
         for (int i = 0; i < lenght; i++) {
@@ -137,35 +125,13 @@ public class MainActivity extends AppBaseActivity {
             }
             llDot.addView(view);
         }
+        loopAdapter.addAll(fragmentList);
+        loopAdapter.notifyDataSetChanged();
     }
 
     public void updateView() {
 
-        countyList.clear();
-        countyList.addAll(dataBaseManager.loadCounties());
-        lenght = countyList.size();
-
-        fragmentList.clear();
-        for (int i = 0; i < lenght; i++) {
-            county = countyList.get(i);
-            Fragment fragment = WeatherFragment.newInstance(resInt[i % 4], resDrawableInt[i % 4], county.getWeaterCode(), county.getPlaceName(), lenght, i);
-            fragmentList.add(fragment);
-        }
-
-        if (lenght == 1) {
-            endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, lenght);
-        } else if (lenght <= 3) {
-            //循环多一次，倍数增加
-            for (int i = 0; i < lenght; i++) {
-                county = countyList.get(i);
-                Fragment fragment = WeatherFragment.newInstance(resInt[i % 4], resDrawableInt[i % 4], county.getWeaterCode(), county.getPlaceName(), lenght, i);
-                fragmentList.add(fragment);
-            }
-            endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, Integer.MAX_VALUE);
-        } else if (lenght >= 4) {
-            endlessLoopAdapter = new EndlessLoopAdapter(this.getSupportFragmentManager(), fragmentList, Integer.MAX_VALUE);
-        }
-        viewpagerMain.setAdapter(endlessLoopAdapter);
+        //点击城市后的回调：需要生成多一个Fragment并加入ViewPager中
 
     }
 
@@ -182,7 +148,6 @@ public class MainActivity extends AppBaseActivity {
             case ADD_FRAGMENT:
                 if (resultCode == RESULT_OK) {
                     updateView();
-
                 } else if (resultCode == RESULT_CANCELED) {
                     finish();
                 }

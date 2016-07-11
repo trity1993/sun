@@ -14,16 +14,16 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cc.trity.library.fragment.BaseFragment;
 import cc.trity.library.utils.CommonUtils;
 import cc.trity.sun.R;
-import cc.trity.sun.ui.adapters.WeatherRecyclerAdapter;
 import cc.trity.sun.db.DataBaseManager;
-import cc.trity.sun.ui.fragments.base.BaseFragment;
 import cc.trity.sun.listener.OnRecyclerItemClickListener;
 import cc.trity.sun.model.WeatherMsg;
 import cc.trity.sun.model.city.County;
 import cc.trity.sun.model.weathersponse.WeatherContainer;
 import cc.trity.sun.presenter.WeatherPresenter;
+import cc.trity.sun.ui.adapters.WeatherRecyclerAdapter;
 import cc.trity.sun.utils.Utility;
 
 /**

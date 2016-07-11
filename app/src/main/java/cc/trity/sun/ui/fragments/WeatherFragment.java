@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cc.trity.library.fragment.BaseFragment;
 import cc.trity.library.utils.CommonUtils;
 import cc.trity.library.utils.GsonUtils;
 import cc.trity.library.utils.LogUtils;
@@ -36,7 +37,6 @@ import cc.trity.sun.ui.activities.ChooseAreaActivity;
 import cc.trity.sun.ui.activities.ForecastActivity;
 import cc.trity.sun.ui.activities.SettingActivity;
 import cc.trity.sun.ui.activities.h5.H5Activity;
-import cc.trity.sun.ui.fragments.base.BaseFragment;
 import cc.trity.sun.utils.ActivitySplitAnimationUtil;
 import cc.trity.sun.utils.Utility;
 
