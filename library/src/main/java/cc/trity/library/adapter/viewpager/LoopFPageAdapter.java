@@ -3,7 +3,6 @@ package cc.trity.library.adapter.viewpager;
 import android.support.v4.app.FragmentManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import cc.trity.library.fragment.BaseFragment;
@@ -11,9 +10,12 @@ import cc.trity.library.fragment.BaseFragment;
 
 /**
  * fragment方式的无限循环
+ * bug1：Can't change tag of fragment BlankFragment
+ * 原来基类继承PagerFragmentAdapter，而不是FragmentStatePagerAdapter，改成FragmentStatePagerAdapter即可
+ * bug2:需要使用到Collections.copy的时候，无法显示对应的view+fragment already active的问题
  * Created by trity on 20/6/16.
  */
-public class LoopFPageAdapter extends CommonFPageAdapter {
+public abstract class LoopFPageAdapter extends CommonFPageAdapter {
 
     private int realIndex;//少于4个的情况，需要标记其真正的索引
 
@@ -27,11 +29,8 @@ public class LoopFPageAdapter extends CommonFPageAdapter {
             return getRealCount();
         } else if (getRealCount() < 4) {
             realIndex = getRealCount();
-            List<BaseFragment> list = new ArrayList<>();
-            Collections.copy(getList(), list);//使用此copy函数才能为深拷贝
-            for (BaseFragment bfTmp : list) {//循环添加多一次
-                add(bfTmp);
-            }
+            List<BaseFragment> list = copyList(getList());
+            addAll(list);
         }
         return Integer.MAX_VALUE;
     }
@@ -50,8 +49,8 @@ public class LoopFPageAdapter extends CommonFPageAdapter {
     }
 
     /**
-     * 设置开始位置，使得能够一开就左滑动
-     *
+     * 设置开始位置，使得能够一开就可以左滑动
+     * viewPage.setCurrentItem(loopFAdapter.getStartPosition())
      * @return
      */
     public int getStartPosition() {
@@ -75,4 +74,13 @@ public class LoopFPageAdapter extends CommonFPageAdapter {
         }
     }
 
+    /**
+     * 在<4的情况使用
+     * 需要自行定义深拷贝，用系统提供的深拷贝无法完成要求
+     * 注意此BaseFragment的子类不可以使用setArguments进行传值,而是直接使用构造函数传值，
+     * 原因是viewpager在加载fragment的使用才会在oncreate的使用getArguments才得到对应的值
+     * @param sourceList
+     * @return
+     */
+    public abstract List<BaseFragment> copyList(List<BaseFragment> sourceList);
 }

@@ -17,6 +17,6 @@
     <color name="gray_bg_alapha">#77303030</color>
 
     <!--main viewpager dot color-->
-    <color name="overColor">#FFDDDDDD</color>
-    <color name="overColorTranslucent">#FFDDDDDD</color>
+    <color name="overColor">#ffffff</color>
+    <color name="overColorTranslucent">#33000000</color>
 </resources>

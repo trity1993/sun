@@ -97,7 +97,21 @@ public class MainActivity extends AppBaseActivity {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-        loopAdapter=new LoopFPageAdapter(getSupportFragmentManager());
+        loopAdapter=new LoopFPageAdapter(getSupportFragmentManager()){
+            @Override
+            public List<BaseFragment> copyList(List<BaseFragment> sourceList) {
+                List<BaseFragment> targetList=new ArrayList<>(sourceList.size());
+                for(BaseFragment bfTmp:sourceList){
+                    if(bfTmp instanceof WeatherFragment){
+                        WeatherFragment wfTmp=(WeatherFragment)bfTmp;
+                        targetList.add(WeatherFragment.newInstance
+                                (wfTmp.getResBgColor(),wfTmp.getResbg(),wfTmp.getCountyCode(),wfTmp.getCountyName(),wfTmp.getPageSize(),wfTmp.getPageNum()));
+                    }
+                }
+                return targetList;
+
+            }
+        };
         viewpagerMain.setAdapter(loopAdapter);
         viewpagerMain.setCurrentItem(lenght * 100);//设置再中间可以左右滑动
         viewpagerMain.setPageTransformer(true, new CubeOutTransformer());
@@ -108,7 +122,7 @@ public class MainActivity extends AppBaseActivity {
                 for (int i = 0; i < llDot.getChildCount(); i++) {
                     llDot.getChildAt(i).setSelected(false);
                 }
-                llDot.getChildAt(position).setSelected(true);
+                llDot.getChildAt(position%llDot.getChildCount()).setSelected(true);
             }
         });
     }

@@ -1,7 +1,7 @@
 package cc.trity.library.adapter.viewpager;
 
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import cc.trity.library.fragment.BaseFragment;
 /**
  * Created by trity on 14/6/16.
  */
-public class CommonFPageAdapter extends FragmentPagerAdapter implements IListAdapter<BaseFragment> {
+public class CommonFPageAdapter extends FragmentStatePagerAdapter implements IListAdapter<BaseFragment> {
 
     protected List<BaseFragment> mFragmentList;
 

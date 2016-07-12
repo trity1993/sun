@@ -73,13 +73,19 @@ public class WeatherFragment extends BaseFragment {
 
     Handler handler = new Handler();
 
-    public WeatherFragment() {
+    public WeatherFragment(int resBgColor,int resBg,int pageSize,int pageNum,String countyCode,String countyName) {
+        this.resBgColor=resBgColor;
+        this.resbg=resBg;
+        this.pageSize=pageSize;
+        this.pageNum=pageNum;
+        this.countyCode=countyCode;
+        this.countyName=countyName;
     }
 
     public static WeatherFragment newInstance(int resBgColor, int resbg,
                                               String countyCode, String countyName,
                                               int pageSize,int pageNum) {
-        WeatherFragment weatherFragment = new WeatherFragment();
+        WeatherFragment weatherFragment = new WeatherFragment(resBgColor,resbg,pageSize,pageNum,countyCode,countyName);
         Bundle bundle = new Bundle();
         bundle.putInt(AppConstants.INTENT_BG_COLOR, resBgColor);
         bundle.putInt("resBg", resbg);
@@ -323,4 +329,28 @@ public class WeatherFragment extends BaseFragment {
             errorUpdateView(errorMessage);
         }
     };
+
+    public int getResBgColor() {
+        return resBgColor;
+    }
+
+    public int getResbg() {
+        return resbg;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public int getPageNum() {
+        return pageNum;
+    }
+
+    public String getCountyCode() {
+        return countyCode;
+    }
+
+    public String getCountyName() {
+        return countyName;
+    }
 }
